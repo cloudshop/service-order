@@ -1,0 +1,101 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "proOrderItem",
+            "otherEntityName": "proOrderItem",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "proOrder"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "bUserid",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "orderNo",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "payment",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "paymentType",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "paymentTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "postFee",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "consignTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "endTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "closeTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "shippingName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "shipingCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "buyerMessage",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "buyerNick",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "buyerRate",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "createdTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "updateTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "deletedB",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "deletedC",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "shopId",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20180403115228",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "pro_order",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "microserviceName": "order",
+    "searchEngine": false
+}

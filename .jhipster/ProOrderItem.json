@@ -1,0 +1,41 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "proOrder",
+            "otherEntityName": "proOrder",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "productSkuId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "count",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "price",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "createdTime",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "updatedTime",
+            "fieldType": "Instant"
+        }
+    ],
+    "changelogDate": "20180403120616",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "pro_order_item",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "microserviceName": "order",
+    "searchEngine": false
+}
