@@ -13,4 +13,6 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface DepOrderRepository extends JpaRepository<DepOrder, Long>, JpaSpecificationExecutor<DepOrder> {
 
+	public DepOrder findByOrderNoAndStatus(String orderNo,Integer status);
+	
 }

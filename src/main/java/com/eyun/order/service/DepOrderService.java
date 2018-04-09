@@ -39,4 +39,7 @@ public interface DepOrderService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+	void depositNotify(String orderNo) throws Exception;
+	
 }

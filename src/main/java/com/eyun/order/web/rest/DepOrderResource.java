@@ -2,13 +2,18 @@ package com.eyun.order.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.DepOrderService;
+import com.eyun.order.service.PayService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.DepOrderDTO;
 import com.eyun.order.service.dto.DepOrderCriteria;
+import com.eyun.order.domain.vo.AlipayDTO;
+import com.eyun.order.domain.vo.DepOrderVO;
 import com.eyun.order.service.DepOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,9 +25,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * REST controller for managing DepOrder.
@@ -38,8 +44,11 @@ public class DepOrderResource {
     private final DepOrderService depOrderService;
 
     private final DepOrderQueryService depOrderQueryService;
+    
+    private final PayService payService;
 
-    public DepOrderResource(DepOrderService depOrderService, DepOrderQueryService depOrderQueryService) {
+    public DepOrderResource(DepOrderService depOrderService, DepOrderQueryService depOrderQueryService, PayService payService) {
+    	this.payService = payService;
         this.depOrderService = depOrderService;
         this.depOrderQueryService = depOrderQueryService;
     }
@@ -121,7 +130,6 @@ public class DepOrderResource {
      *
      * @param id the id of the depOrderDTO to delete
      * @return the ResponseEntity with status 200 (OK)
-     */
     @DeleteMapping("/dep-orders/{id}")
     @Timed
     public ResponseEntity<Void> deleteDepOrder(@PathVariable Long id) {
@@ -129,4 +137,69 @@ public class DepOrderResource {
         depOrderService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+     */
+    
+    /**
+     * 创建充值订单
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年4月9日
+     * @version 1.0
+     * @param depOrderVO
+     * @return
+     */
+    @ApiOperation(value="创建充值订单")
+    @PostMapping("/dep-orders/deposit")
+    public String createdDepostOrder(@RequestBody DepOrderVO depOrderVO) {
+    	String orderNo = UUID.randomUUID().toString().replaceAll("-", "");
+    	String orderString = "";
+    	switch (depOrderVO.getPayType()) {
+		case 1: //阿里支付
+			AlipayDTO alipay = new AlipayDTO();
+			alipay.setBody("贡融积分商城充值");
+			alipay.setOutTradeNo(orderNo);
+			alipay.setSubject("充值余额");
+			alipay.setPassbackParams("deposit");//deposit 充值
+			alipay.setTotalAmount(depOrderVO.getPayment().toString());
+			alipay.setTimeoutExpress("15m");
+			orderString = payService.createAlipayAppOrder(alipay);
+			break;
+		case 2: //微信支付
+			break;
+		default:
+			break;
+		}
+		
+    	DepOrderDTO depOrderDTO = new DepOrderDTO();
+    	depOrderDTO.setOrderNo(orderNo);
+    	depOrderDTO.setCreatedTime(Instant.now());
+    	depOrderDTO.setDeleted(false);
+    	depOrderDTO.setPayment(depOrderVO.getPayment());
+    	depOrderDTO.setPayType(depOrderVO.getPayType());
+    	depOrderDTO.setStatus(1);
+    	depOrderDTO.setUserid(depOrderVO.getUserid());
+    	depOrderDTO.setWalletId(depOrderVO.getWalletId());
+		depOrderService.save(depOrderDTO);
+		
+		return orderString;
+    }
+    
+    /**
+     * 支付回调通知地址
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年4月9日
+     * @version 1.0
+     * @param orderNo
+     * @return
+     * @throws Exception
+     */
+    @PutMapping("/dep-orders/deposit/{orderNo}") 
+    public ResponseEntity<String> depositNotify (@RequestBody String orderNo) throws Exception {
+    	depOrderService.depositNotify(orderNo);
+    	return ResponseEntity.ok()
+    			.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderNo))
+    			.body("success");
+    }
+    
 }

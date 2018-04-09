@@ -7,7 +7,6 @@ import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
-import com.eyun.order.service.dto.ProOrderVO;
 import com.eyun.order.service.impl.ProOrderServiceImpl;
 import com.eyun.order.service.dto.ProOrderCriteria;
 import com.eyun.order.domain.ProOrder;
