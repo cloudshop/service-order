@@ -6,7 +6,12 @@ import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.ProOrderDTO;
+import com.eyun.order.service.dto.ProOrderItemDTO;
+import com.eyun.order.service.dto.ProOrderVO;
+import com.eyun.order.service.impl.ProOrderServiceImpl;
 import com.eyun.order.service.dto.ProOrderCriteria;
+import com.eyun.order.domain.ProOrder;
+import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.ProOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -20,9 +25,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST controller for managing ProOrder.
@@ -129,4 +135,26 @@ public class ProOrderResource {
         proOrderService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    /**
+     * 提交商家proOrder信息
+     * @param list
+     * @return
+     */
+    @PostMapping("/shop-proorders")
+    public ResponseEntity<Void> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO){
+    	
+    for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
+		proOrderService.save(proOrderDTO2);
+		System.out.println(proOrderDTO2.getProOrderItems().size());
+	}
+//    	for (ProOrderDTO proOrder : list) {
+//    		Set<ProOrderItem> proOrderItems = proOrder.getProOrderItems();
+//    		System.out.println("proOrderItems 传进来没有？"+ proOrderItems.size());
+//			proOrderService.save(proOrder);
+//			
+//		}
+		return null;	
+    }
+    
+    
 }

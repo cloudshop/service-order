@@ -1,6 +1,7 @@
 package com.eyun.order.service.mapper;
 
 import com.eyun.order.domain.*;
+import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 
 import org.mapstruct.*;
