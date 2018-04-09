@@ -1,6 +1,10 @@
 package com.eyun.order.service;
 
+import com.eyun.order.domain.ProOrder;
 import com.eyun.order.service.dto.ProOrderDTO;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +43,10 @@ public interface ProOrderService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+	ProOrder save(ProOrder proOrder);
+
+	List<ProOrder> findUnprocessOrders();
+
+	void updateOrderById();
 }

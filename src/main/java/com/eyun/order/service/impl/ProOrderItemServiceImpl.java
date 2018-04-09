@@ -1,12 +1,14 @@
 package com.eyun.order.service.impl;
 
 import com.eyun.order.service.ProOrderItemService;
+import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.repository.ProOrderItemRepository;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.mapper.ProOrderItemMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,11 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
         return proOrderItemMapper.toDto(proOrderItem);
     }
 
+    public ProOrderItem savePro(ProOrderItem pro){
+        ProOrderItem save = proOrderItemRepository.save(pro);
+        return save;
+
+    }
     /**
      * Get all the proOrderItems.
      *
@@ -83,4 +90,23 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
         log.debug("Request to delete ProOrderItem : {}", id);
         proOrderItemRepository.delete(id);
     }
+    
+    /**
+     * 转实体方法
+     */
+       public ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItemDTO,ProOrder proOrder){
+
+    	ProOrderItem entity =  new ProOrderItem();
+
+    	BeanUtils.copyProperties(proOrderItemDTO, entity , "proOrder");
+
+    	entity.setProOrder(proOrder);
+    	log.info("存放entity"+entity.toString());
+    	/*entity.setProOrder(proOrder);*/
+    	ProOrderItem proOrderItem = proOrderItemRepository.save(entity);
+    	log.info("存放proOrderItem " + proOrderItem);
+		return proOrderItem;
+    }
+    
+    
 }

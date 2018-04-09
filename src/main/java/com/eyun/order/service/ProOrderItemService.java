@@ -1,5 +1,7 @@
 package com.eyun.order.service;
 
+import com.eyun.order.domain.ProOrder;
+import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,4 +41,6 @@ public interface ProOrderItemService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+	ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItem, ProOrder proOrder);
 }
