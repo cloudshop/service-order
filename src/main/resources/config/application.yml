@@ -37,8 +37,9 @@ eureka:
 ribbon:
     eureka:
         enabled: true
+    ReadTimeout: 60000
+    ConnectTimeout: 60000
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
-#hystrix:
 #    command:
 #        default:
 #            execution:
@@ -52,6 +53,12 @@ feign:
 
 hystrix:
     share-security-context: true
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 10000
 
 management:
     security:
@@ -108,7 +115,7 @@ jhipster:
     async:
         core-pool-size: 2
         max-pool-size: 50
-        queue-capacity: 10000
+        queue-capacity: 50000
     # By default CORS is disabled. Uncomment to enable.
     #cors:
         #allowed-origins: "*"

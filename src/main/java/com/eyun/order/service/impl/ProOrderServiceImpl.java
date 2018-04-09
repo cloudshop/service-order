@@ -1,6 +1,7 @@
 package com.eyun.order.service.impl;
 
 import com.eyun.order.service.ProOrderService;
+import com.eyun.order.client.ProServiceFeignClient;
 import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.repository.ProOrderRepository;
@@ -11,7 +12,9 @@ import com.eyun.order.web.rest.util.OrderNoUtil;
 
 import java.math.BigInteger;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -39,8 +42,8 @@ public class ProOrderServiceImpl implements ProOrderService {
     private ProOrderItemServiceImpl proOrderItemServiceImpl;
     
     private final ProOrderMapper proOrderMapper;
-    
-   
+    @Autowired
+    private ProServiceFeignClient proServiceFeignClient;
     
 
 
@@ -78,8 +81,13 @@ public class ProOrderServiceImpl implements ProOrderService {
 			proOrderItem.setUpdatedTime(Instant.now());
 			proOrderItem.setProOrderId(proOrder.getId());
 	    	ProOrderItemDTO save = proOrderItemServiceImpl.save(proOrderItem);	
-			System.out.println("***"+proOrderItem.toString());
+			//0:减库存 1:增库存
+	        Map m = new HashMap();
+	        m.put("id", proOrderItem.getProductSkuId());
+	        m.put("count", proOrderItem.getCount());
+	        proServiceFeignClient.updatePro(0, m);
 		}
+        
         return proOrderMapper.toDto(proOrder);
     }
 
@@ -142,7 +150,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
 			proOrderRepository.save(order);
-			System.out.println("定时调度+++++++"+order.toString());
+			System.out.println("定时调度++++"+order.toString());
 		}
 	}
 
