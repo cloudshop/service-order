@@ -21,6 +21,7 @@ public interface ProOrderService {
      */
     ProOrderDTO save(ProOrderDTO proOrderDTO);
 
+    
     /**
      * Get all the proOrders.
      *
@@ -43,10 +44,10 @@ public interface ProOrderService {
      * @param id the id of the entity
      */
     void delete(Long id);
-
-	ProOrder save(ProOrder proOrder);
-
+    
 	List<ProOrder> findUnprocessOrders();
-
+	
 	void updateOrderById();
+	
+    String getOrderString(ProOrderDTO proOrderDTO);
 }

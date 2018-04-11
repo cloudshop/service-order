@@ -5,6 +5,7 @@ import com.eyun.order.service.DepOrderService;
 import com.eyun.order.service.PayService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
+import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.DepOrderDTO;
 import com.eyun.order.service.dto.DepOrderCriteria;
@@ -151,8 +152,9 @@ public class DepOrderResource {
     @ApiOperation(value="创建充值订单")
     @PostMapping("/dep-orders/deposit")
     public String createdDepostOrder(@RequestBody DepOrderVO depOrderVO) {
-    	String orderNo = UUID.randomUUID().toString().replaceAll("-", "");
+    	//String orderNo = UUID.randomUUID().toString().replaceAll("-", "");
     	String orderString = "";
+    	String orderNo = OrderNoUtil.getOrderNoUtil();
     	switch (depOrderVO.getPayType()) {
 		case 1: //阿里支付
 			AlipayDTO alipay = new AlipayDTO();

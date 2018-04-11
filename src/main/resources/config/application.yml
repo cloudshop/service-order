@@ -37,8 +37,8 @@ eureka:
 ribbon:
     eureka:
         enabled: true
-    ReadTimeout: 60000
-    ConnectTimeout: 60000
+    ReadTimeout: 90000
+    ConnectTimeout: 90000
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 #    command:
 #        default:
@@ -53,12 +53,6 @@ feign:
 
 hystrix:
     share-security-context: true
-    command:
-        default:
-            execution:
-                isolation:
-                    thread:
-                        timeoutInMilliseconds: 10000
 
 management:
     security:

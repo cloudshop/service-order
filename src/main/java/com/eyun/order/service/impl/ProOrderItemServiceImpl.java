@@ -6,11 +6,20 @@ import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.repository.ProOrderItemRepository;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.mapper.ProOrderItemMapper;
+
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,6 +116,12 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
     	log.info("存放proOrderItem " + proOrderItem);
 		return proOrderItem;
     }
+
+	@Override
+	public List<ProOrderItem> getAllProOrderItemsByUser(Long userId, int page,int size) {
+		List<ProOrderItem> orderItemList = proOrderItemRepository.getOrderItemByUserId(1l, (page-1)*size, size);
+		return orderItemList;
+	}
     
     
 }

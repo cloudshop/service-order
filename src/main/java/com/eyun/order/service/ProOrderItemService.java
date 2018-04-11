@@ -3,6 +3,9 @@ package com.eyun.order.service;
 import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.dto.ProOrderItemDTO;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -43,4 +46,7 @@ public interface ProOrderItemService {
     void delete(Long id);
 
 	ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItem, ProOrder proOrder);
+	
+	List<ProOrderItem> getAllProOrderItemsByUser(Long userId,int page,int size);
+
 }

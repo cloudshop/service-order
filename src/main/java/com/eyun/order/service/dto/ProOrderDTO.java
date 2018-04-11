@@ -58,6 +58,8 @@ public class ProOrderDTO implements Serializable {
 
     private Long shopId;
     
+    
+    
     private Set<ProOrderItemDTO> proOrderItems = new HashSet<>();
     
     public Set<ProOrderItemDTO> getProOrderItems() {

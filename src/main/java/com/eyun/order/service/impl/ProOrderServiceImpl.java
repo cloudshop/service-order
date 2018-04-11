@@ -1,17 +1,23 @@
 package com.eyun.order.service.impl;
 
+import com.eyun.order.service.PayService;
 import com.eyun.order.service.ProOrderService;
-import com.eyun.order.client.ProServiceFeignClient;
+import com.eyun.order.service.ProService;
+import com.eyun.order.service.ShoppingCartService;
 import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
+import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.repository.ProOrderRepository;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
+import com.eyun.order.service.dto.ProductSkuDTO;
 import com.eyun.order.service.mapper.ProOrderMapper;
 import com.eyun.order.web.rest.util.OrderNoUtil;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +49,13 @@ public class ProOrderServiceImpl implements ProOrderService {
     
     private final ProOrderMapper proOrderMapper;
     @Autowired
-    private ProServiceFeignClient proServiceFeignClient;
+    private ProService proService;
+    @Autowired
+    private PayService payService;
     
-
+    private BigDecimal totalPrice;
+    @Autowired
+    private ShoppingCartService shoppingCartService;
 
     public ProOrderServiceImpl(ProOrderRepository proOrderRepository, ProOrderMapper proOrderMapper) {
         this.proOrderRepository = proOrderRepository;
@@ -61,34 +71,54 @@ public class ProOrderServiceImpl implements ProOrderService {
      * 4.库存
      * 5.购物车
      * 6.支付
+     * 订单状态：1.未支付，2.已付款，3.未发货，4，已发货，5.交易成功，6.交易关闭
      * @param proOrderDTO the entity to save
      * @return the persisted entity
      */
     @Override
-    public ProOrderDTO save(ProOrderDTO proOrderDTO) {
+    public String getOrderString(ProOrderDTO proOrderDTO) {
         log.debug("Request to save ProOrder : {}", proOrderDTO);
+        String sbody = "";
+        String orderString ="";
+        List skuAll = new ArrayList<Long>();
+        
+        
         proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
         proOrderDTO.setStatus(1);
         proOrderDTO.setCreatedTime(Instant.now());
         proOrderDTO.setUpdateTime(Instant.now());
         proOrderDTO.setDeletedB(false);
+        log.debug("配置商铺订单属性" + proOrderDTO);
+        
         Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();
         ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
         ProOrder proOrders = proOrderRepository.save(proOrder);
-
+        log.debug("添加商品订单详细属性");
         for (ProOrderItemDTO proOrderItem : proOrderItems) {
         	proOrderItem.setCreatedTime(Instant.now());
 			proOrderItem.setUpdatedTime(Instant.now());
 			proOrderItem.setProOrderId(proOrder.getId());
+			BigDecimal bPrice = proOrderItem.getPrice();
+			Integer count = proOrderItem.getCount();
+			BigDecimal bCount = new BigDecimal(count); 
+			totalPrice = bPrice.multiply(bCount);
 	    	ProOrderItemDTO save = proOrderItemServiceImpl.save(proOrderItem);	
-			//0:减库存 1:增库存
-	        Map m = new HashMap();
-	        m.put("id", proOrderItem.getProductSkuId());
-	        m.put("count", proOrderItem.getCount());
-	        proServiceFeignClient.updatePro(0, m);
+	    	Integer i = new Integer(0);
+	    	//更改库存
+	        proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
+	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
+	        sbody += pro.getSkuName();
+	        skuAll.add(proOrderItem.getProductSkuId());
 		}
-        
-        return proOrderMapper.toDto(proOrder);
+        // 更改 购物车（userId）
+        shoppingCartService.del(1l, skuAll);
+        totalPrice = totalPrice.add(proOrder.getPostFee());
+        proOrder.setPayment(totalPrice);
+        ProOrder save = proOrderRepository.save(proOrder);
+        log.debug("调用apiPayDTO接口");
+        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "product", "", "", "30m");
+        orderString = payService.createAlipayAppOrder(apiPayDTO);
+        return orderString;
     }
 
     /**
@@ -130,11 +160,6 @@ public class ProOrderServiceImpl implements ProOrderService {
         proOrderRepository.delete(id);
     }
 
-	@Override
-	public ProOrder save(ProOrder proOrder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	
 /*	public List<Integer> findUnprocessOrders() {
@@ -146,7 +171,8 @@ public class ProOrderServiceImpl implements ProOrderService {
 		List<BigInteger> ordersId = proOrderRepository.findOrders();
 		for (BigInteger btId : ordersId) {
 			ProOrder order = proOrderRepository.findOne(btId.longValue());
-			order.setStatus(5);
+			//交易关闭
+			order.setStatus(6);
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
 			proOrderRepository.save(order);
@@ -158,6 +184,13 @@ public class ProOrderServiceImpl implements ProOrderService {
 	public List<ProOrder> findUnprocessOrders() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ProOrderDTO save(ProOrderDTO proOrderDTO) {
+		  ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
+	      proOrderRepository.save(proOrder);
+		return proOrderDTO;
 	}
 
 

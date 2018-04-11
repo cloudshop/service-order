@@ -7,8 +7,11 @@ import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ProOrderItemCriteria;
+import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.ProOrderItemQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -130,5 +133,18 @@ public class ProOrderItemResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
     
-    
+    /**
+     * 
+     * @param pageable
+     * @return
+     */
+    @ApiOperation(value = "查看当前用户的所有订单")
+    @GetMapping("/pro-order-items/{page}/{size}")
+    public ResponseEntity<List<ProOrderItem>> getAllProOrderItemsByUser(@PathVariable int page,@PathVariable int size ) {
+
+    	Long userId;
+    	List<ProOrderItem> pros = proOrderItemService.getAllProOrderItemsByUser(1l,page,size);
+    	
+        return new ResponseEntity<>(pros,HttpStatus.OK);
+    }
 }

@@ -26,8 +26,20 @@ public class ProOrderItemDTO implements Serializable {
     private Instant updatedTime;
 
     private Long proOrderId;
+    
+    
+    public ProOrderItemDTO(Long productSkuId, Integer count, BigDecimal price, Instant createdTime, Instant updatedTime,
+			Long proOrderId) {
+		super();
+		this.productSkuId = productSkuId;
+		this.count = count;
+		this.price = price;
+		this.createdTime = createdTime;
+		this.updatedTime = updatedTime;
+		this.proOrderId = proOrderId;
+	}
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 

@@ -140,19 +140,18 @@ public class ProOrderResource {
      * @return
      */
     @PostMapping("/shop-proorders")
-    public ResponseEntity<Void> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO){
-    	
+    public ResponseEntity<String> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO){
+    String orderString = "";
     for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
-		proOrderService.save(proOrderDTO2);
-		System.out.println(proOrderDTO2.getProOrderItems().size());
+		 orderString = proOrderService.getOrderString(proOrderDTO2);
 	}
-//    	for (ProOrderDTO proOrder : list) {
+		//    	for (ProOrderDTO proOrder : list) {
 //    		Set<ProOrderItem> proOrderItems = proOrder.getProOrderItems();
 //    		System.out.println("proOrderItems 传进来没有？"+ proOrderItems.size());
 //			proOrderService.save(proOrder);
 //			
 //		}
-		return null;	
+		return ResponseEntity.ok().body(orderString);	
     }
     
     
