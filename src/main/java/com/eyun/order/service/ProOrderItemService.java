@@ -47,6 +47,10 @@ public interface ProOrderItemService {
 
 	ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItem, ProOrder proOrder);
 	
-	List<ProOrderItem> getAllProOrderItemsByUser(Long userId,int page,int size);
+	List<ProOrderItem> getAllProOrderItemsByUser(Integer userId,Integer page,Integer size);
+
+	List<ProOrderItem> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
+
+	List<ProOrderItem> findDispatchItems(long l, int page, int size);
 
 }

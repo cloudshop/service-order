@@ -139,12 +139,27 @@ public class ProOrderItemResource {
      * @return
      */
     @ApiOperation(value = "查看当前用户的所有订单")
-    @GetMapping("/pro-order-items/{page}/{size}")
-    public ResponseEntity<List<ProOrderItem>> getAllProOrderItemsByUser(@PathVariable int page,@PathVariable int size ) {
-
-    	Long userId;
-    	List<ProOrderItem> pros = proOrderItemService.getAllProOrderItemsByUser(1l,page,size);
-    	
+    @GetMapping("/findAllProOrderItems/{page}/{size}")
+    public ResponseEntity<List<ProOrderItem>> findAllProOrderItemsByUser(@PathVariable int page,@PathVariable int size ) {
+    	Integer userId;
+    	List<ProOrderItem> pros = proOrderItemService.getAllProOrderItemsByUser(1,page,size);  	
         return new ResponseEntity<>(pros,HttpStatus.OK);
     }
+    
+    @ApiOperation(value = "查看代付款1，已完成5，已取消订单6")
+    @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
+    public ResponseEntity<List<ProOrderItem>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
+    	Integer userId;
+    	List<ProOrderItem> pros = proOrderItemService.findOrderByStatuAndUserid(1l,status,page,size);  	
+    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+    }
+    
+    @ApiOperation(value = "查看待收货订单(status:2,3,4)")
+    @GetMapping("/findDispatchItems/{page}/{size}")
+    public ResponseEntity<List<ProOrderItem>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
+    	Integer userId;
+    	List<ProOrderItem> pros = proOrderItemService.findDispatchItems(1l,page,size);  	
+    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+    }
+    
 }

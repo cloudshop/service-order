@@ -17,4 +17,4 @@ import org.springframework.data.jpa.repository.*;
 public interface ProOrderRepository extends JpaRepository<ProOrder, Long>, JpaSpecificationExecutor<ProOrder> {
 	@Query(value = "SELECT o.id FROM pro_order o WHERE o.status = 1 and  TIMESTAMPDIFF(SECOND,NOW(),UPDATE_TIME) > 1800",nativeQuery = true)
 	public List<BigInteger> findOrders();
-}
+	}

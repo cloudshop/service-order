@@ -106,9 +106,7 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
        public ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItemDTO,ProOrder proOrder){
 
     	ProOrderItem entity =  new ProOrderItem();
-
     	BeanUtils.copyProperties(proOrderItemDTO, entity , "proOrder");
-
     	entity.setProOrder(proOrder);
     	log.info("存放entity"+entity.toString());
     	/*entity.setProOrder(proOrder);*/
@@ -118,9 +116,21 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
     }
 
 	@Override
-	public List<ProOrderItem> getAllProOrderItemsByUser(Long userId, int page,int size) {
+	public List<ProOrderItem> getAllProOrderItemsByUser(Integer userId, Integer page,Integer size) {
 		List<ProOrderItem> orderItemList = proOrderItemRepository.getOrderItemByUserId(1l, (page-1)*size, size);
 		return orderItemList;
+	}
+
+	@Override
+	public List<ProOrderItem> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
+		List<ProOrderItem> findOrderByStatuAndUserid = proOrderItemRepository.findOrderByStatuAndUserid(1l,status,(page-1)*size,size);
+		return findOrderByStatuAndUserid;
+	}
+
+	@Override
+	public List<ProOrderItem> findDispatchItems(long l, int page, int size) {
+		List<ProOrderItem> findDispatchItems = proOrderItemRepository.findDispatchItems(1l,(page-1)*size,size);
+		return findDispatchItems;
 	}
     
     

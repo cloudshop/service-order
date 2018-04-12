@@ -44,9 +44,7 @@ public interface ProOrderService {
      * @param id the id of the entity
      */
     void delete(Long id);
-    
-	List<ProOrder> findUnprocessOrders();
-	
+    	
 	void updateOrderById();
 	
     String getOrderString(ProOrderDTO proOrderDTO);

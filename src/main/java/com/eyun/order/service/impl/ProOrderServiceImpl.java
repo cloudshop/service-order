@@ -181,17 +181,9 @@ public class ProOrderServiceImpl implements ProOrderService {
 	}
 
 	@Override
-	public List<ProOrder> findUnprocessOrders() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ProOrderDTO save(ProOrderDTO proOrderDTO) {
 		  ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
 	      proOrderRepository.save(proOrder);
 		return proOrderDTO;
 	}
-
-
 }
