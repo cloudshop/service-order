@@ -46,11 +46,5 @@ public interface ProOrderItemService {
     void delete(Long id);
 
 	ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItem, ProOrder proOrder);
-	
-	List<ProOrderItem> getAllProOrderItemsByUser(Integer userId,Integer page,Integer size);
-
-	List<ProOrderItem> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
-
-	List<ProOrderItem> findDispatchItems(long l, int page, int size);
 
 }

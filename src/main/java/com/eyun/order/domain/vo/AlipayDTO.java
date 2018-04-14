@@ -107,8 +107,6 @@ public class AlipayDTO {
 	 * 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]
 	 */
 	private String totalAmount;
-	
-	public AlipayDTO() {}
 
 	public AlipayDTO(String body, String outTradeNo, String passbackParams, String subject, String timeExpire,
 			String timeoutExpress) {
@@ -120,6 +118,14 @@ public class AlipayDTO {
 		this.timeExpire = timeExpire;
 		this.timeoutExpress = timeoutExpress;
 	}
+
+	
+	
+	public AlipayDTO() {
+		super();
+	}
+
+
 
 	public String getBody() {
 		return body;

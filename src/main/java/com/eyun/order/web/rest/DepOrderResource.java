@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -47,14 +46,13 @@ public class DepOrderResource {
 
     private final DepOrderQueryService depOrderQueryService;
     
-    @Autowired
-    private PayService payService;
+    private final PayService payService;
 
-    public DepOrderResource(DepOrderService depOrderService, DepOrderQueryService depOrderQueryService) {
-		this.depOrderService = depOrderService;
-		this.depOrderQueryService = depOrderQueryService;
-	}
-
+    public DepOrderResource(DepOrderService depOrderService, DepOrderQueryService depOrderQueryService, PayService payService) {
+    	this.payService = payService;
+        this.depOrderService = depOrderService;
+        this.depOrderQueryService = depOrderQueryService;
+    }
 
     /**
      * POST  /dep-orders : Create a new depOrder.

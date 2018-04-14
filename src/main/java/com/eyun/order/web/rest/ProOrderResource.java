@@ -13,6 +13,8 @@ import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.ProOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing ProOrder.
@@ -154,5 +157,28 @@ public class ProOrderResource {
 		return ResponseEntity.ok().body(orderString);	
     }
     
+    @ApiOperation(value = "查看当前用户的所有订单")
+    @GetMapping("/findAllProOrder/{page}/{size}")
+    public ResponseEntity<List<ProOrderDTO>> findAllProOrderByUser(@PathVariable int page,@PathVariable int size ) {
+    	Integer userId;
+    	List<ProOrderDTO> proOrderItemsByUser = proOrderService.getProOrderItemsByUser(1,page,size);
+        return new ResponseEntity<>(proOrderItemsByUser,HttpStatus.OK);
+    }
     
+    @ApiOperation(value = "查看代付款1，已完成5，已取消订单6")
+    @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
+    public ResponseEntity<List<ProOrderDTO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
+    	Integer userId;
+        List<ProOrderDTO>  pros= proOrderService.findOrderByStatuAndUserid(1l,status,page,size);  	
+    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+    }
+    
+    @ApiOperation(value = "查看待收货订单(status:2,3,4)")
+    @GetMapping("/findDispatchItems/{page}/{size}")
+    public ResponseEntity<List<ProOrderDTO>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
+    	Integer userId;
+    	List<ProOrderDTO> pros = proOrderService.findDispatchItems(1l,page,size); 
+    	System.out.println(pros);
+    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+    }
 }

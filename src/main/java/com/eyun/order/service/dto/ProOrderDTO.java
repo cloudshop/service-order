@@ -55,8 +55,30 @@ public class ProOrderDTO implements Serializable {
     private Boolean deletedB;
 
     private Boolean deletedC;
+    
+    private String shopName;
 
-    private Long shopId;
+    public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public Boolean getBuyerRate() {
+		return buyerRate;
+	}
+
+	public Boolean getDeletedB() {
+		return deletedB;
+	}
+
+	public Boolean getDeletedC() {
+		return deletedC;
+	}
+
+	private Long shopId;
     
     
     

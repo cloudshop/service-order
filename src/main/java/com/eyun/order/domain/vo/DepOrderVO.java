@@ -11,6 +11,8 @@ public class DepOrderVO {
 	private Integer payType;
 	
 	private Long walletId;
+	
+	
 
 	public Long getUserid() {
 		return userid;

@@ -2,6 +2,8 @@ package com.eyun.order.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.ProOrderItemService;
+import com.eyun.order.service.ProOrderService;
+import com.eyun.order.service.ProService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
@@ -14,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +28,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing ProOrderItem.
@@ -133,33 +138,5 @@ public class ProOrderItemResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
     
-    /**
-     * 
-     * @param pageable
-     * @return
-     */
-    @ApiOperation(value = "查看当前用户的所有订单")
-    @GetMapping("/findAllProOrderItems/{page}/{size}")
-    public ResponseEntity<List<ProOrderItem>> findAllProOrderItemsByUser(@PathVariable int page,@PathVariable int size ) {
-    	Integer userId;
-    	List<ProOrderItem> pros = proOrderItemService.getAllProOrderItemsByUser(1,page,size);  	
-        return new ResponseEntity<>(pros,HttpStatus.OK);
-    }
-    
-    @ApiOperation(value = "查看代付款1，已完成5，已取消订单6")
-    @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
-    public ResponseEntity<List<ProOrderItem>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
-    	Integer userId;
-    	List<ProOrderItem> pros = proOrderItemService.findOrderByStatuAndUserid(1l,status,page,size);  	
-    	return new ResponseEntity<>(pros,HttpStatus.OK);	
-    }
-    
-    @ApiOperation(value = "查看待收货订单(status:2,3,4)")
-    @GetMapping("/findDispatchItems/{page}/{size}")
-    public ResponseEntity<List<ProOrderItem>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
-    	Integer userId;
-    	List<ProOrderItem> pros = proOrderItemService.findDispatchItems(1l,page,size);  	
-    	return new ResponseEntity<>(pros,HttpStatus.OK);	
-    }
     
 }
