@@ -121,6 +121,14 @@ public class AlipayDTO {
 		this.timeoutExpress = timeoutExpress;
 	}
 
+	
+	
+	public AlipayDTO() {
+		super();
+	}
+
+
+
 	public String getBody() {
 		return body;
 	}

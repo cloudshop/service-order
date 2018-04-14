@@ -64,7 +64,6 @@ public class DepOrderResource {
 		this.depOrderQueryService = depOrderQueryService;
 	}
 
-
     /**
      * POST  /dep-orders : Create a new depOrder.
      *

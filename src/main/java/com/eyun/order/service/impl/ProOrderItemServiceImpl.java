@@ -114,24 +114,6 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
     	log.info("存放proOrderItem " + proOrderItem);
 		return proOrderItem;
     }
-
-	@Override
-	public List<ProOrderItem> getAllProOrderItemsByUser(Integer userId, Integer page,Integer size) {
-		List<ProOrderItem> orderItemList = proOrderItemRepository.getOrderItemByUserId(1l, (page-1)*size, size);
-		return orderItemList;
-	}
-
-	@Override
-	public List<ProOrderItem> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
-		List<ProOrderItem> findOrderByStatuAndUserid = proOrderItemRepository.findOrderByStatuAndUserid(1l,status,(page-1)*size,size);
-		return findOrderByStatuAndUserid;
-	}
-
-	@Override
-	public List<ProOrderItem> findDispatchItems(long l, int page, int size) {
-		List<ProOrderItem> findDispatchItems = proOrderItemRepository.findDispatchItems(1l,(page-1)*size,size);
-		return findDispatchItems;
-	}
     
     
 }

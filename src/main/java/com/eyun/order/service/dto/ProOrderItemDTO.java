@@ -27,19 +27,28 @@ public class ProOrderItemDTO implements Serializable {
 
     private Long proOrderId;
     
-    public ProOrderItemDTO() {}
-
-	public ProOrderItemDTO(Long productSkuId, Integer count, BigDecimal price, Instant createdTime, Instant updatedTime,
-			Long proOrderId) {
+    private String url;
+    
+    private String skuName;
+    
+    
+    public ProOrderItemDTO() {
 		super();
-		this.productSkuId = productSkuId;
-		this.count = count;
-		this.price = price;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.proOrderId = proOrderId;
 	}
-
+    
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getSkuName() {
+		return skuName;
+	}
+	public void setSkuName(String skuName) {
+		this.skuName = skuName;
+	}
+	
 	public Long getId() {
         return id;
     }

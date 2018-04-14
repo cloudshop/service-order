@@ -13,6 +13,7 @@ import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
 import com.eyun.order.service.mapper.ProOrderMapper;
 import com.eyun.order.web.rest.util.OrderNoUtil;
+import com.eyun.order.web.rest.util.OrderUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -72,8 +73,6 @@ public class ProOrderServiceImpl implements ProOrderService {
      * 5.购物车
      * 6.支付
      * 订单状态：1.未支付，2.已付款，3.未发货，4，已发货，5.交易成功，6.交易关闭
-     * @param proOrderDTO the entity to save
-     * @return the persisted entity
      */
     @Override
     public String getOrderString(ProOrderDTO proOrderDTO) {
@@ -81,8 +80,6 @@ public class ProOrderServiceImpl implements ProOrderService {
         String sbody = "";
         String orderString ="";
         List skuAll = new ArrayList<Long>();
-        
-        
         proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
         proOrderDTO.setStatus(1);
         proOrderDTO.setCreatedTime(Instant.now());
@@ -111,7 +108,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 	        skuAll.add(proOrderItem.getProductSkuId());
 		}
         // 更改 购物车（userId）
-        shoppingCartService.del(1l, skuAll);
+        shoppingCartService.del(skuAll);
         totalPrice = totalPrice.add(proOrder.getPostFee());
         proOrder.setPayment(totalPrice);
         ProOrder save = proOrderRepository.save(proOrder);
@@ -160,12 +157,6 @@ public class ProOrderServiceImpl implements ProOrderService {
         proOrderRepository.delete(id);
     }
 
-
-	
-/*	public List<Integer> findUnprocessOrders() {
-		return proOrderRepository.findOrders();
-	}
-*/
 	@Override
 	public void updateOrderById() {
 		List<BigInteger> ordersId = proOrderRepository.findOrders();
@@ -186,4 +177,30 @@ public class ProOrderServiceImpl implements ProOrderService {
 	      proOrderRepository.save(proOrder);
 		return proOrderDTO;
 	}
+
+	@Override
+	public List<ProOrderDTO> getProOrderItemsByUser(int i, int page, int size) {
+		// TODO Auto-generated method stub
+		List<ProOrder> orders = proOrderRepository.getAllProOrderByUser(1l,(page-1)*size,size);
+		List<ProOrderDTO> showOrder = OrderUtils.showOrder(orders);
+		return showOrder;
+	}
+	
+	@Override
+	public List<ProOrderDTO> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
+		List<ProOrder> orders = proOrderRepository.findOrderByStatuAndUserid(1l,status,(page-1)*size,size);
+		List<ProOrderDTO> showOrder = OrderUtils.showOrder(orders);
+		return showOrder;
+	}
+
+	@Override
+	public List<ProOrderDTO> findDispatchItems(long l, int page, int size) {
+		List<Map> orders = proOrderRepository.findDispatchItems(1l,(page-1)*size,size);
+		System.out.println(orders);
+		List<ProOrderDTO> showOrder;
+/*		= OrderUtils.showOrder(orders);
+*/
+		return null;
+	}
+
 }
