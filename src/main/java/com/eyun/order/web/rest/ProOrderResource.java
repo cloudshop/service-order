@@ -143,7 +143,7 @@ public class ProOrderResource {
      * @param list
      * @return
      */
-    @PostMapping("/shop-proorders/{type}")
+  /*  @PostMapping("/shop-proorders/{type}")
     public ResponseEntity<List<String>> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO,@PathVariable Long type){
     	if(type == 1 ){
     		 List<String> orderString = new ArrayList<String>();
@@ -159,7 +159,18 @@ public class ProOrderResource {
 	    return new ResponseEntity<>(orderString,HttpStatus.OK);    
     		
     	}
+     }*/
+    
+    @PostMapping("/depproorders")
+    public ResponseEntity<List<String>> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO){
+    		 List<String> orderString = new ArrayList<String>();
+    		    for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
+    		    	  orderString.add(proOrderService.OrderItems(proOrderDTO2));
+    				}
+    		    	return new ResponseEntity<>(orderString,HttpStatus.OK);
      }
+    
+    
     
     @ApiOperation(value = "查看当前用户的所有订单")
     @GetMapping("/findAllProOrder/{page}/{size}")
