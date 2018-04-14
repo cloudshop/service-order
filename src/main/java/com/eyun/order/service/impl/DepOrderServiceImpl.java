@@ -10,6 +10,8 @@ import com.eyun.order.service.dto.BalanceDTO;
 import com.eyun.order.service.dto.DepOrderDTO;
 import com.eyun.order.service.mapper.DepOrderMapper;
 
+import io.undertow.util.BadRequestException;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -105,8 +107,6 @@ public class DepOrderServiceImpl implements DepOrderService {
 	@Override
 	public void depositNotify(String orderNo) throws Exception {
 		DepOrder depOrder = depOrderRepository.findByOrderNoAndStatus(orderNo,1);
-		if (depOrder == null) {
-		}
 		String queryOrder = payService.queryOrder(orderNo);
 		JSONObject jsonObject = new JSONObject(queryOrder);
 		JSONObject resp = jsonObject.getJSONObject("alipay_trade_query_response");
@@ -116,11 +116,12 @@ public class DepOrderServiceImpl implements DepOrderService {
 				&& "TRADE_SUCCESS".equals(resp.getString("trade_status"))) {//判断订单号是否相同 金额是否相等 支付状态
 			depOrder.updatedTime(Instant.now());
 			depOrder.setPayNo(resp.getString("trade_no"));
-			String date = resp.getString("send_pay_date");
+			String pay_date = resp.getString("send_pay_date");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date1 = sdf.parse(date);
-			depOrder.setPayTime(Instant.now());
-			depOrder.setStatus(1);
+			Date date = sdf.parse(pay_date);
+			depOrder.setPayTime(date.toInstant());
+			depOrder.setStatus(2);
+			depOrderRepository.save(depOrder);
 			//调用钱包服务 添加余额
 			BalanceDTO balanceDTO = new BalanceDTO();
 			balanceDTO.setMoney(depOrder.getPayment());

@@ -1,5 +1,6 @@
 package com.eyun.order.service;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -12,5 +13,8 @@ public interface WalletService {
 
 	@PutMapping("/api/wallets/balance")
 	public Wallet updateBalance(@RequestBody BalanceDTO balanceDTO);
+	
+	@GetMapping("/api/wallets/user")
+	public Wallet getUserWallet();
 	
 }

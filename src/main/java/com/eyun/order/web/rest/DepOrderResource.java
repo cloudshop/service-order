@@ -3,14 +3,19 @@ package com.eyun.order.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.DepOrderService;
 import com.eyun.order.service.PayService;
+import com.eyun.order.service.UaaService;
+import com.eyun.order.service.WalletService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.DepOrderDTO;
+import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.dto.DepOrderCriteria;
+import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.domain.vo.DepOrderVO;
+import com.eyun.order.domain.vo.OrderString;
 import com.eyun.order.service.DepOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
@@ -49,7 +54,11 @@ public class DepOrderResource {
     
     @Autowired
     private PayService payService;
-
+    
+    @Autowired
+    private WalletService walletService;
+    
+    
     public DepOrderResource(DepOrderService depOrderService, DepOrderQueryService depOrderQueryService) {
 		this.depOrderService = depOrderService;
 		this.depOrderQueryService = depOrderQueryService;
@@ -153,8 +162,9 @@ public class DepOrderResource {
      */
     @ApiOperation(value="创建充值订单")
     @PostMapping("/dep-orders/deposit")
-    public String createdDepostOrder(@RequestBody DepOrderVO depOrderVO) {
-    	//String orderNo = UUID.randomUUID().toString().replaceAll("-", "");
+    @ResponseBody
+    public OrderString createdDepostOrder(@RequestBody DepOrderVO depOrderVO) {
+    	OrderString orderString2 = new OrderString();
     	String orderString = "";
     	String orderNo = OrderNoUtil.getOrderNoUtil();
     	switch (depOrderVO.getPayType()) {
@@ -165,7 +175,7 @@ public class DepOrderResource {
 			alipay.setSubject("充值余额");
 			alipay.setPassbackParams("deposit");//deposit 充值
 			alipay.setTotalAmount(depOrderVO.getPayment().toString());
-			alipay.setTimeoutExpress("15m");
+			alipay.setTimeoutExpress("30m");
 			orderString = payService.createAlipayAppOrder(alipay);
 			break;
 		case 2: //微信支付
@@ -181,11 +191,12 @@ public class DepOrderResource {
     	depOrderDTO.setPayment(depOrderVO.getPayment());
     	depOrderDTO.setPayType(depOrderVO.getPayType());
     	depOrderDTO.setStatus(1);
-    	depOrderDTO.setUserid(depOrderVO.getUserid());
-    	depOrderDTO.setWalletId(depOrderVO.getWalletId());
+    	Wallet wallet = walletService.getUserWallet();
+    	depOrderDTO.setUserid(wallet.getUserid());
+    	depOrderDTO.setWalletId(wallet.getId());
 		depOrderService.save(depOrderDTO);
-		
-		return orderString;
+		orderString2.setOrderString(orderString);
+		return orderString2;
     }
     
     /**
@@ -199,11 +210,17 @@ public class DepOrderResource {
      * @throws Exception
      */
     @PutMapping("/dep-orders/deposit/{orderNo}") 
-    public ResponseEntity<String> depositNotify (@RequestBody String orderNo) throws Exception {
-    	depOrderService.depositNotify(orderNo);
-    	return ResponseEntity.ok()
-    			.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderNo))
-    			.body("success");
+    public ResponseEntity<String> depositNotify (@PathVariable("orderNo") String orderNo) {
+    	try {
+			depOrderService.depositNotify(orderNo);
+			return ResponseEntity.ok()
+					.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderNo))
+					.body("success");
+		} catch (Exception e) {
+			return ResponseEntity.ok()
+					.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderNo))
+					.body("failure");
+		}
     }
     
 }
