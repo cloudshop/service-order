@@ -75,7 +75,7 @@ public class ProOrderServiceImpl implements ProOrderService {
      * 订单状态：1.未支付，2.已付款，3.未发货，4，已发货，5.交易成功，6.交易关闭
      */
     @Override
-    public String getOrderString(ProOrderDTO proOrderDTO) {
+    public String createOrder(ProOrderDTO proOrderDTO) {
         log.debug("Request to save ProOrder : {}", proOrderDTO);
         String sbody = "";
         String orderString ="";
@@ -202,5 +202,48 @@ public class ProOrderServiceImpl implements ProOrderService {
 */
 		return null;
 	}
+
+	@Override
+	public String OrderItems(ProOrderDTO proOrderDTO){
+	    log.debug("Request to save ProOrder : {}", proOrderDTO);
+        String sbody = "";
+        String orderString ="";
+        List skuAll = new ArrayList<Long>();
+        proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
+        proOrderDTO.setStatus(1);
+        proOrderDTO.setCreatedTime(Instant.now());
+        proOrderDTO.setUpdateTime(Instant.now());
+        proOrderDTO.setDeletedB(false);
+        log.debug("配置商铺订单属性" + proOrderDTO);
+        
+        Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();
+        ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
+        ProOrder proOrders = proOrderRepository.save(proOrder);
+        log.debug("添加商品订单详细属性");
+        for (ProOrderItemDTO proOrderItem : proOrderItems) {
+        	proOrderItem.setCreatedTime(Instant.now());
+			proOrderItem.setUpdatedTime(Instant.now());
+			proOrderItem.setProOrderId(proOrder.getId());
+			BigDecimal bPrice = proOrderItem.getPrice();
+			Integer count = proOrderItem.getCount();
+			BigDecimal bCount = new BigDecimal(count); 
+			totalPrice = bPrice.multiply(bCount);
+	    	ProOrderItemDTO save = proOrderItemServiceImpl.save(proOrderItem);	
+	    	Integer i = new Integer(0);
+	    	//更改库存
+	        proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
+	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
+	        sbody += pro.getSkuName();
+	        skuAll.add(proOrderItem.getProductSkuId());
+		}
+        // 更改 购物车（userId）
+        totalPrice = totalPrice.add(proOrder.getPostFee());
+        proOrder.setPayment(totalPrice);
+        ProOrder save = proOrderRepository.save(proOrder);
+        log.debug("调用apiPayDTO接口");
+        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "product", "", "", "30m");
+        orderString = payService.createAlipayAppOrder(apiPayDTO);
+        return orderString;
+    }
 
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -142,20 +143,23 @@ public class ProOrderResource {
      * @param list
      * @return
      */
-    @PostMapping("/shop-proorders")
-    public ResponseEntity<String> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO){
-    String orderString = "";
-    for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
-		 orderString = proOrderService.getOrderString(proOrderDTO2);
-	}
-		//    	for (ProOrderDTO proOrder : list) {
-//    		Set<ProOrderItem> proOrderItems = proOrder.getProOrderItems();
-//    		System.out.println("proOrderItems 传进来没有？"+ proOrderItems.size());
-//			proOrderService.save(proOrder);
-//			
-//		}
-		return ResponseEntity.ok().body(orderString);	
-    }
+    @PostMapping("/shop-proorders/{type}")
+    public ResponseEntity<List<String>> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO,@PathVariable Long type){
+    	if(type == 1 ){
+    		 List<String> orderString = new ArrayList<String>();
+    		    for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
+    		    	  orderString.add(proOrderService.OrderItems(proOrderDTO2));
+    				}
+    		    	return new ResponseEntity<>(orderString,HttpStatus.OK);
+    	}else{
+   		 List<String> orderString = new ArrayList<String>();
+   		 for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
+	    	  orderString.add(proOrderService.createOrder(proOrderDTO2));
+			}
+	    return new ResponseEntity<>(orderString,HttpStatus.OK);    
+    		
+    	}
+     }
     
     @ApiOperation(value = "查看当前用户的所有订单")
     @GetMapping("/findAllProOrder/{page}/{size}")

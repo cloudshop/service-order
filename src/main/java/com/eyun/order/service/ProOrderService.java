@@ -46,13 +46,15 @@ public interface ProOrderService {
     void delete(Long id);
     	
 	void updateOrderById();
-	
-    String getOrderString(ProOrderDTO proOrderDTO);
-
 
 	List<ProOrderDTO> getProOrderItemsByUser(int i, int page, int size);
 
 	List<ProOrderDTO> findDispatchItems(long l, int page, int size);
 
 	List<ProOrderDTO> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
+
+
+	String OrderItems(ProOrderDTO proOrderDTO);
+	
+	String createOrder(ProOrderDTO proOrderDTO);
 }
