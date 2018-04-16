@@ -14,6 +14,7 @@ public interface PayService {
 	@PostMapping("/api/alipay/app/orderString")
 	public String createAlipayAppOrder (@RequestBody AlipayDTO alipayVM);
 	
+	
 	@GetMapping("/api/alipay/order/{orderNo}")
 	public String queryOrder(@PathVariable("orderNo") String orderNo);
 	

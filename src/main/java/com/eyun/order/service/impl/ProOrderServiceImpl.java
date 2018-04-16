@@ -172,7 +172,7 @@ public class ProOrderServiceImpl implements ProOrderService {
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
-            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "product", "", "", "30m",totalPrice.toString());
+            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "deposit", "", "", "30m",totalPrice.toString());
             
             orderString = payService.createAlipayAppOrder(apiPayDTO);
             
@@ -310,7 +310,7 @@ public class ProOrderServiceImpl implements ProOrderService {
         ProOrder save = proOrderRepository.save(proOrder);
         
         log.debug("调用apiPayDTO接口");
-        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "product", "", "", "30m", totalPrice.toString());
+        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "deposit", "", "", "30m", totalPrice.toString());
         orderString = payService.createAlipayAppOrder(apiPayDTO);
         return orderString;
     }
