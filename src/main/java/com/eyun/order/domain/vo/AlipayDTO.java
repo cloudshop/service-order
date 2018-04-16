@@ -110,7 +110,7 @@ public class AlipayDTO {
 	
 	public AlipayDTO() {}
 
-	public AlipayDTO(String body, String outTradeNo, String passbackParams, String subject, String timeExpire,
+/*	public AlipayDTO(String body, String outTradeNo, String passbackParams, String subject, String timeExpire,
 			String timeoutExpress, String totalAmount) {
 		super();
 		this.body = body;
@@ -120,7 +120,7 @@ public class AlipayDTO {
 		this.timeExpire = timeExpire;
 		this.timeoutExpress = timeoutExpress;
 		this.totalAmount = totalAmount;
-	}
+	}*/
 
 	public String getBody() {
 		return body;
