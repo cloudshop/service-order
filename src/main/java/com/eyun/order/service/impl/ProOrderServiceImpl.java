@@ -172,13 +172,17 @@ public class ProOrderServiceImpl implements ProOrderService {
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
-            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "deposit", "", "", "30m",totalPrice.toString());
-            
+//            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "deposit", "", "", "30m",totalPrice.toString());
+            AlipayDTO apiPayDTO = new AlipayDTO();
+            apiPayDTO.setBody("贡融积分商城");
+            apiPayDTO.setOutTradeNo(save1.getOrderNo());
+            apiPayDTO.setSubject("支付");
+            apiPayDTO.setPassbackParams("deposit");
+            apiPayDTO.setTotalAmount(totalPrice.toString());
+            apiPayDTO.setTimeoutExpress("30m");
             orderString = payService.createAlipayAppOrder(apiPayDTO);
             
             break;  
-        case 3:
-        	return null;
         default:
  		   break;
          }
@@ -310,7 +314,14 @@ public class ProOrderServiceImpl implements ProOrderService {
         ProOrder save = proOrderRepository.save(proOrder);
         
         log.debug("调用apiPayDTO接口");
-        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "deposit", "", "", "30m", totalPrice.toString());
+        AlipayDTO apiPayDTO = new AlipayDTO();
+        apiPayDTO.setBody("贡融积分商城");
+        apiPayDTO.setOutTradeNo(save.getOrderNo());
+        apiPayDTO.setSubject("支付");
+        apiPayDTO.setPassbackParams("deposit");
+        apiPayDTO.setTotalAmount(totalPrice.toString());
+        apiPayDTO.setTimeoutExpress("30m");
+        orderString = payService.createAlipayAppOrder(apiPayDTO);
         orderString = payService.createAlipayAppOrder(apiPayDTO);
         return orderString;
     }
