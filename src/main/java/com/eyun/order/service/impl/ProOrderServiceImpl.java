@@ -112,10 +112,10 @@ public class ProOrderServiceImpl implements ProOrderService {
     	    	//更改库存
     	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
     	        String message = (String)updateProductSkuCount.get("message");
-    	        System.out.println(message);
-    	        if(message.equals("failed")){
+//    	        System.out.println(message);
+    	       /* if(message.equals("failed")){
     	        	return "库存不足";
-    	        }
+    	        }*/
     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
     	        sbody += pro.getSkuName();
     	        skuAll.add(proOrderItem.getProductSkuId());
@@ -160,9 +160,9 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
     	        String message = (String)updateProductSkuCount.get("message");
     	        System.out.println(message);
-    	        if(message.equals("failed")){
+    	     /*   if(message.equals("failed")){
     	        	return "库存不足";
-    	        }
+    	        }*/
     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
     	        sbody += pro.getSkuName();
     	        skuAll.add(proOrderItem.getProductSkuId());
