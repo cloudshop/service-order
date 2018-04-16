@@ -57,7 +57,6 @@ public class ProOrderServiceImpl implements ProOrderService {
     @Autowired
     private PayService payService;
     
-    private BigDecimal totalPrice;
     @Autowired
     private ShoppingCartService shoppingCartService;
     
@@ -84,6 +83,7 @@ public class ProOrderServiceImpl implements ProOrderService {
      */
     @Override
     public String createOrder(ProOrderDTO proOrderDTO) {
+    	BigDecimal totalPrice = new BigDecimal(0);
         log.debug("Request to save ProOrder : {}", proOrderDTO);
         String sbody = "";
         String orderString ="";
@@ -172,7 +172,8 @@ public class ProOrderServiceImpl implements ProOrderService {
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
-            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "product", "", "", "30m");
+            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "product", "", "", "30m",totalPrice.toString());
+            
             orderString = payService.createAlipayAppOrder(apiPayDTO);
             
             break;  
