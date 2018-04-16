@@ -113,16 +113,16 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
     	        String message = (String)updateProductSkuCount.get("message");
     	        System.out.println(message);
-    	        if(message.equals("failed")){
+    	       /* if(message.equals("failed")){
     	        	return "库存不足";
-    	        }
+    	        }*/
     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
     	        sbody += pro.getSkuName();
     	        skuAll.add(proOrderItem.getProductSkuId());
     		}
             
          // 更改 购物车（userId）
-        // shoppingCartService.del(skuAll);
+            shoppingCartService.del(skuAll);
             totalPrice = totalPrice.add(proOrder.getPostFee());
             proOrder.setPayment(totalPrice);
 
@@ -159,7 +159,6 @@ public class ProOrderServiceImpl implements ProOrderService {
     	    	//更改库存
     	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
     	        String message = (String)updateProductSkuCount.get("message");
-    	        System.out.println(message);
 /*    	        if(message.equals("failed")){
     	        	return "库存不足";
     	        }*/
@@ -168,12 +167,10 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        skuAll.add(proOrderItem.getProductSkuId());
     		}
             
-         // 更改 购物车（userId）
             shoppingCartService.del(skuAll);
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
-         //调用支付宝接口
             AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "product", "", "", "30m");
             orderString = payService.createAlipayAppOrder(apiPayDTO);
             
