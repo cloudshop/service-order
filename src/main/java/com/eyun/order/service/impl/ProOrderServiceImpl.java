@@ -86,6 +86,7 @@ public class ProOrderServiceImpl implements ProOrderService {
         String sbody = "";
         String orderString ="";
         List skuAll = new ArrayList<Long>();
+        log.debug("proOrderDTO的支付类型" + proOrderDTO.getPaymentType());
         switch (proOrderDTO.getPaymentType()){
         case 1://余额支付
         	proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
@@ -111,7 +112,7 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        String message = (String)updateProductSkuCount.get("message");
     	        System.out.println(message);
     	        if(message.equals("failed")){
-    	        	return proOrderItem.getSkuName()+"库存不足";
+    	        	return "库存不足";
     	        }
     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
     	        sbody += pro.getSkuName();

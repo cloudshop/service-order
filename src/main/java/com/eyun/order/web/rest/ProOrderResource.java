@@ -145,22 +145,34 @@ public class ProOrderResource {
      */
     //从购物车购买
     @PostMapping("/shop-proorders")
-    public ResponseEntity<List<String>> createShopOrder(@RequestBody List<ProOrderDTO> proOrderDTO){
-    		 List<String> orderString = new ArrayList<String>();
-    		    for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
-    		    	  orderString.add(proOrderService.createOrder(proOrderDTO2));
-    				}
-    		return new ResponseEntity<>(orderString,HttpStatus.OK);
-    	
+    public ResponseEntity<List<String>> createShopOrder(@RequestBody ProOrderDTO proOrderDTO){
+   		          List<String> orderString = new ArrayList<String>();
+		    	  if(proOrderService.createOrder(proOrderDTO).equals("账户余额不足")){
+		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
+		    	  }else if(proOrderService.createOrder(proOrderDTO).equals("库存不足")){
+		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
+		    	  }
+		    	  else{
+		    		  orderString.add(proOrderService.createOrder(proOrderDTO));
+		    	  }  	
+	    	          return new ResponseEntity<>(orderString,HttpStatus.OK);
+
      }
+    
     //直接从商品购买   
     @PostMapping("/depproorders")
-    public ResponseEntity<List<String>> depproorders(@RequestBody List<ProOrderDTO> proOrderDTO){
-    		 List<String> orderString = new ArrayList<String>();
-    		    for (ProOrderDTO proOrderDTO2 : proOrderDTO) {
-    		    	  orderString.add(proOrderService.OrderItems(proOrderDTO2));
-    				}
-    		    	return new ResponseEntity<>(orderString,HttpStatus.OK);
+    public ResponseEntity<List<String>> depproorders(@RequestBody ProOrderDTO proOrderDTO){
+		      List<String> orderString = new ArrayList<String>();
+		   	  if(proOrderService.createOrder(proOrderDTO).equals("账户余额不足")){
+		   		  return new ResponseEntity<>(orderString,HttpStatus.OK);
+		   	  }else if(proOrderService.createOrder(proOrderDTO).equals("库存不足")){
+		   		  return new ResponseEntity<>(orderString,HttpStatus.OK);
+		   	  }
+		   	  else{
+		   		  orderString.add(proOrderService.createOrder(proOrderDTO));
+		   	  }  
+			  return new ResponseEntity<>(orderString,HttpStatus.OK);
+		    		    	
      }
     
     @ApiOperation(value = "查看当前用户的所有订单")
