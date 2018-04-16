@@ -275,6 +275,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 	public String orderItems(ProOrderDTO proOrderDTO){
 	    log.debug("Request to save ProOrder : {}", proOrderDTO);
         String sbody = "";
+        BigDecimal totalPrice = new BigDecimal(0);
         String orderString ="";
         List skuAll = new ArrayList<Long>();
         proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
@@ -309,7 +310,7 @@ public class ProOrderServiceImpl implements ProOrderService {
         ProOrder save = proOrderRepository.save(proOrder);
         
         log.debug("调用apiPayDTO接口");
-        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "product", "", "", "30m");
+        AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "product", "", "", "30m", totalPrice.toString());
         orderString = payService.createAlipayAppOrder(apiPayDTO);
         return orderString;
     }
