@@ -85,7 +85,6 @@ public class ProOrderServiceImpl implements ProOrderService {
     @Override
     public String createOrder(ProOrderDTO proOrderDTO) {
         log.debug("Request to save ProOrder : {}", proOrderDTO);
-        
         String sbody = "";
         String orderString ="";
         List skuAll = new ArrayList<Long>();
@@ -123,7 +122,7 @@ public class ProOrderServiceImpl implements ProOrderService {
     		}
             
          // 更改 购物车（userId）
-            shoppingCartService.del(skuAll);
+        // shoppingCartService.del(skuAll);
             totalPrice = totalPrice.add(proOrder.getPostFee());
             proOrder.setPayment(totalPrice);
 
@@ -131,11 +130,12 @@ public class ProOrderServiceImpl implements ProOrderService {
             Wallet userWallet = walletService.getUserWallet();
             BigDecimal balance = userWallet.getBalance();
             if(totalPrice.compareTo(balance) == -1 ){
-            	return "账户余额不足" ;
+            	orderString = "账户余额不足";
             }else{
                 proOrderRepository.save(proOrder);
-            	return null;
+                orderString = "余额支付";
             }
+            break;
         case 2://支付宝支付
         	//余额支付
         	proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
@@ -161,7 +161,7 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        String message = (String)updateProductSkuCount.get("message");
     	        System.out.println(message);
     	        if(message.equals("failed")){
-    	        	return proOrderItem.getSkuName()+"库存不足";
+    	        	return "库存不足";
     	        }
     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
     	        sbody += pro.getSkuName();
@@ -176,6 +176,7 @@ public class ProOrderServiceImpl implements ProOrderService {
          //调用支付宝接口
             AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "product", "", "", "30m");
             orderString = payService.createAlipayAppOrder(apiPayDTO);
+            
             break;  
         case 3:
         	return null;

@@ -162,26 +162,25 @@ public class ProOrderResource {
 		    	  }
 		    	  else{
 		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		    	  }  	
-	    	         
+		    	  }  	       
 
      }
     
+    
+    
+    
+    
     //直接从商品购买   
     @PostMapping("/depproorders")
-    public ResponseEntity<List<String>> depproorders(@RequestBody ProOrderDTO proOrderDTO){
-		      List<String> orderString = new ArrayList<String>();
-		   	  if(proOrderService.createOrder(proOrderDTO).equals("账户余额不足")){
-		   		  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		   	  }else if(proOrderService.createOrder(proOrderDTO).equals("库存不足")){
-		   		  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		   	  }
-		   	  else{
-		   		  orderString.add(proOrderService.createOrder(proOrderDTO));
-		   	  }  
-			  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		    		    	
+    public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO){
+        
+        return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO),HttpStatus.OK);	    		    	
      }
+ 
+    
+    
+    
+    
     
     @ApiOperation(value = "查看当前用户的所有订单")
     @GetMapping("/findAllProOrder/{page}/{size}")
