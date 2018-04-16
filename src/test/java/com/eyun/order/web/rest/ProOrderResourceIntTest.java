@@ -109,6 +109,9 @@ public class ProOrderResourceIntTest {
     private static final Long DEFAULT_SHOP_ID = 1L;
     private static final Long UPDATED_SHOP_ID = 2L;
 
+    private static final String DEFAULT_PAY_NO = "AAAAAAAAAA";
+    private static final String UPDATED_PAY_NO = "BBBBBBBBBB";
+
     @Autowired
     private ProOrderRepository proOrderRepository;
 
@@ -175,7 +178,8 @@ public class ProOrderResourceIntTest {
             .updateTime(DEFAULT_UPDATE_TIME)
             .deletedB(DEFAULT_DELETED_B)
             .deletedC(DEFAULT_DELETED_C)
-            .shopId(DEFAULT_SHOP_ID);
+            .shopId(DEFAULT_SHOP_ID)
+            .payNo(DEFAULT_PAY_NO);
         return proOrder;
     }
 
@@ -220,6 +224,7 @@ public class ProOrderResourceIntTest {
         assertThat(testProOrder.isDeletedB()).isEqualTo(DEFAULT_DELETED_B);
         assertThat(testProOrder.isDeletedC()).isEqualTo(DEFAULT_DELETED_C);
         assertThat(testProOrder.getShopId()).isEqualTo(DEFAULT_SHOP_ID);
+        assertThat(testProOrder.getPayNo()).isEqualTo(DEFAULT_PAY_NO);
     }
 
     @Test
@@ -272,7 +277,8 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].updateTime").value(hasItem(DEFAULT_UPDATE_TIME.toString())))
             .andExpect(jsonPath("$.[*].deletedB").value(hasItem(DEFAULT_DELETED_B.booleanValue())))
             .andExpect(jsonPath("$.[*].deletedC").value(hasItem(DEFAULT_DELETED_C.booleanValue())))
-            .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())));
+            .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())))
+            .andExpect(jsonPath("$.[*].payNo").value(hasItem(DEFAULT_PAY_NO.toString())));
     }
 
     @Test
@@ -305,7 +311,8 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.updateTime").value(DEFAULT_UPDATE_TIME.toString()))
             .andExpect(jsonPath("$.deletedB").value(DEFAULT_DELETED_B.booleanValue()))
             .andExpect(jsonPath("$.deletedC").value(DEFAULT_DELETED_C.booleanValue()))
-            .andExpect(jsonPath("$.shopId").value(DEFAULT_SHOP_ID.intValue()));
+            .andExpect(jsonPath("$.shopId").value(DEFAULT_SHOP_ID.intValue()))
+            .andExpect(jsonPath("$.payNo").value(DEFAULT_PAY_NO.toString()));
     }
 
     @Test
@@ -1198,6 +1205,45 @@ public class ProOrderResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllProOrdersByPayNoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where payNo equals to DEFAULT_PAY_NO
+        defaultProOrderShouldBeFound("payNo.equals=" + DEFAULT_PAY_NO);
+
+        // Get all the proOrderList where payNo equals to UPDATED_PAY_NO
+        defaultProOrderShouldNotBeFound("payNo.equals=" + UPDATED_PAY_NO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByPayNoIsInShouldWork() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where payNo in DEFAULT_PAY_NO or UPDATED_PAY_NO
+        defaultProOrderShouldBeFound("payNo.in=" + DEFAULT_PAY_NO + "," + UPDATED_PAY_NO);
+
+        // Get all the proOrderList where payNo equals to UPDATED_PAY_NO
+        defaultProOrderShouldNotBeFound("payNo.in=" + UPDATED_PAY_NO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByPayNoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where payNo is not null
+        defaultProOrderShouldBeFound("payNo.specified=true");
+
+        // Get all the proOrderList where payNo is null
+        defaultProOrderShouldNotBeFound("payNo.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllProOrdersByProOrderItemIsEqualToSomething() throws Exception {
         // Initialize the database
         ProOrderItem proOrderItem = ProOrderItemResourceIntTest.createEntity(em);
@@ -1241,7 +1287,8 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].updateTime").value(hasItem(DEFAULT_UPDATE_TIME.toString())))
             .andExpect(jsonPath("$.[*].deletedB").value(hasItem(DEFAULT_DELETED_B.booleanValue())))
             .andExpect(jsonPath("$.[*].deletedC").value(hasItem(DEFAULT_DELETED_C.booleanValue())))
-            .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())));
+            .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())))
+            .andExpect(jsonPath("$.[*].payNo").value(hasItem(DEFAULT_PAY_NO.toString())));
     }
 
     /**
@@ -1295,7 +1342,8 @@ public class ProOrderResourceIntTest {
             .updateTime(UPDATED_UPDATE_TIME)
             .deletedB(UPDATED_DELETED_B)
             .deletedC(UPDATED_DELETED_C)
-            .shopId(UPDATED_SHOP_ID);
+            .shopId(UPDATED_SHOP_ID)
+            .payNo(UPDATED_PAY_NO);
         ProOrderDTO proOrderDTO = proOrderMapper.toDto(updatedProOrder);
 
         restProOrderMockMvc.perform(put("/api/pro-orders")
@@ -1327,6 +1375,7 @@ public class ProOrderResourceIntTest {
         assertThat(testProOrder.isDeletedB()).isEqualTo(UPDATED_DELETED_B);
         assertThat(testProOrder.isDeletedC()).isEqualTo(UPDATED_DELETED_C);
         assertThat(testProOrder.getShopId()).isEqualTo(UPDATED_SHOP_ID);
+        assertThat(testProOrder.getPayNo()).isEqualTo(UPDATED_PAY_NO);
     }
 
     @Test

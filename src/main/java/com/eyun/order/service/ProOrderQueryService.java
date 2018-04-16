@@ -139,6 +139,9 @@ public class ProOrderQueryService extends QueryService<ProOrder> {
             if (criteria.getShopId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getShopId(), ProOrder_.shopId));
             }
+            if (criteria.getPayNo() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getPayNo(), ProOrder_.payNo));
+            }
             if (criteria.getProOrderItemId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getProOrderItemId(), ProOrder_.proOrderItems, ProOrderItem_.id));
             }

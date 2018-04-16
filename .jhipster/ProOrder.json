@@ -88,6 +88,10 @@
         {
             "fieldName": "shopId",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "payNo",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20180403115228",

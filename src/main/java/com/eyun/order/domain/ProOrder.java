@@ -87,6 +87,9 @@ public class ProOrder implements Serializable {
     @Column(name = "shop_id")
     private Long shopId;
 
+    @Column(name = "pay_no")
+    private String payNo;
+
     @OneToMany(mappedBy = "proOrder")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -361,6 +364,19 @@ public class ProOrder implements Serializable {
         this.shopId = shopId;
     }
 
+    public String getPayNo() {
+        return payNo;
+    }
+
+    public ProOrder payNo(String payNo) {
+        this.payNo = payNo;
+        return this;
+    }
+
+    public void setPayNo(String payNo) {
+        this.payNo = payNo;
+    }
+
     public Set<ProOrderItem> getProOrderItems() {
         return proOrderItems;
     }
@@ -431,6 +447,7 @@ public class ProOrder implements Serializable {
             ", deletedB='" + isDeletedB() + "'" +
             ", deletedC='" + isDeletedC() + "'" +
             ", shopId=" + getShopId() +
+            ", payNo='" + getPayNo() + "'" +
             "}";
     }
 }
