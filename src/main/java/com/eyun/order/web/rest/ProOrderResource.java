@@ -179,9 +179,7 @@ public class ProOrderResource {
  
     
     
-    
-    
-    
+
     @ApiOperation(value = "查看当前用户的所有订单")
     @GetMapping("/findAllProOrder/{page}/{size}")
     public ResponseEntity<List<ProOrderBO>> findAllProOrderByUser(@PathVariable int page,@PathVariable int size ) {
