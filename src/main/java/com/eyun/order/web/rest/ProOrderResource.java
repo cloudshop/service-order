@@ -2,21 +2,25 @@ package com.eyun.order.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.ProOrderService;
+import com.eyun.order.service.UaaService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
+import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.impl.ProOrderServiceImpl;
 import com.eyun.order.service.dto.ProOrderCriteria;
 import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
+import com.eyun.order.service.ProOrderBO;
 import com.eyun.order.service.ProOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -47,6 +51,9 @@ public class ProOrderResource {
     private final ProOrderService proOrderService;
 
     private final ProOrderQueryService proOrderQueryService;
+    
+    @Autowired
+    private UaaService uaaService;
 
     public ProOrderResource(ProOrderService proOrderService, ProOrderQueryService proOrderQueryService) {
         this.proOrderService = proOrderService;
@@ -145,17 +152,18 @@ public class ProOrderResource {
      */
     //从购物车购买
     @PostMapping("/shop-proorders")
-    public ResponseEntity<List<String>> createShopOrder(@RequestBody ProOrderDTO proOrderDTO){
-   		          List<String> orderString = new ArrayList<String>();
+    public ResponseEntity<String> createShopOrder(@RequestBody ProOrderDTO proOrderDTO){
+   		         String  orderString = ""; 
 		    	  if(proOrderService.createOrder(proOrderDTO).equals("账户余额不足")){
+		    		  orderString = proOrderService.createOrder(proOrderDTO);
 		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
 		    	  }else if(proOrderService.createOrder(proOrderDTO).equals("库存不足")){
 		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
 		    	  }
 		    	  else{
-		    		  orderString.add(proOrderService.createOrder(proOrderDTO));
+		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
 		    	  }  	
-	    	          return new ResponseEntity<>(orderString,HttpStatus.OK);
+	    	         
 
      }
     
@@ -177,26 +185,28 @@ public class ProOrderResource {
     
     @ApiOperation(value = "查看当前用户的所有订单")
     @GetMapping("/findAllProOrder/{page}/{size}")
-    public ResponseEntity<List<ProOrderDTO>> findAllProOrderByUser(@PathVariable int page,@PathVariable int size ) {
-    	Integer userId;
-    	List<ProOrderDTO> proOrderItemsByUser = proOrderService.getProOrderItemsByUser(1,page,size);
+    public ResponseEntity<List<ProOrderBO>> findAllProOrderByUser(@PathVariable int page,@PathVariable int size ) {
+//    	UserDTO user = uaaService.getAccount();
+//    	Long userId = user.getId();
+    	
+    	List<ProOrderBO> proOrderItemsByUser = proOrderService.getProOrderItemsByUser(1,page,size);
         return new ResponseEntity<>(proOrderItemsByUser,HttpStatus.OK);
     }
     
     @ApiOperation(value = "查看代付款1，已完成5，已取消订单6")
     @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
-    public ResponseEntity<List<ProOrderDTO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
+    public ResponseEntity<List<ProOrderBO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
     	Integer userId;
-        List<ProOrderDTO>  pros= proOrderService.findOrderByStatuAndUserid(1l,status,page,size);  	
+    	List<ProOrderBO>  pros= proOrderService.findOrderByStatuAndUserid(1l,status,page,size);  	
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
     
     @ApiOperation(value = "查看待收货订单(status:2,3,4)")
     @GetMapping("/findDispatchItems/{page}/{size}")
-    public ResponseEntity<List<ProOrderDTO>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
+    public ResponseEntity<List<ProOrderBO>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
     	Integer userId;
-    	List<ProOrderDTO> pros = proOrderService.findDispatchItems(1l,page,size); 
-    	System.out.println(pros);
+    	List<ProOrderBO> pros = proOrderService.findDispatchItems(1l,page,size); 
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
+   
 }

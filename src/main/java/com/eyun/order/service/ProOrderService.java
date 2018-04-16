@@ -47,14 +47,14 @@ public interface ProOrderService {
     	
 	void updateOrderById();
 
-	List<ProOrderDTO> getProOrderItemsByUser(int i, int page, int size);
+	List<ProOrderBO> getProOrderItemsByUser(int i, int page, int size);
 
-	List<ProOrderDTO> findDispatchItems(long l, int page, int size);
+	List<ProOrderBO> findDispatchItems(long l, int page, int size);
 
-	List<ProOrderDTO> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
+	List<ProOrderBO> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
 
 
-	String OrderItems(ProOrderDTO proOrderDTO);
+	String orderItems(ProOrderDTO proOrderDTO);
 	
 	String createOrder(ProOrderDTO proOrderDTO);
 }

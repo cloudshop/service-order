@@ -1,6 +1,7 @@
 package com.eyun.order.service.impl;
 
 import com.eyun.order.service.PayService;
+import com.eyun.order.service.ProOrderBO;
 import com.eyun.order.service.ProOrderService;
 import com.eyun.order.service.ProService;
 import com.eyun.order.service.ShoppingCartService;
@@ -62,7 +63,9 @@ public class ProOrderServiceImpl implements ProOrderService {
     
     @Autowired
     private WalletService walletService;
-
+    
+    @Autowired
+    private OrderUtils orderUtils;
     public ProOrderServiceImpl(ProOrderRepository proOrderRepository, ProOrderMapper proOrderMapper) {
         this.proOrderRepository = proOrderRepository;
         this.proOrderMapper = proOrderMapper;
@@ -243,35 +246,33 @@ public class ProOrderServiceImpl implements ProOrderService {
 	}
 
 	@Override
-	public List<ProOrderDTO> getProOrderItemsByUser(int i, int page, int size) {
+	public List<ProOrderBO> getProOrderItemsByUser(int i, int page, int size) {
 		// TODO Auto-generated method stub
-		List<ProOrder> orders = proOrderRepository.getAllProOrderByUser(1l,(page-1)*size,size);
-		List<ProOrderDTO> showOrder = OrderUtils.showOrder(orders);
+		int key = (page-1)*size;
+		List<ProOrder> allProOrderByUser = proOrderRepository.getOrderByUserId(1l,key,size);
+		
+		List<ProOrderBO> showOrder = orderUtils.showOrder(allProOrderByUser);
+		
 		return showOrder;
 	}
 	
 	@Override
-	public List<ProOrderDTO> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
+	public List<ProOrderBO> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
 		List<ProOrder> orders = proOrderRepository.findOrderByStatuAndUserid(1l,status,(page-1)*size,size);
-		List<ProOrderDTO> showOrder = OrderUtils.showOrder(orders);
+		List<ProOrderBO> showOrder = orderUtils.showOrder(orders);
 		return showOrder;
 	}
 
 	@Override
-	public List<ProOrderDTO> findDispatchItems(long l, int page, int size) {
-		List<Map> orders = proOrderRepository.findDispatchItems(1l,(page-1)*size,size);
-		for (Map map : orders) {
-			System.out.println(map.get("proOrderItems"));
-		}
-		
-		List<ProOrderDTO> showOrder;
-/*		= OrderUtils.showOrder(orders);
-*/
-		return null;
+	public List<ProOrderBO> findDispatchItems(long l, int page, int size) {
+		List<ProOrder> orders = proOrderRepository.findDispatchItems(1l,(page-1)*size,size);
+		List<ProOrderBO> showOrder	= orderUtils.showOrder(orders);
+
+		return showOrder;
 	}
 
 	@Override
-	public String OrderItems(ProOrderDTO proOrderDTO){
+	public String orderItems(ProOrderDTO proOrderDTO){
 	    log.debug("Request to save ProOrder : {}", proOrderDTO);
         String sbody = "";
         String orderString ="";
