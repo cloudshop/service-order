@@ -99,7 +99,6 @@ public class ProOrderServiceImpl implements ProOrderService {
             Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();
             ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
             ProOrder proOrders = proOrderRepository.save(proOrder);
-            log.debug("添加商品订单详细属性");
             for (ProOrderItemDTO proOrderItem : proOrderItems) {
             	proOrderItem.setCreatedTime(Instant.now());
     			proOrderItem.setUpdatedTime(Instant.now());
@@ -129,7 +128,9 @@ public class ProOrderServiceImpl implements ProOrderService {
          //判断余额
             Wallet userWallet = walletService.getUserWallet();
             BigDecimal balance = userWallet.getBalance();
-            if(totalPrice.compareTo(balance) == -1 ){
+            BigDecimal subtract = balance.subtract(totalPrice);
+            if (subtract.doubleValue() < 0.00) {
+            //if(totalPrice.compareTo(balance) == -1 ){
             	orderString = "账户余额不足";
             }else{
                 ProOrder save = proOrderRepository.save(proOrder);
