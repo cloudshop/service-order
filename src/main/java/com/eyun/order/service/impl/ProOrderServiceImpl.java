@@ -112,8 +112,8 @@ public class ProOrderServiceImpl implements ProOrderService {
     	    	//更改库存
     	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
     	        String message = (String)updateProductSkuCount.get("message");
-//    	        System.out.println(message);
-    	       /* if(message.equals("failed")){
+    	        System.out.println(message);
+/*    	        if(message.equals("failed")){
     	        	return "库存不足";
     	        }*/
     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
@@ -132,49 +132,50 @@ public class ProOrderServiceImpl implements ProOrderService {
             if(totalPrice.compareTo(balance) == -1 ){
             	orderString = "账户余额不足";
             }else{
-                proOrderRepository.save(proOrder);
-                orderString = "余额支付";
+                ProOrder save = proOrderRepository.save(proOrder);
+                orderString = save.getOrderNo();
             }
             break;
         case 2://支付宝支付
         	//余额支付
-             List skuAll1 = new ArrayList<Long>();
-             proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
-             proOrderDTO.setStatus(1);
-             proOrderDTO.setCreatedTime(Instant.now());
-             proOrderDTO.setUpdateTime(Instant.now());
-             proOrderDTO.setDeletedB(false);
-             log.debug("配置商铺订单属性" + proOrderDTO);
-             Set<ProOrderItemDTO> proOrderItems1 = proOrderDTO.getProOrderItems();
-             ProOrder proOrder1 = proOrderMapper.toEntity(proOrderDTO);
-             ProOrder proOrders1 = proOrderRepository.save(proOrder1);
-             log.debug("添加商品订单详细属性");
-             for (ProOrderItemDTO proOrderItem : proOrderItems1) {
-             	proOrderItem.setCreatedTime(Instant.now());
-     			proOrderItem.setUpdatedTime(Instant.now());
-     			proOrderItem.setProOrderId(proOrder1.getId());
-     			BigDecimal bPrice = proOrderItem.getPrice();
-     			Integer count = proOrderItem.getCount();
-     			BigDecimal bCount = new BigDecimal(count); 
-     			totalPrice = bPrice.multiply(bCount);
-     	    	ProOrderItemDTO save = proOrderItemServiceImpl.save(proOrderItem);	
-     	    	Integer i = new Integer(0);
-     	    	//更改库存
-     	        proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
-     	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
-     	        sbody += pro.getSkuName();
-     	        skuAll1.add(proOrderItem.getProductSkuId());
-     		}
-             // 更改 购物车（userId）
-             totalPrice = totalPrice.add(proOrder1.getPostFee());
-             proOrder1.setPayment(totalPrice);
-             ProOrder save = proOrderRepository.save(proOrder1);
-             
-             log.debug("调用apiPayDTO接口");
-             AlipayDTO apiPayDTO = new AlipayDTO(sbody, save.getOrderNo(), "product", "", "", "30m");
-             orderString = payService.createAlipayAppOrder(apiPayDTO);
+        	proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
+            proOrderDTO.setStatus(1);
+            proOrderDTO.setCreatedTime(Instant.now());
+            proOrderDTO.setUpdateTime(Instant.now());
+            proOrderDTO.setDeletedB(false);
+            Set<ProOrderItemDTO> proOrderItems1 = proOrderDTO.getProOrderItems();
+            ProOrder proOrder1 = proOrderMapper.toEntity(proOrderDTO);
+            ProOrder proOrders1 = proOrderRepository.save(proOrder1);
+            log.debug("添加商品订单详细属性");
+            for (ProOrderItemDTO proOrderItem : proOrderItems1) {
+            	proOrderItem.setCreatedTime(Instant.now());
+    			proOrderItem.setUpdatedTime(Instant.now());
+    			proOrderItem.setProOrderId(proOrder1.getId());
+    			BigDecimal bPrice = proOrderItem.getPrice();
+    			Integer count = proOrderItem.getCount();
+    			BigDecimal bCount = new BigDecimal(count); 
+    			totalPrice = bPrice.multiply(bCount);
+    	    	Integer i = new Integer(0);
+    	    	//更改库存
+    	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
+    	        String message = (String)updateProductSkuCount.get("message");
+    	        System.out.println(message);
+/*    	        if(message.equals("failed")){
+    	        	return "库存不足";
+    	        }*/
+    	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
+    	        sbody += pro.getSkuName();
+    	        skuAll.add(proOrderItem.getProductSkuId());
+    		}
+            
+         // 更改 购物车（userId）
+            shoppingCartService.del(skuAll);
+            totalPrice = totalPrice.add(proOrder1.getPostFee());
+            proOrder1.setPayment(totalPrice);
+            ProOrder save1 = proOrderRepository.save(proOrder1);
          //调用支付宝接口
-          
+            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "product", "", "", "30m");
+            orderString = payService.createAlipayAppOrder(apiPayDTO);
             
             break;  
         case 3:
