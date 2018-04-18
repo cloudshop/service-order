@@ -84,11 +84,10 @@ public class ProOrderServiceImpl implements ProOrderService {
     @Override
     public String createOrder(ProOrderDTO proOrderDTO,Integer type) {
     	BigDecimal totalPrice = new BigDecimal(0);
-        log.debug("Request to save ProOrder : {}", proOrderDTO);
         String sbody = "";
         String orderString ="";
         List skuAll = new ArrayList<Long>();
-        log.debug("proOrderDTO的支付类型" + proOrderDTO.getPaymentType());
+        //区分支付类型（1.余额支付，2.支付宝支付）
         switch (proOrderDTO.getPaymentType()){
         case 1://余额支付
         	proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
@@ -98,14 +97,16 @@ public class ProOrderServiceImpl implements ProOrderService {
             proOrderDTO.setDeletedB(false);
             Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();
             ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
-            ProOrder proOrders = proOrderRepository.save(proOrder);
+            //proOrdersPers 是持久化状态
+            ProOrder proOrdersPers = proOrderRepository.save(proOrder);
             for (ProOrderItemDTO proOrderItem : proOrderItems) {
             	proOrderItem.setCreatedTime(Instant.now());
     			proOrderItem.setUpdatedTime(Instant.now());
-    			proOrderItem.setProOrderId(proOrder.getId());
+    			proOrderItem.setProOrderId(proOrdersPers.getId());
     			BigDecimal bPrice = proOrderItem.getPrice();
     			Integer count = proOrderItem.getCount();
     			BigDecimal bCount = new BigDecimal(count); 
+    			//总价
     			totalPrice = bPrice.multiply(bCount);
     	    	Integer i = new Integer(0);
     	    	//更改库存
@@ -257,12 +258,9 @@ public class ProOrderServiceImpl implements ProOrderService {
 
 	@Override
 	public List<ProOrderBO> getProOrderItemsByUser(int i, int page, int size) {
-		// TODO Auto-generated method stub
 		int key = (page-1)*size;
 		List<ProOrder> allProOrderByUser = proOrderRepository.getOrderByUserId(1l,key,size);
-		
-		List<ProOrderBO> showOrder = orderUtils.showOrder(allProOrderByUser);
-		
+		List<ProOrderBO> showOrder = orderUtils.showOrder(allProOrderByUser);	
 		return showOrder;
 	}
 	

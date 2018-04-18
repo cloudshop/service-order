@@ -151,7 +151,7 @@ public class ProOrderResource {
      * @return
      */ 
     
-    @ApiOperation(value = "商品购买，购物车购买")
+    @ApiOperation(value = "商品直接购买type:0，购物车购买type:1")
     @PostMapping("/depproorders/{type}")
     public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO,@PathVariable Integer type){
                 return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	

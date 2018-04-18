@@ -12,7 +12,7 @@ public class OrderNoUtil {
 	        String format = sdf.format(System.currentTimeMillis());
 //	        String random = StringUtil.random(6);
 	        Random random = new Random();
-	        int k = (int)(random.nextDouble() * (99999 - 10000 + 1)) + 10000;
+	        int k = (int)(random.nextDouble() * (999999 - 100000 + 1)) + 100000;
 	        String r = k+"";
 	        String orderNo = ORDER_NO_PRE + format + r;
 			return orderNo;	
