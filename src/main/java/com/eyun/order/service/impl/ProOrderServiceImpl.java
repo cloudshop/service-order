@@ -82,7 +82,7 @@ public class ProOrderServiceImpl implements ProOrderService {
      * 订单状态：1.未支付，2.已付款，3.未发货，4，已发货，5.交易成功，6.交易关闭
      */
     @Override
-    public String createOrder(ProOrderDTO proOrderDTO) {
+    public String createOrder(ProOrderDTO proOrderDTO,Integer type) {
     	BigDecimal totalPrice = new BigDecimal(0);
         log.debug("Request to save ProOrder : {}", proOrderDTO);
         String sbody = "";
@@ -120,17 +120,22 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        skuAll.add(proOrderItem.getProductSkuId());
     		}
             
-         // 更改 购物车（userId）
-            shoppingCartService.del(skuAll);
+        	// 更改 购物车（userId）            
+            if(type == 0){
+                shoppingCartService.del(skuAll);
+            }
+            
             totalPrice = totalPrice.add(proOrder.getPostFee());
             proOrder.setPayment(totalPrice);
 
-         //判断余额
+           //判断余额
             Wallet userWallet = walletService.getUserWallet();
             BigDecimal balance = userWallet.getBalance();
-            BigDecimal subtract = balance.subtract(totalPrice);
+            BigDecimal subtract = balance.subtract(balance);
             if (subtract.doubleValue() < 0.00) {
             //if(totalPrice.compareTo(balance) == -1 ){
+            	System.out.println("用户余额：" + userWallet);
+            	System.out.println("总价" + totalPrice);
             	orderString = "账户余额不足";
             }else{
                 ProOrder save = proOrderRepository.save(proOrder);
@@ -172,7 +177,6 @@ public class ProOrderServiceImpl implements ProOrderService {
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
-//            AlipayDTO apiPayDTO = new AlipayDTO(sbody, save1.getOrderNo(), "deposit", "", "", "30m",totalPrice.toString());
             AlipayDTO apiPayDTO = new AlipayDTO();
             apiPayDTO.setBody("贡融积分商城");
             apiPayDTO.setOutTradeNo(save1.getOrderNo());
@@ -180,8 +184,7 @@ public class ProOrderServiceImpl implements ProOrderService {
             apiPayDTO.setPassbackParams("deposit");
             apiPayDTO.setTotalAmount(totalPrice.toString());
             apiPayDTO.setTimeoutExpress("30m");
-            orderString = payService.createAlipayAppOrder(apiPayDTO);
-            
+            orderString = payService.createAlipayAppOrder(apiPayDTO);            
             break;  
         default:
  		   break;
@@ -271,59 +274,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 	public List<ProOrderBO> findDispatchItems(long l, int page, int size) {
 		List<ProOrder> orders = proOrderRepository.findDispatchItems(1l,(page-1)*size,size);
 		List<ProOrderBO> showOrder	= orderUtils.showOrder(orders);
-
 		return showOrder;
 	}
-
-	@Override
-	public String orderItems(ProOrderDTO proOrderDTO){
-	    log.debug("Request to save ProOrder : {}", proOrderDTO);
-        String sbody = "";
-        BigDecimal totalPrice = new BigDecimal(0);
-        String orderString ="";
-        List skuAll = new ArrayList<Long>();
-        proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
-        proOrderDTO.setStatus(1);
-        proOrderDTO.setCreatedTime(Instant.now());
-        proOrderDTO.setUpdateTime(Instant.now());
-        proOrderDTO.setDeletedB(false);
-        log.debug("配置商铺订单属性" + proOrderDTO);
-        Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();
-        ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
-        ProOrder proOrders = proOrderRepository.save(proOrder);
-        log.debug("添加商品订单详细属性");
-        for (ProOrderItemDTO proOrderItem : proOrderItems) {
-        	proOrderItem.setCreatedTime(Instant.now());
-			proOrderItem.setUpdatedTime(Instant.now());
-			proOrderItem.setProOrderId(proOrder.getId());
-			BigDecimal bPrice = proOrderItem.getPrice();
-			Integer count = proOrderItem.getCount();
-			BigDecimal bCount = new BigDecimal(count); 
-			totalPrice = bPrice.multiply(bCount);
-	    	ProOrderItemDTO save = proOrderItemServiceImpl.save(proOrderItem);	
-	    	Integer i = new Integer(0);
-	    	//更改库存
-	        proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
-	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
-	        sbody += pro.getSkuName();
-	        skuAll.add(proOrderItem.getProductSkuId());
-		}
-        // 更改 购物车（userId）
-        totalPrice = totalPrice.add(proOrder.getPostFee());
-        proOrder.setPayment(totalPrice);
-        ProOrder save = proOrderRepository.save(proOrder);
-        
-        log.debug("调用apiPayDTO接口");
-        AlipayDTO apiPayDTO = new AlipayDTO();
-        apiPayDTO.setBody("贡融积分商城");
-        apiPayDTO.setOutTradeNo(save.getOrderNo());
-        apiPayDTO.setSubject("支付");
-        apiPayDTO.setPassbackParams("deposit");
-        apiPayDTO.setTotalAmount(totalPrice.toString());
-        apiPayDTO.setTimeoutExpress("30m");
-        orderString = payService.createAlipayAppOrder(apiPayDTO);
-        orderString = payService.createAlipayAppOrder(apiPayDTO);
-        return orderString;
-    }
 
 }

@@ -149,43 +149,19 @@ public class ProOrderResource {
      * 提交商家proOrder信息
      * @param list
      * @return
-     */
-    //从购物车购买
-    @PostMapping("/shop-proorders")
-    public ResponseEntity<String> createShopOrder(@RequestBody ProOrderDTO proOrderDTO){
-   		         String  orderString = ""; 
-		    	  if(proOrderService.createOrder(proOrderDTO).equals("账户余额不足")){
-		    		  orderString = proOrderService.createOrder(proOrderDTO);
-		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		    	  }else if(proOrderService.createOrder(proOrderDTO).equals("库存不足")){
-		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		    	  }
-		    	  else{
-		    		  return new ResponseEntity<>(orderString,HttpStatus.OK);
-		    	  }  	       
-
+     */ 
+    
+    @ApiOperation(value = "商品购买，购物车购买")
+    @PostMapping("/depproorders/{type}")
+    public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO,@PathVariable Integer type){
+                return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
      }
-    
-    
-    
-    
-    
-    //直接从商品购买   
-    @PostMapping("/depproorders")
-    public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO){
-        
-        return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO),HttpStatus.OK);	    		    	
-     }
- 
-    
-    
 
     @ApiOperation(value = "查看当前用户的所有订单")
     @GetMapping("/findAllProOrder/{page}/{size}")
     public ResponseEntity<List<ProOrderBO>> findAllProOrderByUser(@PathVariable int page,@PathVariable int size ) {
 //    	UserDTO user = uaaService.getAccount();
 //    	Long userId = user.getId();
-    	
     	List<ProOrderBO> proOrderItemsByUser = proOrderService.getProOrderItemsByUser(1,page,size);
         return new ResponseEntity<>(proOrderItemsByUser,HttpStatus.OK);
     }

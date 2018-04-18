@@ -52,9 +52,6 @@ public interface ProOrderService {
 	List<ProOrderBO> findDispatchItems(long l, int page, int size);
 
 	List<ProOrderBO> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
-
-
-	String orderItems(ProOrderDTO proOrderDTO);
 	
-	String createOrder(ProOrderDTO proOrderDTO);
+	String createOrder(ProOrderDTO proOrderDTO, Integer type);
 }
