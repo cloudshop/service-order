@@ -181,15 +181,17 @@ public class ProOrderServiceImpl implements ProOrderService {
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
-            AlipayDTO apiPayDTO = new AlipayDTO();
+//            AlipayDTO apiPayDTO = new AlipayDTO();
             
 //            AlipayDTO apiPayDTO = new AlipayDTO();
-            apiPayDTO.setBody("贡融积分商城");
+            AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", save1.getOrderNo(), "product", "支付", "30m",
+            		totalPrice.toString());
+           /* apiPayDTO.setBody("贡融积分商城");
             apiPayDTO.setOutTradeNo(save1.getOrderNo());
             apiPayDTO.setSubject("支付");
             apiPayDTO.setPassbackParams("product");
             apiPayDTO.setTotalAmount(totalPrice.toString());
-            apiPayDTO.setTimeoutExpress("30m");
+            apiPayDTO.setTimeoutExpress("30m");*/
             orderString = payService.createAlipayAppOrder(apiPayDTO);            
             break;  
         default:

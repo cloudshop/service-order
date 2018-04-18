@@ -134,6 +134,17 @@ public class AlipayDTO {
 		return body;
 	}
 
+	public AlipayDTO(String body, String outTradeNo, String passbackParams, String subject, String timeoutExpress,
+			String totalAmount) {
+		super();
+		this.body = body;
+		this.outTradeNo = outTradeNo;
+		this.passbackParams = passbackParams;
+		this.subject = subject;
+		this.timeoutExpress = timeoutExpress;
+		this.totalAmount = totalAmount;
+	}
+
 	public void setBody(String body) {
 		this.body = body;
 	}
