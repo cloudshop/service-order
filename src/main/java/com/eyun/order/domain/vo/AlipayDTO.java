@@ -122,6 +122,14 @@ public class AlipayDTO {
 		this.totalAmount = totalAmount;
 	}*/
 
+	 /*AlipayDTO apiPayDTO = new AlipayDTO();
+    apiPayDTO.setBody("贡融积分商城");
+    apiPayDTO.setOutTradeNo(save1.getOrderNo());
+    apiPayDTO.setSubject("支付");
+    apiPayDTO.setPassbackParams("deposit");
+    apiPayDTO.setTotalAmount(totalPrice.toString());
+    apiPayDTO.setTimeoutExpress("30m");*/
+	
 	public String getBody() {
 		return body;
 	}
