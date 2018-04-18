@@ -173,7 +173,10 @@ public class ProOrderServiceImpl implements ProOrderService {
     	        skuAll.add(proOrderItem.getProductSkuId());
     		}
             
-            shoppingCartService.del(skuAll);
+            if(type == 0){
+                shoppingCartService.del(skuAll);
+            }
+            
             totalPrice = totalPrice.add(proOrder1.getPostFee());
             proOrder1.setPayment(totalPrice);
             ProOrder save1 = proOrderRepository.save(proOrder1);
