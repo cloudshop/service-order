@@ -16,6 +16,7 @@ import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
 import com.eyun.order.service.mapper.ProOrderMapper;
+import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.OrderUtils;
 
@@ -285,16 +286,19 @@ public class ProOrderServiceImpl implements ProOrderService {
 
 	@Override
 	public ProOrderDTO findOrderByOrderNo(String orderNo) {
-		return proOrderRepository.findOrderByOrderNo(orderNo);
+		ProOrder proOrder = proOrderRepository.findOrderByOrderNo(orderNo);
+		return proOrderMapper.toDto(proOrder);
 	}
 
 	@Override
 	public ProOrderDTO proOrderNotify(PayNotifyDTO payNotifyDTO) {
-		ProOrderDTO proOrderDTO = proOrderRepository.findOrderByOrderNo(payNotifyDTO.getOrderNo());
-		proOrderDTO.setStatus(2);
-		proOrderDTO.setPayNo(payNotifyDTO.getOrderNo());
-		ProOrder entity = proOrderMapper.toEntity(proOrderDTO);
-		ProOrder save = proOrderRepository.save(entity);
+		ProOrder proOrder = proOrderRepository.findOrderByOrderNo(payNotifyDTO.getOrderNo());
+		if (proOrder.getStatus() != 1) {
+			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
+		}
+		proOrder.setStatus(2);
+		proOrder.setPayNo(payNotifyDTO.getPayNo());
+		ProOrder save = proOrderRepository.save(proOrder);
 		return proOrderMapper.toDto(save);
 	}
 

@@ -209,11 +209,13 @@ public class ProOrderResource {
      * @date 2018年4月19日
      * @version 1.0
      * @param orderNo
+     * @return 
      * @return
      */
-    @GetMapping("/api/findOrderByOrderNo/{orderNo}")
-    public ProOrderDTO findOrderByOrderNo(@PathVariable("orderNo")String orderNo) {
-    	return proOrderService.findOrderByOrderNo(orderNo);
+    @GetMapping("/findOrderByOrderNo/{orderNo}")
+    public ResponseEntity<ProOrderDTO> findOrderByOrderNo(@PathVariable("orderNo")String orderNo) {
+    	ProOrderDTO proOrderDTO = proOrderService.findOrderByOrderNo(orderNo);
+    	return ResponseUtil.wrapOrNotFound(Optional.ofNullable(proOrderDTO));
     }
     
 }
