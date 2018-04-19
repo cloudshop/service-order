@@ -28,7 +28,7 @@ public class ProOrderCriteria implements Serializable {
 
     private LongFilter id;
 
-    private LongFilter bUserid;
+    private LongFilter cUserid;
 
     private StringFilter orderNo;
 
@@ -83,12 +83,12 @@ public class ProOrderCriteria implements Serializable {
         this.id = id;
     }
 
-    public LongFilter getbUserid() {
-        return bUserid;
+    public LongFilter getcUserid() {
+        return cUserid;
     }
 
-    public void setbUserid(LongFilter bUserid) {
-        this.bUserid = bUserid;
+    public void setcUserid(LongFilter cUserid) {
+        this.cUserid = cUserid;
     }
 
     public StringFilter getOrderNo() {
@@ -263,7 +263,7 @@ public class ProOrderCriteria implements Serializable {
     public String toString() {
         return "ProOrderCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (bUserid != null ? "bUserid=" + bUserid + ", " : "") +
+                (cUserid != null ? "cUserid=" + cUserid + ", " : "") +
                 (orderNo != null ? "orderNo=" + orderNo + ", " : "") +
                 (status != null ? "status=" + status + ", " : "") +
                 (payment != null ? "payment=" + payment + ", " : "") +

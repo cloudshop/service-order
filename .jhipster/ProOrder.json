@@ -10,7 +10,7 @@
     ],
     "fields": [
         {
-            "fieldName": "bUserid",
+            "fieldName": "cUserid",
             "fieldType": "Long"
         },
         {

@@ -18,7 +18,7 @@ public class ProOrderDTO implements Serializable {
 
     private Long id;
 
-    private Long bUserid;
+    private Long cUserid;
 
     private String orderNo;
 
@@ -102,12 +102,12 @@ public class ProOrderDTO implements Serializable {
         this.id = id;
     }
 
-    public Long getbUserid() {
-        return bUserid;
+    public Long getcUserid() {
+        return cUserid;
     }
 
-    public void setbUserid(Long bUserid) {
-        this.bUserid = bUserid;
+    public void setcUserid(Long cUserid) {
+        this.cUserid = cUserid;
     }
 
     public String getOrderNo() {
@@ -295,7 +295,7 @@ public class ProOrderDTO implements Serializable {
     public String toString() {
         return "ProOrderDTO{" +
             "id=" + getId() +
-            ", bUserid=" + getbUserid() +
+            ", cUserid=" + getcUserid() +
             ", orderNo='" + getOrderNo() + "'" +
             ", status=" + getStatus() +
             ", payment=" + getPayment() +

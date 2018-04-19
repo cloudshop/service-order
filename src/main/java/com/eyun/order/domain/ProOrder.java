@@ -27,8 +27,8 @@ public class ProOrder implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "b_userid")
-    private Long bUserid;
+    @Column(name = "c_userid")
+    private Long cUserid;
 
     @Column(name = "order_no")
     private String orderNo;
@@ -104,17 +104,17 @@ public class ProOrder implements Serializable {
         this.id = id;
     }
 
-    public Long getbUserid() {
-        return bUserid;
+    public Long getcUserid() {
+        return cUserid;
     }
 
-    public ProOrder bUserid(Long bUserid) {
-        this.bUserid = bUserid;
+    public ProOrder cUserid(Long cUserid) {
+        this.cUserid = cUserid;
         return this;
     }
 
-    public void setbUserid(Long bUserid) {
-        this.bUserid = bUserid;
+    public void setcUserid(Long cUserid) {
+        this.cUserid = cUserid;
     }
 
     public String getOrderNo() {
@@ -427,7 +427,7 @@ public class ProOrder implements Serializable {
     public String toString() {
         return "ProOrder{" +
             "id=" + getId() +
-            ", bUserid=" + getbUserid() +
+            ", cUserid=" + getcUserid() +
             ", orderNo='" + getOrderNo() + "'" +
             ", status=" + getStatus() +
             ", payment=" + getPayment() +

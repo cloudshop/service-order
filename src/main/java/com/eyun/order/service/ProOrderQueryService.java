@@ -79,8 +79,8 @@ public class ProOrderQueryService extends QueryService<ProOrder> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), ProOrder_.id));
             }
-            if (criteria.getbUserid() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getbUserid(), ProOrder_.bUserid));
+            if (criteria.getcUserid() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getcUserid(), ProOrder_.cUserid));
             }
             if (criteria.getOrderNo() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getOrderNo(), ProOrder_.orderNo));

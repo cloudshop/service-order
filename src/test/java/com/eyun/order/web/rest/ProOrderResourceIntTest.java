@@ -49,8 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {OrderApp.class, SecurityBeanOverrideConfiguration.class})
 public class ProOrderResourceIntTest {
 
-    private static final Long DEFAULT_B_USERID = 1L;
-    private static final Long UPDATED_B_USERID = 2L;
+    private static final Long DEFAULT_C_USERID = 1L;
+    private static final Long UPDATED_C_USERID = 2L;
 
     private static final String DEFAULT_ORDER_NO = "AAAAAAAAAA";
     private static final String UPDATED_ORDER_NO = "BBBBBBBBBB";
@@ -159,7 +159,7 @@ public class ProOrderResourceIntTest {
      */
     public static ProOrder createEntity(EntityManager em) {
         ProOrder proOrder = new ProOrder()
-            .bUserid(DEFAULT_B_USERID)
+            .cUserid(DEFAULT_C_USERID)
             .orderNo(DEFAULT_ORDER_NO)
             .status(DEFAULT_STATUS)
             .payment(DEFAULT_PAYMENT)
@@ -204,7 +204,7 @@ public class ProOrderResourceIntTest {
         List<ProOrder> proOrderList = proOrderRepository.findAll();
         assertThat(proOrderList).hasSize(databaseSizeBeforeCreate + 1);
         ProOrder testProOrder = proOrderList.get(proOrderList.size() - 1);
-        assertThat(testProOrder.getbUserid()).isEqualTo(DEFAULT_B_USERID);
+        assertThat(testProOrder.getcUserid()).isEqualTo(DEFAULT_C_USERID);
         assertThat(testProOrder.getOrderNo()).isEqualTo(DEFAULT_ORDER_NO);
         assertThat(testProOrder.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testProOrder.getPayment()).isEqualTo(DEFAULT_PAYMENT);
@@ -258,7 +258,7 @@ public class ProOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(proOrder.getId().intValue())))
-            .andExpect(jsonPath("$.[*].bUserid").value(hasItem(DEFAULT_B_USERID.intValue())))
+            .andExpect(jsonPath("$.[*].cUserid").value(hasItem(DEFAULT_C_USERID.intValue())))
             .andExpect(jsonPath("$.[*].orderNo").value(hasItem(DEFAULT_ORDER_NO.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].payment").value(hasItem(DEFAULT_PAYMENT.intValue())))
@@ -292,7 +292,7 @@ public class ProOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(proOrder.getId().intValue()))
-            .andExpect(jsonPath("$.bUserid").value(DEFAULT_B_USERID.intValue()))
+            .andExpect(jsonPath("$.cUserid").value(DEFAULT_C_USERID.intValue()))
             .andExpect(jsonPath("$.orderNo").value(DEFAULT_ORDER_NO.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
             .andExpect(jsonPath("$.payment").value(DEFAULT_PAYMENT.intValue()))
@@ -317,67 +317,67 @@ public class ProOrderResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllProOrdersBybUseridIsEqualToSomething() throws Exception {
+    public void getAllProOrdersBycUseridIsEqualToSomething() throws Exception {
         // Initialize the database
         proOrderRepository.saveAndFlush(proOrder);
 
-        // Get all the proOrderList where bUserid equals to DEFAULT_B_USERID
-        defaultProOrderShouldBeFound("bUserid.equals=" + DEFAULT_B_USERID);
+        // Get all the proOrderList where cUserid equals to DEFAULT_C_USERID
+        defaultProOrderShouldBeFound("cUserid.equals=" + DEFAULT_C_USERID);
 
-        // Get all the proOrderList where bUserid equals to UPDATED_B_USERID
-        defaultProOrderShouldNotBeFound("bUserid.equals=" + UPDATED_B_USERID);
+        // Get all the proOrderList where cUserid equals to UPDATED_C_USERID
+        defaultProOrderShouldNotBeFound("cUserid.equals=" + UPDATED_C_USERID);
     }
 
     @Test
     @Transactional
-    public void getAllProOrdersBybUseridIsInShouldWork() throws Exception {
+    public void getAllProOrdersBycUseridIsInShouldWork() throws Exception {
         // Initialize the database
         proOrderRepository.saveAndFlush(proOrder);
 
-        // Get all the proOrderList where bUserid in DEFAULT_B_USERID or UPDATED_B_USERID
-        defaultProOrderShouldBeFound("bUserid.in=" + DEFAULT_B_USERID + "," + UPDATED_B_USERID);
+        // Get all the proOrderList where cUserid in DEFAULT_C_USERID or UPDATED_C_USERID
+        defaultProOrderShouldBeFound("cUserid.in=" + DEFAULT_C_USERID + "," + UPDATED_C_USERID);
 
-        // Get all the proOrderList where bUserid equals to UPDATED_B_USERID
-        defaultProOrderShouldNotBeFound("bUserid.in=" + UPDATED_B_USERID);
+        // Get all the proOrderList where cUserid equals to UPDATED_C_USERID
+        defaultProOrderShouldNotBeFound("cUserid.in=" + UPDATED_C_USERID);
     }
 
     @Test
     @Transactional
-    public void getAllProOrdersBybUseridIsNullOrNotNull() throws Exception {
+    public void getAllProOrdersBycUseridIsNullOrNotNull() throws Exception {
         // Initialize the database
         proOrderRepository.saveAndFlush(proOrder);
 
-        // Get all the proOrderList where bUserid is not null
-        defaultProOrderShouldBeFound("bUserid.specified=true");
+        // Get all the proOrderList where cUserid is not null
+        defaultProOrderShouldBeFound("cUserid.specified=true");
 
-        // Get all the proOrderList where bUserid is null
-        defaultProOrderShouldNotBeFound("bUserid.specified=false");
+        // Get all the proOrderList where cUserid is null
+        defaultProOrderShouldNotBeFound("cUserid.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllProOrdersBybUseridIsGreaterThanOrEqualToSomething() throws Exception {
+    public void getAllProOrdersBycUseridIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         proOrderRepository.saveAndFlush(proOrder);
 
-        // Get all the proOrderList where bUserid greater than or equals to DEFAULT_B_USERID
-        defaultProOrderShouldBeFound("bUserid.greaterOrEqualThan=" + DEFAULT_B_USERID);
+        // Get all the proOrderList where cUserid greater than or equals to DEFAULT_C_USERID
+        defaultProOrderShouldBeFound("cUserid.greaterOrEqualThan=" + DEFAULT_C_USERID);
 
-        // Get all the proOrderList where bUserid greater than or equals to UPDATED_B_USERID
-        defaultProOrderShouldNotBeFound("bUserid.greaterOrEqualThan=" + UPDATED_B_USERID);
+        // Get all the proOrderList where cUserid greater than or equals to UPDATED_C_USERID
+        defaultProOrderShouldNotBeFound("cUserid.greaterOrEqualThan=" + UPDATED_C_USERID);
     }
 
     @Test
     @Transactional
-    public void getAllProOrdersBybUseridIsLessThanSomething() throws Exception {
+    public void getAllProOrdersBycUseridIsLessThanSomething() throws Exception {
         // Initialize the database
         proOrderRepository.saveAndFlush(proOrder);
 
-        // Get all the proOrderList where bUserid less than or equals to DEFAULT_B_USERID
-        defaultProOrderShouldNotBeFound("bUserid.lessThan=" + DEFAULT_B_USERID);
+        // Get all the proOrderList where cUserid less than or equals to DEFAULT_C_USERID
+        defaultProOrderShouldNotBeFound("cUserid.lessThan=" + DEFAULT_C_USERID);
 
-        // Get all the proOrderList where bUserid less than or equals to UPDATED_B_USERID
-        defaultProOrderShouldBeFound("bUserid.lessThan=" + UPDATED_B_USERID);
+        // Get all the proOrderList where cUserid less than or equals to UPDATED_C_USERID
+        defaultProOrderShouldBeFound("cUserid.lessThan=" + UPDATED_C_USERID);
     }
 
 
@@ -1268,7 +1268,7 @@ public class ProOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(proOrder.getId().intValue())))
-            .andExpect(jsonPath("$.[*].bUserid").value(hasItem(DEFAULT_B_USERID.intValue())))
+            .andExpect(jsonPath("$.[*].cUserid").value(hasItem(DEFAULT_C_USERID.intValue())))
             .andExpect(jsonPath("$.[*].orderNo").value(hasItem(DEFAULT_ORDER_NO.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].payment").value(hasItem(DEFAULT_PAYMENT.intValue())))
@@ -1323,7 +1323,7 @@ public class ProOrderResourceIntTest {
         // Disconnect from session so that the updates on updatedProOrder are not directly saved in db
         em.detach(updatedProOrder);
         updatedProOrder
-            .bUserid(UPDATED_B_USERID)
+            .cUserid(UPDATED_C_USERID)
             .orderNo(UPDATED_ORDER_NO)
             .status(UPDATED_STATUS)
             .payment(UPDATED_PAYMENT)
@@ -1355,7 +1355,7 @@ public class ProOrderResourceIntTest {
         List<ProOrder> proOrderList = proOrderRepository.findAll();
         assertThat(proOrderList).hasSize(databaseSizeBeforeUpdate);
         ProOrder testProOrder = proOrderList.get(proOrderList.size() - 1);
-        assertThat(testProOrder.getbUserid()).isEqualTo(UPDATED_B_USERID);
+        assertThat(testProOrder.getcUserid()).isEqualTo(UPDATED_C_USERID);
         assertThat(testProOrder.getOrderNo()).isEqualTo(UPDATED_ORDER_NO);
         assertThat(testProOrder.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testProOrder.getPayment()).isEqualTo(UPDATED_PAYMENT);
