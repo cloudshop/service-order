@@ -92,6 +92,10 @@
         {
             "fieldName": "payNo",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "orderString",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20180403115228",

@@ -90,6 +90,9 @@ public class ProOrder implements Serializable {
     @Column(name = "pay_no")
     private String payNo;
 
+    @Column(name = "order_string")
+    private String orderString;
+
     @OneToMany(mappedBy = "proOrder")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -377,6 +380,19 @@ public class ProOrder implements Serializable {
         this.payNo = payNo;
     }
 
+    public String getOrderString() {
+        return orderString;
+    }
+
+    public ProOrder orderString(String orderString) {
+        this.orderString = orderString;
+        return this;
+    }
+
+    public void setOrderString(String orderString) {
+        this.orderString = orderString;
+    }
+
     public Set<ProOrderItem> getProOrderItems() {
         return proOrderItems;
     }
@@ -448,6 +464,7 @@ public class ProOrder implements Serializable {
             ", deletedC='" + isDeletedC() + "'" +
             ", shopId=" + getShopId() +
             ", payNo='" + getPayNo() + "'" +
+            ", orderString='" + getOrderString() + "'" +
             "}";
     }
 }

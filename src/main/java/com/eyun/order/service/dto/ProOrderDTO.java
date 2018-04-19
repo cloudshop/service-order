@@ -59,6 +59,8 @@ public class ProOrderDTO implements Serializable {
 	private String payNo;
     
     private String shopName;
+	
+	private String orderString;
 
     public String getShopName() {
 		return shopName;
@@ -89,7 +91,7 @@ public class ProOrderDTO implements Serializable {
     public Set<ProOrderItemDTO> getProOrderItems() {
 		return proOrderItems;
 	}
-
+    
 	public void setProOrderItems(Set<ProOrderItemDTO> proOrderItems) {
 		this.proOrderItems = proOrderItems;
 	}
@@ -270,6 +272,14 @@ public class ProOrderDTO implements Serializable {
         this.payNo = payNo;
     }
 
+    public String getOrderString() {
+        return orderString;
+    }
+
+    public void setOrderString(String orderString) {
+        this.orderString = orderString;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -316,6 +326,7 @@ public class ProOrderDTO implements Serializable {
             ", deletedC='" + isDeletedC() + "'" +
             ", shopId=" + getShopId() +
             ", payNo='" + getPayNo() + "'" +
+            ", orderString='" + getOrderString() + "'" +
             "}";
     }
 }

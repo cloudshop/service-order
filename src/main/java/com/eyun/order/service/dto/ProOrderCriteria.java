@@ -70,6 +70,8 @@ public class ProOrderCriteria implements Serializable {
 
     private StringFilter payNo;
 
+    private StringFilter orderString;
+
     private LongFilter proOrderItemId;
 
     public ProOrderCriteria() {
@@ -251,6 +253,14 @@ public class ProOrderCriteria implements Serializable {
         this.payNo = payNo;
     }
 
+    public StringFilter getOrderString() {
+        return orderString;
+    }
+
+    public void setOrderString(StringFilter orderString) {
+        this.orderString = orderString;
+    }
+
     public LongFilter getProOrderItemId() {
         return proOrderItemId;
     }
@@ -284,6 +294,7 @@ public class ProOrderCriteria implements Serializable {
                 (deletedC != null ? "deletedC=" + deletedC + ", " : "") +
                 (shopId != null ? "shopId=" + shopId + ", " : "") +
                 (payNo != null ? "payNo=" + payNo + ", " : "") +
+                (orderString != null ? "orderString=" + orderString + ", " : "") +
                 (proOrderItemId != null ? "proOrderItemId=" + proOrderItemId + ", " : "") +
             "}";
     }

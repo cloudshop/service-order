@@ -142,6 +142,9 @@ public class ProOrderQueryService extends QueryService<ProOrder> {
             if (criteria.getPayNo() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getPayNo(), ProOrder_.payNo));
             }
+            if (criteria.getOrderString() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getOrderString(), ProOrder_.orderString));
+            }
             if (criteria.getProOrderItemId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getProOrderItemId(), ProOrder_.proOrderItems, ProOrderItem_.id));
             }
