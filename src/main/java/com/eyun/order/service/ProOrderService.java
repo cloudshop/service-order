@@ -1,6 +1,7 @@
 package com.eyun.order.service;
 
 import com.eyun.order.domain.ProOrder;
+import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
 
 import java.util.List;
@@ -54,4 +55,8 @@ public interface ProOrderService {
 	List<ProOrderBO> findOrderByStatuAndUserid(Long userId, Integer status, Integer page, Integer size);
 	
 	String createOrder(ProOrderDTO proOrderDTO, Integer type);
+
+	ProOrderDTO findOrderByOrderNo(String orderNo);
+
+	ProOrderDTO proOrderNotify(PayNotifyDTO payNotifyDTO);
 }

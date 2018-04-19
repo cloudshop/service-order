@@ -11,6 +11,7 @@ import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.repository.ProOrderRepository;
+import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
@@ -280,6 +281,21 @@ public class ProOrderServiceImpl implements ProOrderService {
 		List<ProOrder> orders = proOrderRepository.findDispatchItems(1l,(page-1)*size,size);
 		List<ProOrderBO> showOrder	= orderUtils.showOrder(orders);
 		return showOrder;
+	}
+
+	@Override
+	public ProOrderDTO findOrderByOrderNo(String orderNo) {
+		return proOrderRepository.findOrderByOrderNo(orderNo);
+	}
+
+	@Override
+	public ProOrderDTO proOrderNotify(PayNotifyDTO payNotifyDTO) {
+		ProOrderDTO proOrderDTO = proOrderRepository.findOrderByOrderNo(payNotifyDTO.getOrderNo());
+		proOrderDTO.setStatus(2);
+		proOrderDTO.setPayNo(payNotifyDTO.getOrderNo());
+		ProOrder entity = proOrderMapper.toEntity(proOrderDTO);
+		ProOrder save = proOrderRepository.save(entity);
+		return proOrderMapper.toDto(save);
 	}
 
 }

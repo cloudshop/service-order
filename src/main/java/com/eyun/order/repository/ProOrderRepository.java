@@ -30,5 +30,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrder, Long>, JpaSp
 	
 	@Query(value = "select * from  pro_order  p  where c_userid = ?1 and status = ?2 Limit ?3,?4",nativeQuery = true)
 	public List<ProOrder> findOrderByStatuAndUserid(long l, int status,Integer page,Integer size);
+
+	public ProOrderDTO findOrderByOrderNo(String orderNo);
 	
 }

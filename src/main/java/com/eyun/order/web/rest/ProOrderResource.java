@@ -3,6 +3,7 @@ package com.eyun.order.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.ProOrderService;
 import com.eyun.order.service.UaaService;
+import com.eyun.order.service.WalletService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
@@ -10,6 +11,8 @@ import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.impl.ProOrderServiceImpl;
+import com.eyun.order.service.dto.PayNotifyDTO;
+import com.eyun.order.service.dto.PayOrderDTO;
 import com.eyun.order.service.dto.ProOrderCriteria;
 import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
@@ -54,6 +57,9 @@ public class ProOrderResource {
     
     @Autowired
     private UaaService uaaService;
+    
+    @Autowired
+    private WalletService walletService;
 
     public ProOrderResource(ProOrderService proOrderService, ProOrderQueryService proOrderQueryService) {
         this.proOrderService = proOrderService;
@@ -182,4 +188,32 @@ public class ProOrderResource {
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
    
+    /**
+     * 支付通知回调修改订单状态
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年4月19日
+     * @version 1.0
+     * @param payNotifyDTO
+     */
+    @PutMapping("/pro-order/pay/notify")
+    public ResponseEntity<ProOrderDTO> proOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
+    	ProOrderDTO proOrderDTO = proOrderService.proOrderNotify(payNotifyDTO);
+    	return new ResponseEntity<ProOrderDTO>(proOrderDTO, HttpStatus.OK);
+    }
+    
+    /**
+     * 根据OrderNo查询订单
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年4月19日
+     * @version 1.0
+     * @param orderNo
+     * @return
+     */
+    @GetMapping("/api/findOrderByOrderNo/{orderNo}")
+    public ProOrderDTO findOrderByOrderNo(@PathVariable("orderNo")String orderNo) {
+    	return proOrderService.findOrderByOrderNo(orderNo);
+    }
+    
 }
