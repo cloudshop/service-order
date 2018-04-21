@@ -2,15 +2,24 @@ package com.eyun.order.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.LeaguerOrderService;
+import com.eyun.order.service.PayService;
+import com.eyun.order.service.UaaService;
+import com.eyun.order.service.WalletService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
+import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
 import com.eyun.order.service.dto.LeaguerOrderCriteria;
+import com.eyun.order.domain.Wallet;
+import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.service.LeaguerOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -18,9 +27,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +48,16 @@ public class LeaguerOrderResource {
     private final LeaguerOrderService leaguerOrderService;
 
     private final LeaguerOrderQueryService leaguerOrderQueryService;
+    
+    @Autowired
+    private UaaService uaaService;
 
+    @Autowired
+    private WalletService walletService;
+    
+    @Autowired
+    private PayService payService;
+    
     public LeaguerOrderResource(LeaguerOrderService leaguerOrderService, LeaguerOrderQueryService leaguerOrderQueryService) {
         this.leaguerOrderService = leaguerOrderService;
         this.leaguerOrderQueryService = leaguerOrderQueryService;
@@ -51,17 +70,43 @@ public class LeaguerOrderResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new leaguerOrderDTO, or with status 400 (Bad Request) if the leaguerOrder has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @ApiOperation("创建增值业务的订单")
     @PostMapping("/leaguer-orders")
     @Timed
-    public ResponseEntity<LeaguerOrderDTO> createLeaguerOrder(@RequestBody LeaguerOrderDTO leaguerOrderDTO) throws URISyntaxException {
+    public ResponseEntity<String> createLeaguerOrder(@RequestBody LeaguerOrderDTO leaguerOrderDTO) throws URISyntaxException {
         log.debug("REST request to save LeaguerOrder : {}", leaguerOrderDTO);
         if (leaguerOrderDTO.getId() != null) {
             throw new BadRequestAlertException("A new leaguerOrder cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
+        String orderString = "";
+        //设置订单编号
+        leaguerOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
+        leaguerOrderDTO.setCreatedTime(Instant.now());
+        leaguerOrderDTO.setDeleted(false);
+        leaguerOrderDTO.setUpdatedTime(Instant.now());     
         LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
-        return ResponseEntity.created(new URI("/api/leaguer-orders/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        //支付
+        switch (leaguerOrderDTO.getPayType()) {
+		case 1:// 余额支付
+			Wallet userWallet = walletService.getUserWallet();
+			BigDecimal balance = userWallet.getBalance();
+			BigDecimal subtract = balance.subtract(leaguerOrderDTO.getPayment());
+			if (subtract.doubleValue() < 0.00) {
+				orderString = "账户余额不足";
+			} else {
+				orderString = leaguerOrderDTO.getOrderNo();
+			}
+			break;
+		case 2:// 支付宝支付
+			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", leaguerOrderDTO.getOrderNo(), "product", "支付", "30m",
+					leaguerOrderDTO.getPayment().toString());
+			orderString = payService.createAlipayAppOrder(apiPayDTO);
+			break;
+		default:
+			break;
+		} 
+        return new ResponseEntity<>(orderString,HttpStatus.OK);
     }
 
     /**
@@ -78,7 +123,8 @@ public class LeaguerOrderResource {
     public ResponseEntity<LeaguerOrderDTO> updateLeaguerOrder(@RequestBody LeaguerOrderDTO leaguerOrderDTO) throws URISyntaxException {
         log.debug("REST request to update LeaguerOrder : {}", leaguerOrderDTO);
         if (leaguerOrderDTO.getId() == null) {
-            return createLeaguerOrder(leaguerOrderDTO);
+//            return createLeaguerOrder(leaguerOrderDTO);
+        	return null;
         }
         LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
         return ResponseEntity.ok()

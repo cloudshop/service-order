@@ -113,7 +113,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 						proOrderItemDTO.getCount());
 				itemList.add(proOrderItemDTO);
 				System.out.println("updateProductSkuCount " + updateProductSkuCount);
-				String message = (String) updateProductSkuCount.get("message");
+				String message = (String) updateProductSkuCount.get("messgae");
 				if (message.equals("failed")) {
 					return orderString = "库存不足";
 				}
@@ -136,11 +136,11 @@ public class ProOrderServiceImpl implements ProOrderService {
 				BigDecimal subtract = balance.subtract(totalPrice);
 				if (subtract.doubleValue() < 0.00) {
 					orderString = "账户余额不足";
+					proOrder.setStatus(4);
 				} else {
 					orderString = proOrder.getOrderNo();
 					pro.setOrderString(orderString);
-					proOrderRepository.saveAndFlush(proOrder);
-
+					proOrder.setStatus(4);
 				}
 				break;
 			case 2:// 支付宝支付
@@ -148,7 +148,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 						totalPrice.toString());
 				orderString = payService.createAlipayAppOrder(apiPayDTO);
 				pro.setOrderString(orderString);
-				proOrderRepository.saveAndFlush(proOrder);
+				pro.setStatus(4);
 				break;
 			default:
 				break;
@@ -161,6 +161,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			
 			orderString = "订单失败" + e;	
 		}*/
+		proOrderRepository.saveAndFlush(proOrder);
 		return orderString;
 }
     /**
