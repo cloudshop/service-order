@@ -8,6 +8,7 @@
     <include file="config/liquibase/changelog/20180403115228_added_entity_ProOrder.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180403120616_added_entity_ProOrderItem.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180408102935_added_entity_DepOrder.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180408102935_added_entity_LeaguerOrder.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20180403120616_added_entity_constraints_ProOrderItem.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
