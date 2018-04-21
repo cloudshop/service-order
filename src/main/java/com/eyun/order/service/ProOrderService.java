@@ -59,4 +59,6 @@ public interface ProOrderService {
 	ProOrderDTO findOrderByOrderNo(String orderNo);
 
 	ProOrderDTO proOrderNotify(PayNotifyDTO payNotifyDTO);
+
+	List<ProOrderBO> findAllOrder(long l, int page, int size);
 }

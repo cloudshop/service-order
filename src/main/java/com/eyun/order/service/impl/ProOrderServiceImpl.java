@@ -263,4 +263,11 @@ public class ProOrderServiceImpl implements ProOrderService {
 		return proOrderMapper.toDto(save);
 	}
 
+	@Override
+	public List<ProOrderBO> findAllOrder(long l, int page, int size) {
+		List<ProOrder> orderByUserId = proOrderRepository.getOrderByUserId(1l,(page-1)*size,size);
+		List<ProOrderBO> showOrder = orderUtils.showOrder(orderByUserId);
+		return showOrder;
+	}
+
 }

@@ -179,6 +179,14 @@ public class ProOrderResource {
     	List<ProOrderBO> pros = proOrderService.findDispatchItems(1l,page,size); 
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
+    
+    @ApiOperation(value = "查看全部订单")
+    @GetMapping("/findAllOrder/{page}/{size}")
+    public ResponseEntity<List<ProOrderBO>> findAllOrder(@PathVariable int page,@PathVariable int size){		
+    	Integer userId;
+    	List<ProOrderBO> pros = proOrderService.findAllOrder(1l,page,size); 
+    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+    }
    
    
     /**
