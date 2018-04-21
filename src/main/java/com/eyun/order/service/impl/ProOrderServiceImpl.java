@@ -136,11 +136,13 @@ public class ProOrderServiceImpl implements ProOrderService {
 				BigDecimal subtract = balance.subtract(totalPrice);
 				if (subtract.doubleValue() < 0.00) {
 					orderString = "账户余额不足";
-					pro.setStatus(4);
+					//待付款状态
+					pro.setStatus(1);
 				} else {
 					orderString = proOrder.getOrderNo();
 					pro.setOrderString(orderString);
-					pro.setStatus(4);
+					//待付款状态
+					pro.setStatus(1);
 				}
 				break;
 			case 2:// 支付宝支付
@@ -148,7 +150,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 						totalPrice.toString());
 				orderString = payService.createAlipayAppOrder(apiPayDTO);
 				pro.setOrderString(orderString);
-				pro.setStatus(4);
+				pro.setStatus(1);
 				break;
 			default:
 				break;
