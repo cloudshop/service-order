@@ -113,7 +113,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 						proOrderItemDTO.getCount());
 				itemList.add(proOrderItemDTO);
 				System.out.println("updateProductSkuCount " + updateProductSkuCount);
-				String message = (String) updateProductSkuCount.get("messgae");
+				String message = (String) updateProductSkuCount.get("message");
 				if (message.equals("failed")) {
 					return orderString = "库存不足";
 				}
