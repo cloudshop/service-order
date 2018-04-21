@@ -14,7 +14,19 @@ public class ProOrderBO {
     
     private Integer status;
     
-    public Long getOrderid() {
+    private String OrderString;
+    
+    
+    
+    public String getOrderString() {
+		return OrderString;
+	}
+
+	public void setOrderString(String orderString) {
+		OrderString = orderString;
+	}
+
+	public Long getOrderid() {
 		return orderid;
 	}
 

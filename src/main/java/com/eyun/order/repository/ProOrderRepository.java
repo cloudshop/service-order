@@ -22,7 +22,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrder, Long>, JpaSp
 	@Query(value = "SELECT o.id FROM pro_order o WHERE o.status = 1 and  TIMESTAMPDIFF(SECOND,NOW(),UPDATE_TIME) > 1800",nativeQuery = true)
 	public List<BigInteger> findOrders();
 	
-	@Query(value = "select * from pro_order o where status in (2,3,4) and c_userid = ?1 limit ?2,?3 ",nativeQuery = true)
+	@Query(value = "select * from pro_order o where status in (2,3) and c_userid = ?1 limit ?2,?3 ",nativeQuery = true)
 	public List<ProOrder> findDispatchItems(long l, int i, int size);
 	
 	@Query(value = "SELECT * FROM pro_order p  WHERE c_userid = ?1 LIMIT ?2,?3  ",nativeQuery = true)

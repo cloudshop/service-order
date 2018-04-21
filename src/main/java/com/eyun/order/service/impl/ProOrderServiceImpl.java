@@ -72,136 +72,97 @@ public class ProOrderServiceImpl implements ProOrderService {
         this.proOrderMapper = proOrderMapper;
     }
 
-    /**
-     * Save a proOrder.
-     * 创建总的订单 详情订单
-     * 1.创建总订单（设置：订单号，用户id，状态，创建时间，更改时间，评价默认值，删除默认值）
-     * 2.创建订单详情（设置：创建时间，更改时间,订单id）
-     * 3.定时器
-     * 4.库存
-     * 5.购物车
-     * 6.支付
-     * 订单状态：1.未支付，2.已付款，3.未发货，4，已发货，5.交易成功，6.交易关闭
-     */
-    @Override
-    public String createOrder(ProOrderDTO proOrderDTO,Integer type) {
-    	BigDecimal totalPrice = new BigDecimal(0);
-        String sbody = "";
-        String orderString ="";
-        List skuAll = new ArrayList<Long>();
-        //区分支付类型（1.余额支付，2.支付宝支付）
-        switch (proOrderDTO.getPaymentType()){
-        case 1://余额支付
-        	proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
-            proOrderDTO.setStatus(1);
-            proOrderDTO.setCreatedTime(Instant.now());
-            proOrderDTO.setUpdateTime(Instant.now());
-            proOrderDTO.setDeletedB(false);
-            Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();
-            ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);
-            //proOrdersPers 是持久化状态
-            ProOrder proOrdersPers = proOrderRepository.save(proOrder);
-            for (ProOrderItemDTO proOrderItem : proOrderItems) {
-            	proOrderItem.setCreatedTime(Instant.now());
-    			proOrderItem.setUpdatedTime(Instant.now());
-    			proOrderItem.setProOrderId(proOrdersPers.getId());
-    			BigDecimal bPrice = proOrderItem.getPrice();
-    			Integer count = proOrderItem.getCount();
-    			BigDecimal bCount = new BigDecimal(count); 
-    			//总价
-    			totalPrice = bPrice.multiply(bCount);
-    	    	Integer i = new Integer(0);
-    	    	//更改库存
-    	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
-    	        String message = (String)updateProductSkuCount.get("message");
-    	        System.out.println(message);
-    	       /* if(message.equals("failed")){
-    	        	return "库存不足";
-    	        }*/
-    	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
-    	        sbody += pro.getSkuName();
-    	        skuAll.add(proOrderItem.getProductSkuId());
-    		}
-            
-        	// 更改 购物车（userId）            
-            if(type == 0){
-                shoppingCartService.del(skuAll);
-            }
-            
-            totalPrice = totalPrice.add(proOrder.getPostFee());
-            proOrder.setPayment(totalPrice);
+	/**
+	 * Save a proOrder. 创建总的订单 详情订单
+	 * 1.创建总订单（设置：订单号，用户id，状态，创建时间，更改时间，评价默认值，删除默认值） 2.创建订单详情（设置：创建时间，更改时间,订单id）
+	 * 3.定时器 4.库存 5.购物车 6.支付 订单状态：[1.未支付，2.已付款(未发货)，3.已发货，4.交易成功，5.交易关闭]
+	 */
+	@Override
+	public String createOrder(ProOrderDTO proOrderDTO, Integer type) {
+		
+		String orderString = "";
+		Long orderId = null;
+		List<ProOrderItemDTO> itemList = new ArrayList<>();
+		/*try {	*/
+			BigDecimal totalPrice = new BigDecimal(0);
+			String sbody = "";
+			List skuAll = new ArrayList<Long>();// 统计所有订单的子项
+			proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
+			proOrderDTO.setStatus(1);// 设置订单状态
+			proOrderDTO.setCreatedTime(Instant.now());// 设置创建时间
+			proOrderDTO.setUpdateTime(Instant.now());// 设置更新时间
+			proOrderDTO.setDeletedB(false);// 初始化删除状态
+			Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();// 获取订单的所有子项
+			ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);// proOrderDTO转换实体，但是proOrderDTO中的Item并没有转
+			ProOrder save = proOrderRepository.save(proOrder);
+			orderId = save.getId();
+			Set<ProOrderItem> proOrderSet = proOrder.getProOrderItems();
+			for (ProOrderItemDTO proOrderItemDTO : proOrderItems) {
+				ProOrderItem pro = new ProOrderItem();
+				pro.setCount(proOrderItemDTO.getCount());
+				pro.setCreatedTime(Instant.now());
+				pro.setUpdatedTime(Instant.now());
+				pro.setPrice(proOrderItemDTO.getPrice());
+				pro.setProOrder(proOrder);
+				pro.setProductSkuId(proOrderItemDTO.getProductSkuId());
+				// 计算总价
+				totalPrice =  totalPrice.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));
+				// 更改库存
+				Integer i = new Integer(0);
+				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
+						proOrderItemDTO.getCount());
+				itemList.add(proOrderItemDTO);
+				System.out.println("updateProductSkuCount " + updateProductSkuCount);
+				String message = (String) updateProductSkuCount.get("messgae");
+				if (message.equals("failed")) {
+					return orderString = "库存不足";
+				}
+				ProductSkuDTO pros = proService.getProductSku(proOrderItemDTO.getProductSkuId());
+				skuAll.add(proOrderItemDTO.getProductSkuId());
+				proOrderSet.add(pro);
+			}
+			//计算总价totalPrice
+			totalPrice = totalPrice.add(proOrder.getPostFee());
+			proOrder.setPayment(totalPrice);
+			if (type == 0) {
+				shoppingCartService.del(skuAll);
+			}	
+			ProOrder pro = proOrderRepository.saveAndFlush(proOrder);
+			System.out.println("订单id" + orderId);
+			switch (proOrderDTO.getPaymentType()) {
+			case 1:// 余额支付
+				Wallet userWallet = walletService.getUserWallet();
+				BigDecimal balance = userWallet.getBalance();
+				BigDecimal subtract = balance.subtract(totalPrice);
+				if (subtract.doubleValue() < 0.00) {
+					orderString = "账户余额不足";
+				} else {
+					orderString = proOrder.getOrderNo();
+					pro.setOrderString(orderString);
+					proOrderRepository.saveAndFlush(proOrder);
 
-           //判断余额
-            Wallet userWallet = walletService.getUserWallet();
-            BigDecimal balance = userWallet.getBalance();
-            BigDecimal subtract = balance.subtract(balance);
-            if (subtract.doubleValue() < 0.00) {
-            //if(totalPrice.compareTo(balance) == -1 ){
-            	System.out.println("用户余额：" + userWallet);
-            	System.out.println("总价" + totalPrice);
-            	orderString = "账户余额不足";
-            }else{
-                ProOrder save = proOrderRepository.save(proOrder);
-                orderString = save.getOrderNo();
-            }
-            break;
-        case 2://支付宝支付
-        	//余额支付
-        	proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());
-            proOrderDTO.setStatus(1);
-            proOrderDTO.setCreatedTime(Instant.now());
-            proOrderDTO.setUpdateTime(Instant.now());
-            proOrderDTO.setDeletedB(false);
-            Set<ProOrderItemDTO> proOrderItems1 = proOrderDTO.getProOrderItems();
-            ProOrder proOrder1 = proOrderMapper.toEntity(proOrderDTO);
-            ProOrder proOrders1 = proOrderRepository.save(proOrder1);
-            log.debug("添加商品订单详细属性");
-            for (ProOrderItemDTO proOrderItem : proOrderItems1) {
-            	proOrderItem.setCreatedTime(Instant.now());
-    			proOrderItem.setUpdatedTime(Instant.now());
-    			proOrderItem.setProOrderId(proOrder1.getId());
-    			BigDecimal bPrice = proOrderItem.getPrice();
-    			Integer count = proOrderItem.getCount();
-    			BigDecimal bCount = new BigDecimal(count); 
-    			totalPrice = bPrice.multiply(bCount);
-    	    	Integer i = new Integer(0);
-    	    	//更改库存
-    	        Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItem.getProductSkuId(),proOrderItem.getCount());
-    	        String message = (String)updateProductSkuCount.get("message");
-/*    	        if(message.equals("failed")){
-    	        	return "库存不足";
-    	        }*/
-    	        ProductSkuDTO pro = proService.getProductSku(proOrderItem.getProductSkuId());
-    	        sbody += pro.getSkuName();
-    	        skuAll.add(proOrderItem.getProductSkuId());
-    		}
-            
-            if(type == 0){
-                shoppingCartService.del(skuAll);
-            }
-            
-            totalPrice = totalPrice.add(proOrder1.getPostFee());
-            proOrder1.setPayment(totalPrice);
-            ProOrder save1 = proOrderRepository.save(proOrder1);
-//            AlipayDTO apiPayDTO = new AlipayDTO();
-            
-//            AlipayDTO apiPayDTO = new AlipayDTO();
-            AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", save1.getOrderNo(), "product", "支付", "30m",
-            		totalPrice.toString());
-           /* apiPayDTO.setBody("贡融积分商城");
-            apiPayDTO.setOutTradeNo(save1.getOrderNo());
-            apiPayDTO.setSubject("支付");
-            apiPayDTO.setPassbackParams("product");
-            apiPayDTO.setTotalAmount(totalPrice.toString());
-            apiPayDTO.setTimeoutExpress("30m");*/
-            orderString = payService.createAlipayAppOrder(apiPayDTO);            
-            break;  
-        default:
- 		   break;
-         }
-           return orderString;  
-    }
-
+				}
+				break;
+			case 2:// 支付宝支付
+				AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", proOrder.getOrderNo(), "product", "支付", "30m",
+						totalPrice.toString());
+				orderString = payService.createAlipayAppOrder(apiPayDTO);
+				pro.setOrderString(orderString);
+				proOrderRepository.saveAndFlush(proOrder);
+				break;
+			default:
+				break;
+			}
+		/*} catch (Exception e) {
+			//出现任何异常 库存返回，并返回页面“订单失败“,1.需要更改订单状态（取消订单）2.商品回库存
+			ProOrder order = proOrderRepository.getOne(orderId);
+			order.setDeletedB(true);
+			proOrderRepository.save(order);
+			
+			orderString = "订单失败" + e;	
+		}*/
+		return orderString;
+}
     /**
      * Get all the proOrders.
      *
@@ -246,12 +207,12 @@ public class ProOrderServiceImpl implements ProOrderService {
 		List<BigInteger> ordersId = proOrderRepository.findOrders();
 		for (BigInteger btId : ordersId) {
 			ProOrder order = proOrderRepository.findOne(btId.longValue());
-			//交易关闭
-			order.setStatus(6);
+			// 交易关闭
+			order.setStatus(5);
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
 			proOrderRepository.save(order);
-			System.out.println("定时调度++++"+order.toString());
+			System.out.println("定时调度++++" + order.toString());
 		}
 	}
 

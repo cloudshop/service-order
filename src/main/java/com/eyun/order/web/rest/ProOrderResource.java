@@ -36,6 +36,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -157,22 +158,13 @@ public class ProOrderResource {
      * @return
      */ 
     
-    @ApiOperation(value = "商品直接购买type:0，购物车购买type:1")
+    @ApiOperation(value = "商品直接购买(待付款购买)type:0，购物车购买type:1,")
     @PostMapping("/depproorders/{type}")
     public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO,@PathVariable Integer type){
-                return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
+            return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
      }
 
-    @ApiOperation(value = "查看当前用户的所有订单")
-    @GetMapping("/findAllProOrder/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findAllProOrderByUser(@PathVariable int page,@PathVariable int size ) {
-//    	UserDTO user = uaaService.getAccount();
-//    	Long userId = user.getId();
-    	List<ProOrderBO> proOrderItemsByUser = proOrderService.getProOrderItemsByUser(1,page,size);
-        return new ResponseEntity<>(proOrderItemsByUser,HttpStatus.OK);
-    }
-    
-    @ApiOperation(value = "查看代付款1，已完成5，已取消订单6")
+    @ApiOperation(value = "查看代付款1，已完成4，已取消订单5")
     @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
     public ResponseEntity<List<ProOrderBO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
     	Integer userId;
@@ -180,13 +172,14 @@ public class ProOrderResource {
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
     
-    @ApiOperation(value = "查看待收货订单(status:2,3,4)")
+    @ApiOperation(value = "查看待收货订单(status:2,3)")
     @GetMapping("/findDispatchItems/{page}/{size}")
     public ResponseEntity<List<ProOrderBO>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
     	Integer userId;
     	List<ProOrderBO> pros = proOrderService.findDispatchItems(1l,page,size); 
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
+   
    
     /**
      * 支付通知回调修改订单状态
@@ -216,6 +209,21 @@ public class ProOrderResource {
     public ResponseEntity<ProOrderDTO> findOrderByOrderNo(@PathVariable("orderNo")String orderNo) {
     	ProOrderDTO proOrderDTO = proOrderService.findOrderByOrderNo(orderNo);
     	return ResponseUtil.wrapOrNotFound(Optional.ofNullable(proOrderDTO));
+    }
+    
+    /**
+     * 已发货 根据orderNo来存物流名称 物流单号
+     */
+    @ApiOperation(value = "填物流单号，物流名称,更改订单为已发货状态")
+    @PostMapping("/updateOrderByShip")
+    public ResponseEntity<Void>  updateOrderByShip(@RequestBody Map map ){
+    	
+		ProOrderDTO orderDTO =  proOrderService.findOrderByOrderNo((String) map.get("orderNo"));
+    	orderDTO.setShipingCode((String) map.get("shipName"));
+    	orderDTO.setShippingName((String) map.get("shipCode"));
+    	orderDTO.setStatus(3);
+    	ProOrderDTO save = proOrderService.save(orderDTO);
+    	return new ResponseEntity<>(null,HttpStatus.OK);
     }
     
 }

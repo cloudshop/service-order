@@ -31,7 +31,9 @@ public class OrderUtils {
 	    	pbo.setOrderid(proOrder.getId());
 	    	MercuryDTO mercuries = userService.getMercuries(proOrder.getShopId());
 	    	pbo.setShopName(mercuries.getName());
-	    	pbo.setStatus(proOrder.getStatus());	
+	    	pbo.setStatus(proOrder.getStatus());
+	    	pbo.setOrderString(proOrder.getOrderString());
+	    	pbo.setOrderid(proOrder.getId());
 	    	Set<ProOrderItem> proOrderItems = proOrder.getProOrderItems();
 	    	for (ProOrderItem proOrderItem : proOrderItems) {
 	    		ProOrderItemBO pItem = new ProOrderItemBO();
@@ -40,9 +42,11 @@ public class OrderUtils {
 	    		pItem.setPrice(proOrderItem.getPrice());
 	    		ProductSkuDTO sku = proService.getProductSku(proOrderItem.getProductSkuId());
 	    		pItem.setSkuName(sku.getSkuName());
-	    		pbo.getProOrderItems().add(pItem);		
+	    		pbo.getProOrderItems().add(pItem);
+	    		System.out.println("ProOrderBo 的所有值 " + pbo.getProOrderItems().size());
 			}
 	    	proVo.add(pbo);
+	    
 	    }			
 		return proVo;
 	}
