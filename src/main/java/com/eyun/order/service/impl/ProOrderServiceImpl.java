@@ -136,11 +136,11 @@ public class ProOrderServiceImpl implements ProOrderService {
 				BigDecimal subtract = balance.subtract(totalPrice);
 				if (subtract.doubleValue() < 0.00) {
 					orderString = "账户余额不足";
-					proOrder.setStatus(4);
+					pro.setStatus(4);
 				} else {
 					orderString = proOrder.getOrderNo();
 					pro.setOrderString(orderString);
-					proOrder.setStatus(4);
+					pro.setStatus(4);
 				}
 				break;
 			case 2:// 支付宝支付
@@ -161,7 +161,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			
 			orderString = "订单失败" + e;	
 		}*/
-		proOrderRepository.saveAndFlush(proOrder);
+		proOrderRepository.saveAndFlush(pro);
 		return orderString;
 }
     /**
