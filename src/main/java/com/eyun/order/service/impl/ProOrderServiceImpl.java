@@ -239,14 +239,14 @@ public class ProOrderServiceImpl implements ProOrderService {
 	
 	@Override
 	public List<ProOrderBO> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
-		List<ProOrder> orders = proOrderRepository.findOrderByStatuAndUserid(1l,status,(page-1)*size,size);
+		List<ProOrder> orders = proOrderRepository.findOrderByStatuAndUserid(userId,status,(page-1)*size,size);
 		List<ProOrderBO> showOrder = orderUtils.showOrder(orders);
 		return showOrder;
 	}
 
 	@Override
 	public List<ProOrderBO> findDispatchItems(long l, int page, int size) {
-		List<ProOrder> orders = proOrderRepository.findDispatchItems(1l,(page-1)*size,size);
+		List<ProOrder> orders = proOrderRepository.findDispatchItems(l,(page-1)*size,size);
 		List<ProOrderBO> showOrder	= orderUtils.showOrder(orders);
 		return showOrder;
 	}
@@ -271,7 +271,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 
 	@Override
 	public List<ProOrderBO> findAllOrder(long l, int page, int size) {
-		List<ProOrder> orderByUserId = proOrderRepository.getOrderByUserId(1l,(page-1)*size,size);
+		List<ProOrder> orderByUserId = proOrderRepository.getOrderByUserId(l,(page-1)*size,size);
 		List<ProOrderBO> showOrder = orderUtils.showOrder(orderByUserId);
 		return showOrder;
 	}
