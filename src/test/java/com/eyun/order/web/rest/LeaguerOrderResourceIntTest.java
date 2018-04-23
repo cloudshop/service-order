@@ -60,6 +60,9 @@ public class LeaguerOrderResourceIntTest {
     private static final BigDecimal DEFAULT_PAYMENT = new BigDecimal(1);
     private static final BigDecimal UPDATED_PAYMENT = new BigDecimal(2);
 
+    private static final BigDecimal DEFAULT_TICKET = new BigDecimal(1);
+    private static final BigDecimal UPDATED_TICKET = new BigDecimal(2);
+
     private static final Integer DEFAULT_PAY_TYPE = 1;
     private static final Integer UPDATED_PAY_TYPE = 2;
 
@@ -129,6 +132,7 @@ public class LeaguerOrderResourceIntTest {
             .status(DEFAULT_STATUS)
             .userid(DEFAULT_USERID)
             .payment(DEFAULT_PAYMENT)
+            .ticket(DEFAULT_TICKET)
             .payType(DEFAULT_PAY_TYPE)
             .payNo(DEFAULT_PAY_NO)
             .payTime(DEFAULT_PAY_TIME)
@@ -163,6 +167,7 @@ public class LeaguerOrderResourceIntTest {
         assertThat(testLeaguerOrder.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testLeaguerOrder.getUserid()).isEqualTo(DEFAULT_USERID);
         assertThat(testLeaguerOrder.getPayment()).isEqualTo(DEFAULT_PAYMENT);
+        assertThat(testLeaguerOrder.getTicket()).isEqualTo(DEFAULT_TICKET);
         assertThat(testLeaguerOrder.getPayType()).isEqualTo(DEFAULT_PAY_TYPE);
         assertThat(testLeaguerOrder.getPayNo()).isEqualTo(DEFAULT_PAY_NO);
         assertThat(testLeaguerOrder.getPayTime()).isEqualTo(DEFAULT_PAY_TIME);
@@ -206,6 +211,7 @@ public class LeaguerOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].userid").value(hasItem(DEFAULT_USERID.intValue())))
             .andExpect(jsonPath("$.[*].payment").value(hasItem(DEFAULT_PAYMENT.intValue())))
+            .andExpect(jsonPath("$.[*].ticket").value(hasItem(DEFAULT_TICKET.intValue())))
             .andExpect(jsonPath("$.[*].payType").value(hasItem(DEFAULT_PAY_TYPE)))
             .andExpect(jsonPath("$.[*].payNo").value(hasItem(DEFAULT_PAY_NO.toString())))
             .andExpect(jsonPath("$.[*].payTime").value(hasItem(DEFAULT_PAY_TIME.toString())))
@@ -229,6 +235,7 @@ public class LeaguerOrderResourceIntTest {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
             .andExpect(jsonPath("$.userid").value(DEFAULT_USERID.intValue()))
             .andExpect(jsonPath("$.payment").value(DEFAULT_PAYMENT.intValue()))
+            .andExpect(jsonPath("$.ticket").value(DEFAULT_TICKET.intValue()))
             .andExpect(jsonPath("$.payType").value(DEFAULT_PAY_TYPE))
             .andExpect(jsonPath("$.payNo").value(DEFAULT_PAY_NO.toString()))
             .andExpect(jsonPath("$.payTime").value(DEFAULT_PAY_TIME.toString()))
@@ -445,6 +452,45 @@ public class LeaguerOrderResourceIntTest {
 
         // Get all the leaguerOrderList where payment is null
         defaultLeaguerOrderShouldNotBeFound("payment.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaguerOrdersByTicketIsEqualToSomething() throws Exception {
+        // Initialize the database
+        leaguerOrderRepository.saveAndFlush(leaguerOrder);
+
+        // Get all the leaguerOrderList where ticket equals to DEFAULT_TICKET
+        defaultLeaguerOrderShouldBeFound("ticket.equals=" + DEFAULT_TICKET);
+
+        // Get all the leaguerOrderList where ticket equals to UPDATED_TICKET
+        defaultLeaguerOrderShouldNotBeFound("ticket.equals=" + UPDATED_TICKET);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaguerOrdersByTicketIsInShouldWork() throws Exception {
+        // Initialize the database
+        leaguerOrderRepository.saveAndFlush(leaguerOrder);
+
+        // Get all the leaguerOrderList where ticket in DEFAULT_TICKET or UPDATED_TICKET
+        defaultLeaguerOrderShouldBeFound("ticket.in=" + DEFAULT_TICKET + "," + UPDATED_TICKET);
+
+        // Get all the leaguerOrderList where ticket equals to UPDATED_TICKET
+        defaultLeaguerOrderShouldNotBeFound("ticket.in=" + UPDATED_TICKET);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaguerOrdersByTicketIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        leaguerOrderRepository.saveAndFlush(leaguerOrder);
+
+        // Get all the leaguerOrderList where ticket is not null
+        defaultLeaguerOrderShouldBeFound("ticket.specified=true");
+
+        // Get all the leaguerOrderList where ticket is null
+        defaultLeaguerOrderShouldNotBeFound("ticket.specified=false");
     }
 
     @Test
@@ -719,6 +765,7 @@ public class LeaguerOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].userid").value(hasItem(DEFAULT_USERID.intValue())))
             .andExpect(jsonPath("$.[*].payment").value(hasItem(DEFAULT_PAYMENT.intValue())))
+            .andExpect(jsonPath("$.[*].ticket").value(hasItem(DEFAULT_TICKET.intValue())))
             .andExpect(jsonPath("$.[*].payType").value(hasItem(DEFAULT_PAY_TYPE)))
             .andExpect(jsonPath("$.[*].payNo").value(hasItem(DEFAULT_PAY_NO.toString())))
             .andExpect(jsonPath("$.[*].payTime").value(hasItem(DEFAULT_PAY_TIME.toString())))
@@ -763,6 +810,7 @@ public class LeaguerOrderResourceIntTest {
             .status(UPDATED_STATUS)
             .userid(UPDATED_USERID)
             .payment(UPDATED_PAYMENT)
+            .ticket(UPDATED_TICKET)
             .payType(UPDATED_PAY_TYPE)
             .payNo(UPDATED_PAY_NO)
             .payTime(UPDATED_PAY_TIME)
@@ -784,6 +832,7 @@ public class LeaguerOrderResourceIntTest {
         assertThat(testLeaguerOrder.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testLeaguerOrder.getUserid()).isEqualTo(UPDATED_USERID);
         assertThat(testLeaguerOrder.getPayment()).isEqualTo(UPDATED_PAYMENT);
+        assertThat(testLeaguerOrder.getTicket()).isEqualTo(UPDATED_TICKET);
         assertThat(testLeaguerOrder.getPayType()).isEqualTo(UPDATED_PAY_TYPE);
         assertThat(testLeaguerOrder.getPayNo()).isEqualTo(UPDATED_PAY_NO);
         assertThat(testLeaguerOrder.getPayTime()).isEqualTo(UPDATED_PAY_TIME);

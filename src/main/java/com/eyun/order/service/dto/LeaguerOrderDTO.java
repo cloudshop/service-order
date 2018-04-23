@@ -21,6 +21,8 @@ public class LeaguerOrderDTO implements Serializable {
 
     private BigDecimal payment;
 
+    private BigDecimal ticket;
+
     private Integer payType;
 
     private String payNo;
@@ -71,6 +73,14 @@ public class LeaguerOrderDTO implements Serializable {
 
     public void setPayment(BigDecimal payment) {
         this.payment = payment;
+    }
+
+    public BigDecimal getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(BigDecimal ticket) {
+        this.ticket = ticket;
     }
 
     public Integer getPayType() {
@@ -150,6 +160,7 @@ public class LeaguerOrderDTO implements Serializable {
             ", status=" + getStatus() +
             ", userid=" + getUserid() +
             ", payment=" + getPayment() +
+            ", ticket=" + getTicket() +
             ", payType=" + getPayType() +
             ", payNo='" + getPayNo() + "'" +
             ", payTime='" + getPayTime() + "'" +

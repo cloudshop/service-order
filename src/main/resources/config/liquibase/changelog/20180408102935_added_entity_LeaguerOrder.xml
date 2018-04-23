@@ -38,6 +38,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="ticket" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
             <column name="pay_type" type="integer">
                 <constraints nullable="true" />
             </column>

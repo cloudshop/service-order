@@ -36,6 +36,9 @@ public class LeaguerOrder implements Serializable {
     @Column(name = "payment", precision=10, scale=2)
     private BigDecimal payment;
 
+    @Column(name = "ticket", precision=10, scale=2)
+    private BigDecimal ticket;
+
     @Column(name = "pay_type")
     private Integer payType;
 
@@ -113,6 +116,19 @@ public class LeaguerOrder implements Serializable {
 
     public void setPayment(BigDecimal payment) {
         this.payment = payment;
+    }
+
+    public BigDecimal getTicket() {
+        return ticket;
+    }
+
+    public LeaguerOrder ticket(BigDecimal ticket) {
+        this.ticket = ticket;
+        return this;
+    }
+
+    public void setTicket(BigDecimal ticket) {
+        this.ticket = ticket;
     }
 
     public Integer getPayType() {
@@ -222,6 +238,7 @@ public class LeaguerOrder implements Serializable {
             ", status=" + getStatus() +
             ", userid=" + getUserid() +
             ", payment=" + getPayment() +
+            ", ticket=" + getTicket() +
             ", payType=" + getPayType() +
             ", payNo='" + getPayNo() + "'" +
             ", payTime='" + getPayTime() + "'" +

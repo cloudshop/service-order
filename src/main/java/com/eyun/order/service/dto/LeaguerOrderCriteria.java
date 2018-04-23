@@ -36,6 +36,8 @@ public class LeaguerOrderCriteria implements Serializable {
 
     private BigDecimalFilter payment;
 
+    private BigDecimalFilter ticket;
+
     private IntegerFilter payType;
 
     private StringFilter payNo;
@@ -89,6 +91,14 @@ public class LeaguerOrderCriteria implements Serializable {
 
     public void setPayment(BigDecimalFilter payment) {
         this.payment = payment;
+    }
+
+    public BigDecimalFilter getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(BigDecimalFilter ticket) {
+        this.ticket = ticket;
     }
 
     public IntegerFilter getPayType() {
@@ -147,6 +157,7 @@ public class LeaguerOrderCriteria implements Serializable {
                 (status != null ? "status=" + status + ", " : "") +
                 (userid != null ? "userid=" + userid + ", " : "") +
                 (payment != null ? "payment=" + payment + ", " : "") +
+                (ticket != null ? "ticket=" + ticket + ", " : "") +
                 (payType != null ? "payType=" + payType + ", " : "") +
                 (payNo != null ? "payNo=" + payNo + ", " : "") +
                 (payTime != null ? "payTime=" + payTime + ", " : "") +
