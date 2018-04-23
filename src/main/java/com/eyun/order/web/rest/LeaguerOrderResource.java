@@ -116,6 +116,8 @@ public class LeaguerOrderResource {
 		default:
 			break;
 		} 
+        
+        leaguerOrderService.save(leaguerOrderDTO);   
         return new ResponseEntity<>(orderString,HttpStatus.OK);
     }
 
