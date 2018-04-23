@@ -156,35 +156,57 @@ public class ProOrderResource {
      * 提交商家proOrder信息
      * @param list
      * @return
+     * @throws Exception 
      */ 
     
     @ApiOperation(value = "商品直接购买(待付款购买)type:0，购物车购买type:1,")
     @PostMapping("/depproorders/{type}")
-    public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO,@PathVariable Integer type){
-            return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
+    public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO,@PathVariable Integer type) throws Exception{
+    	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	
+    	proOrderDTO.setcUserid(userDTO.getId());
+           return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
      }
 
     @ApiOperation(value = "查看代付款1，已完成4，已取消订单5")
     @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size){		
-    	Integer userId;
-    	List<ProOrderBO>  pros= proOrderService.findOrderByStatuAndUserid(1l,status,page,size);  	
+    public ResponseEntity<List<ProOrderBO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size) throws Exception{		
+  
+    	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	
+    	List<ProOrderBO>  pros= proOrderService.findOrderByStatuAndUserid(userDTO.getId(),status,page,size);  	
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
     
     @ApiOperation(value = "查看待收货订单(status:2,3)")
     @GetMapping("/findDispatchItems/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findDispatchItems(@PathVariable int page,@PathVariable int size){		
-    	Integer userId;
-    	List<ProOrderBO> pros = proOrderService.findDispatchItems(1l,page,size); 
+    public ResponseEntity<List<ProOrderBO>> findDispatchItems(@PathVariable int page,@PathVariable int size) throws Exception{		
+    	
+    	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	
+    	List<ProOrderBO> pros = proOrderService.findDispatchItems(userDTO.getId(),page,size); 
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
     
     @ApiOperation(value = "查看全部订单")
     @GetMapping("/findAllOrder/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findAllOrder(@PathVariable int page,@PathVariable int size){		
-    	Integer userId;
-    	List<ProOrderBO> pros = proOrderService.findAllOrder(1l,page,size); 
+    public ResponseEntity<List<ProOrderBO>> findAllOrder(@PathVariable int page,@PathVariable int size) throws Exception{		
+    	
+    	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	
+    	List<ProOrderBO> pros = proOrderService.findAllOrder(userDTO.getId(),page,size); 
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
    

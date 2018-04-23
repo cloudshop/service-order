@@ -15,6 +15,7 @@ import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
+import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.mapper.ProOrderMapper;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.OrderNoUtil;
@@ -88,7 +89,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			String sbody = "";
 			List skuAll = new ArrayList<Long>();// 统计所有订单的子项
 			proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
-			proOrderDTO.setStatus(1);// 设置订单状态
+//			proOrderDTO.setStatus(1);// 设置订单状态
 			proOrderDTO.setCreatedTime(Instant.now());// 设置创建时间
 			proOrderDTO.setUpdateTime(Instant.now());// 设置更新时间
 			proOrderDTO.setDeletedB(false);// 初始化删除状态
@@ -108,12 +109,14 @@ public class ProOrderServiceImpl implements ProOrderService {
 				// 计算总价
 				totalPrice =  totalPrice.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));
 				// 更改库存
+				
 				Integer i = new Integer(0);
 				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
 						proOrderItemDTO.getCount());
 				itemList.add(proOrderItemDTO);
+				
 				System.out.println("updateProductSkuCount " + updateProductSkuCount);
-				String message = (String) updateProductSkuCount.get("messgae");
+				String message = (String) updateProductSkuCount.get("message");
 				if (message.equals("failed")) {
 					return orderString = "库存不足";
 				}
