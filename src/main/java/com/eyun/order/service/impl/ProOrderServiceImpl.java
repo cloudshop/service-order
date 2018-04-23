@@ -10,6 +10,7 @@ import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
+import com.eyun.order.repository.ProOrderItemRepository;
 import com.eyun.order.repository.ProOrderRepository;
 import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
@@ -62,6 +63,9 @@ public class ProOrderServiceImpl implements ProOrderService {
     
     @Autowired
     private ShoppingCartService shoppingCartService;
+
+    @Autowired
+    private ProOrderItemRepository proOrderItemRepository;
     
     @Autowired
     private WalletService walletService;
@@ -97,7 +101,6 @@ public class ProOrderServiceImpl implements ProOrderService {
 			ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);// proOrderDTO转换实体，但是proOrderDTO中的Item并没有转
 			ProOrder save = proOrderRepository.save(proOrder);
 			orderId = save.getId();
-			Set<ProOrderItem> proOrderSet = proOrder.getProOrderItems();
 			for (ProOrderItemDTO proOrderItemDTO : proOrderItems) {
 				ProOrderItem pro = new ProOrderItem();
 				pro.setCount(proOrderItemDTO.getCount());
@@ -116,13 +119,14 @@ public class ProOrderServiceImpl implements ProOrderService {
 				itemList.add(proOrderItemDTO);
 				
 				System.out.println("updateProductSkuCount " + updateProductSkuCount);
-				String message = (String) updateProductSkuCount.get("message");
+				String message = (String) updateProductSkuCount.get("messgae");
 				if (message.equals("failed")) {
 					return orderString = "库存不足";
 				}
 				ProductSkuDTO pros = proService.getProductSku(proOrderItemDTO.getProductSkuId());
 				skuAll.add(proOrderItemDTO.getProductSkuId());
-				proOrderSet.add(pro);
+				proOrder.getProOrderItems().add(pro);
+				proOrderItemRepository.saveAndFlush(pro);
 			}
 			//计算总价totalPrice
 			totalPrice = totalPrice.add(proOrder.getPostFee());
@@ -130,7 +134,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
 			}	
-			ProOrder pro = proOrderRepository.saveAndFlush(proOrder);
+			ProOrder proOrder2 = proOrderRepository.saveAndFlush(proOrder);
 			System.out.println("订单id" + orderId);
 			switch (proOrderDTO.getPaymentType()) {
 			case 1:// 余额支付
@@ -140,20 +144,20 @@ public class ProOrderServiceImpl implements ProOrderService {
 				if (subtract.doubleValue() < 0.00) {
 					orderString = "账户余额不足";
 					//待付款状态
-					pro.setStatus(1);
+					proOrder2.setStatus(1);
 				} else {
 					orderString = proOrder.getOrderNo();
-					pro.setOrderString(orderString);
+					proOrder2.setOrderString(orderString);
 					//待付款状态
-					pro.setStatus(1);
+					proOrder2.setStatus(1);
 				}
 				break;
 			case 2:// 支付宝支付
 				AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", proOrder.getOrderNo(), "product", "支付", "30m",
 						totalPrice.toString());
 				orderString = payService.createAlipayAppOrder(apiPayDTO);
-				pro.setOrderString(orderString);
-				pro.setStatus(1);
+				proOrder2.setOrderString(orderString);
+				proOrder2.setStatus(1);
 				break;
 			default:
 				break;
@@ -166,7 +170,8 @@ public class ProOrderServiceImpl implements ProOrderService {
 			
 			orderString = "订单失败" + e;	
 		}*/
-		proOrderRepository.saveAndFlush(pro);
+		proOrderRepository.saveAndFlush(proOrder2);
+		
 		return orderString;
 }
     /**
