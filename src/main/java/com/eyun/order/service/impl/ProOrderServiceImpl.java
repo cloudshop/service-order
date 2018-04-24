@@ -281,4 +281,16 @@ public class ProOrderServiceImpl implements ProOrderService {
 		return showOrder;
 	}
 
+	@Override
+	public Boolean updateOrderStatus(String string, Integer integer) {
+		ProOrder proOrder = proOrderRepository.getOrderByOrderNo(string);
+		proOrder.setStatus(integer);
+		ProOrder save = proOrderRepository.save(proOrder);
+		if(save == null){
+			return  false;
+		}
+		return true;
+	}
+
+
 }

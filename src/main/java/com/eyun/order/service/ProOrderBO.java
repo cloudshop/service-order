@@ -16,9 +16,27 @@ public class ProOrderBO {
     
     private String OrderString;
     
+    private String shippingName;
+
+    private String shipingCode;
     
-    
-    public String getOrderString() {
+    public String getShippingName() {
+		return shippingName;
+	}
+
+	public void setShippingName(String shippingName) {
+		this.shippingName = shippingName;
+	}
+
+	public String getShipingCode() {
+		return shipingCode;
+	}
+
+	public void setShipingCode(String shipingCode) {
+		this.shipingCode = shipingCode;
+	}
+
+	public String getOrderString() {
 		return OrderString;
 	}
 

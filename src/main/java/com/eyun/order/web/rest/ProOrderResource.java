@@ -256,4 +256,27 @@ public class ProOrderResource {
     	return new ResponseEntity<>(null,HttpStatus.OK);
     }
     
+    /**
+     * 更改订单状态接口
+     * @param orderNo,status
+     * @throws Exception 
+     */
+    @ApiOperation("更改订单状态")
+    @PostMapping("/updateOrderStatus")
+    public ResponseEntity<Boolean> updateOrderStatus(@RequestBody Map map) throws Exception{
+    /*	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	*/
+		return new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 }

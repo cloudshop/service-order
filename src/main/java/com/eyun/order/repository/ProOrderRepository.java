@@ -33,4 +33,7 @@ public interface ProOrderRepository extends JpaRepository<ProOrder, Long>, JpaSp
 
 	public ProOrder findOrderByOrderNo(String orderNo);
 	
+	@Query(value = "select * from pro_order p where order_no = ?1",nativeQuery = true)
+	public ProOrder getOrderByOrderNo(String string);
+	
 }
