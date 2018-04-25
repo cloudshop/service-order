@@ -131,6 +131,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			//计算总价totalPrice
 			totalPrice = totalPrice.add(proOrder.getPostFee());
 			proOrder.setPayment(totalPrice);
+			proOrder.setDeletedB(false);
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
 			}	
@@ -142,9 +143,9 @@ public class ProOrderServiceImpl implements ProOrderService {
 				BigDecimal balance = userWallet.getBalance();
 				BigDecimal subtract = balance.subtract(totalPrice);
 				if (subtract.doubleValue() < 0.00) {
-					orderString = "账户余额不足";
+					proOrder.setDeletedB(true);
+					throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
 					//待付款状态
-					proOrder2.setStatus(1);
 				} else {
 					orderString = proOrder.getOrderNo();
 					proOrder2.setOrderString(orderString);
