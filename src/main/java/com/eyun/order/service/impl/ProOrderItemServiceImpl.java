@@ -104,7 +104,6 @@ public class ProOrderItemServiceImpl implements ProOrderItemService {
      * 转实体方法
      */
        public ProOrderItem getProOrderItem(ProOrderItemDTO proOrderItemDTO,ProOrder proOrder){
-
     	ProOrderItem entity =  new ProOrderItem();
     	BeanUtils.copyProperties(proOrderItemDTO, entity , "proOrder");
     	entity.setProOrder(proOrder);

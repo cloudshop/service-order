@@ -257,7 +257,7 @@ public class ProOrderResource {
     	
 		ProOrderDTO orderDTO =  proOrderService.findOrderByOrderNo((String) map.get("orderNo"));
 		if(orderDTO == null){
-			throw new BadRequestAlertException("该订单号不存在", orderDTO.toString(), ""); 
+			throw new BadRequestAlertException("该订单号不存在", "", ""); 
 		}
     	orderDTO.setShipingCode((String) map.get("shipName"));
     	orderDTO.setShippingName((String) map.get("shipCode"));
@@ -276,12 +276,5 @@ public class ProOrderResource {
     public ResponseEntity<Boolean> updateOrderStatus(@RequestBody Map map) throws Exception{
 		return new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
     }
-    
-    
-    
-    
-    
-    
-    
     
 }

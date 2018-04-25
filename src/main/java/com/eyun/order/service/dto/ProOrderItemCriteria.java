@@ -38,6 +38,8 @@ public class ProOrderItemCriteria implements Serializable {
 
     private InstantFilter updatedTime;
 
+    private BigDecimalFilter transfer;
+
     private LongFilter proOrderId;
 
     public ProOrderItemCriteria() {
@@ -91,6 +93,14 @@ public class ProOrderItemCriteria implements Serializable {
         this.updatedTime = updatedTime;
     }
 
+    public BigDecimalFilter getTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(BigDecimalFilter transfer) {
+        this.transfer = transfer;
+    }
+
     public LongFilter getProOrderId() {
         return proOrderId;
     }
@@ -108,6 +118,7 @@ public class ProOrderItemCriteria implements Serializable {
                 (price != null ? "price=" + price + ", " : "") +
                 (createdTime != null ? "createdTime=" + createdTime + ", " : "") +
                 (updatedTime != null ? "updatedTime=" + updatedTime + ", " : "") +
+                (transfer != null ? "transfer=" + transfer + ", " : "") +
                 (proOrderId != null ? "proOrderId=" + proOrderId + ", " : "") +
             "}";
     }

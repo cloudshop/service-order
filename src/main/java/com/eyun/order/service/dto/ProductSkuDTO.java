@@ -4,6 +4,7 @@ package com.eyun.order.service.dto;
 import java.time.Instant;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -13,16 +14,16 @@ public class ProductSkuDTO implements Serializable {
 
     private Long id;
 
-    
+    @NotNull
     private Long productId;
 
-    
+    @NotNull
     @Min(value = 0)
     private Integer count;
 
-    
-    @Min(value = 0)
-    private Integer price;
+    @NotNull
+    @DecimalMin(value = "0")
+    private BigDecimal price;
 
     private Integer status;
 
@@ -37,6 +38,10 @@ public class ProductSkuDTO implements Serializable {
     private Instant updatedTime;
 
     private Boolean deleted;
+
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "1")
+    private BigDecimal transfer;
 
     public Long getId() {
         return id;
@@ -62,11 +67,11 @@ public class ProductSkuDTO implements Serializable {
         this.count = count;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -126,6 +131,14 @@ public class ProductSkuDTO implements Serializable {
         this.deleted = deleted;
     }
 
+    public BigDecimal getTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(BigDecimal transfer) {
+        this.transfer = transfer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -161,6 +174,7 @@ public class ProductSkuDTO implements Serializable {
             ", createdTime='" + getCreatedTime() + "'" +
             ", updatedTime='" + getUpdatedTime() + "'" +
             ", deleted='" + isDeleted() + "'" +
+            ", transfer=" + getTransfer() +
             "}";
     }
 }

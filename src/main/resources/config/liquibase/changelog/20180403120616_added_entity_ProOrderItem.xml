@@ -42,6 +42,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="transfer" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
             <column name="pro_order_id" type="bigint">
                 <constraints nullable="true" />
             </column>

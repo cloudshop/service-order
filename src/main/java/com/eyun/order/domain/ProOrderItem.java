@@ -4,6 +4,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -38,6 +39,11 @@ public class ProOrderItem implements Serializable {
 
     @Column(name = "updated_time")
     private Instant updatedTime;
+
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "1")
+    @Column(name = "transfer", precision=10, scale=2)
+    private BigDecimal transfer;
 
     @ManyToOne
     private ProOrder proOrder;
@@ -116,6 +122,19 @@ public class ProOrderItem implements Serializable {
         this.updatedTime = updatedTime;
     }
 
+    public BigDecimal getTransfer() {
+        return transfer;
+    }
+
+    public ProOrderItem transfer(BigDecimal transfer) {
+        this.transfer = transfer;
+        return this;
+    }
+
+    public void setTransfer(BigDecimal transfer) {
+        this.transfer = transfer;
+    }
+
     public ProOrder getProOrder() {
         return proOrder;
     }
@@ -159,6 +178,7 @@ public class ProOrderItem implements Serializable {
             ", price=" + getPrice() +
             ", createdTime='" + getCreatedTime() + "'" +
             ", updatedTime='" + getUpdatedTime() + "'" +
+            ", transfer=" + getTransfer() +
             "}";
     }
 }

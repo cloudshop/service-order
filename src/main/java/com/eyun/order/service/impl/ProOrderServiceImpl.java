@@ -97,6 +97,8 @@ public class ProOrderServiceImpl implements ProOrderService {
 			proOrderDTO.setCreatedTime(Instant.now());// 设置创建时间
 			proOrderDTO.setUpdateTime(Instant.now());// 设置更新时间
 			proOrderDTO.setDeletedB(false);// 初始化删除状态
+			proOrderDTO.setDeletedC(false);
+			
 			Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();// 获取订单的所有子项
 			ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);// proOrderDTO转换实体，但是proOrderDTO中的Item并没有转
 			ProOrder save = proOrderRepository.save(proOrder);
@@ -111,8 +113,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 				pro.setProductSkuId(proOrderItemDTO.getProductSkuId());
 				// 计算总价
 				totalPrice =  totalPrice.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));
-				// 更改库存
-				
+				// 更改库存,添加让利
+				System.out.println("-------------" + proService.getProductSku(proOrderItemDTO.getProductSkuId()).toString());
+				System.out.println("=============" + proService.getProductSku(proOrderItemDTO.getProductSkuId()).getTransfer());
+				pro.setTransfer(proService.getProductSku(proOrderItemDTO.getProductSkuId()).getTransfer());
 				Integer i = new Integer(0);
 				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
 						proOrderItemDTO.getCount());
@@ -285,11 +289,11 @@ public class ProOrderServiceImpl implements ProOrderService {
 	@Override
 	public Boolean updateOrderStatus(String string, Integer integer) {
 		ProOrder proOrder = proOrderRepository.getOrderByOrderNo(string);
+		if(proOrder == null){
+			throw new BadRequestAlertException("该订单号不存在", "", ""); 
+		}
 		proOrder.setStatus(integer);
 		ProOrder save = proOrderRepository.save(proOrder);
-		if(save == null){
-			return  false;
-		}
 		return true;
 	}
 
