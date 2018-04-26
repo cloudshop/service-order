@@ -61,4 +61,6 @@ public interface ProOrderService {
 	ProOrderDTO proOrderNotify(PayNotifyDTO payNotifyDTO);
 
 	List<ProOrderBO> findAllOrder(long l, int page, int size);
+
+	Boolean updateOrderStatus(String string, Integer integer);
 }

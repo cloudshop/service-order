@@ -2,6 +2,7 @@ package com.eyun.order.service.dto;
 
 
 import java.time.Instant;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -24,6 +25,10 @@ public class ProOrderItemDTO implements Serializable {
     private Instant createdTime;
 
     private Instant updatedTime;
+
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "1")
+    private BigDecimal transfer;
 
     private Long proOrderId;
     
@@ -97,6 +102,14 @@ public class ProOrderItemDTO implements Serializable {
         this.updatedTime = updatedTime;
     }
 
+    public BigDecimal getTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(BigDecimal transfer) {
+        this.transfer = transfer;
+    }
+
     public Long getProOrderId() {
         return proOrderId;
     }
@@ -135,6 +148,7 @@ public class ProOrderItemDTO implements Serializable {
             ", price=" + getPrice() +
             ", createdTime='" + getCreatedTime() + "'" +
             ", updatedTime='" + getUpdatedTime() + "'" +
+            ", transfer=" + getTransfer() +
             "}";
     }
 }

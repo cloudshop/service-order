@@ -94,6 +94,9 @@ public class ProOrderItemQueryService extends QueryService<ProOrderItem> {
             if (criteria.getUpdatedTime() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getUpdatedTime(), ProOrderItem_.updatedTime));
             }
+            if (criteria.getTransfer() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getTransfer(), ProOrderItem_.transfer));
+            }
             if (criteria.getProOrderId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getProOrderId(), ProOrderItem_.proOrder, ProOrder_.id));
             }

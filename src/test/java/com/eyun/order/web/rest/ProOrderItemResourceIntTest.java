@@ -64,6 +64,9 @@ public class ProOrderItemResourceIntTest {
     private static final Instant DEFAULT_UPDATED_TIME = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_UPDATED_TIME = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
+    private static final BigDecimal DEFAULT_TRANSFER = new BigDecimal(0);
+    private static final BigDecimal UPDATED_TRANSFER = new BigDecimal(1);
+
     @Autowired
     private ProOrderItemRepository proOrderItemRepository;
 
@@ -115,7 +118,8 @@ public class ProOrderItemResourceIntTest {
             .count(DEFAULT_COUNT)
             .price(DEFAULT_PRICE)
             .createdTime(DEFAULT_CREATED_TIME)
-            .updatedTime(DEFAULT_UPDATED_TIME);
+            .updatedTime(DEFAULT_UPDATED_TIME)
+            .transfer(DEFAULT_TRANSFER);
         return proOrderItem;
     }
 
@@ -145,6 +149,7 @@ public class ProOrderItemResourceIntTest {
         assertThat(testProOrderItem.getPrice()).isEqualTo(DEFAULT_PRICE);
         assertThat(testProOrderItem.getCreatedTime()).isEqualTo(DEFAULT_CREATED_TIME);
         assertThat(testProOrderItem.getUpdatedTime()).isEqualTo(DEFAULT_UPDATED_TIME);
+        assertThat(testProOrderItem.getTransfer()).isEqualTo(DEFAULT_TRANSFER);
     }
 
     @Test
@@ -182,7 +187,8 @@ public class ProOrderItemResourceIntTest {
             .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].createdTime").value(hasItem(DEFAULT_CREATED_TIME.toString())))
-            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())));
+            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())))
+            .andExpect(jsonPath("$.[*].transfer").value(hasItem(DEFAULT_TRANSFER.intValue())));
     }
 
     @Test
@@ -200,7 +206,8 @@ public class ProOrderItemResourceIntTest {
             .andExpect(jsonPath("$.count").value(DEFAULT_COUNT))
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
             .andExpect(jsonPath("$.createdTime").value(DEFAULT_CREATED_TIME.toString()))
-            .andExpect(jsonPath("$.updatedTime").value(DEFAULT_UPDATED_TIME.toString()));
+            .andExpect(jsonPath("$.updatedTime").value(DEFAULT_UPDATED_TIME.toString()))
+            .andExpect(jsonPath("$.transfer").value(DEFAULT_TRANSFER.intValue()));
     }
 
     @Test
@@ -454,6 +461,45 @@ public class ProOrderItemResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllProOrderItemsByTransferIsEqualToSomething() throws Exception {
+        // Initialize the database
+        proOrderItemRepository.saveAndFlush(proOrderItem);
+
+        // Get all the proOrderItemList where transfer equals to DEFAULT_TRANSFER
+        defaultProOrderItemShouldBeFound("transfer.equals=" + DEFAULT_TRANSFER);
+
+        // Get all the proOrderItemList where transfer equals to UPDATED_TRANSFER
+        defaultProOrderItemShouldNotBeFound("transfer.equals=" + UPDATED_TRANSFER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrderItemsByTransferIsInShouldWork() throws Exception {
+        // Initialize the database
+        proOrderItemRepository.saveAndFlush(proOrderItem);
+
+        // Get all the proOrderItemList where transfer in DEFAULT_TRANSFER or UPDATED_TRANSFER
+        defaultProOrderItemShouldBeFound("transfer.in=" + DEFAULT_TRANSFER + "," + UPDATED_TRANSFER);
+
+        // Get all the proOrderItemList where transfer equals to UPDATED_TRANSFER
+        defaultProOrderItemShouldNotBeFound("transfer.in=" + UPDATED_TRANSFER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrderItemsByTransferIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        proOrderItemRepository.saveAndFlush(proOrderItem);
+
+        // Get all the proOrderItemList where transfer is not null
+        defaultProOrderItemShouldBeFound("transfer.specified=true");
+
+        // Get all the proOrderItemList where transfer is null
+        defaultProOrderItemShouldNotBeFound("transfer.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllProOrderItemsByProOrderIsEqualToSomething() throws Exception {
         // Initialize the database
         ProOrder proOrder = ProOrderResourceIntTest.createEntity(em);
@@ -482,7 +528,8 @@ public class ProOrderItemResourceIntTest {
             .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].createdTime").value(hasItem(DEFAULT_CREATED_TIME.toString())))
-            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())));
+            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())))
+            .andExpect(jsonPath("$.[*].transfer").value(hasItem(DEFAULT_TRANSFER.intValue())));
     }
 
     /**
@@ -521,7 +568,8 @@ public class ProOrderItemResourceIntTest {
             .count(UPDATED_COUNT)
             .price(UPDATED_PRICE)
             .createdTime(UPDATED_CREATED_TIME)
-            .updatedTime(UPDATED_UPDATED_TIME);
+            .updatedTime(UPDATED_UPDATED_TIME)
+            .transfer(UPDATED_TRANSFER);
         ProOrderItemDTO proOrderItemDTO = proOrderItemMapper.toDto(updatedProOrderItem);
 
         restProOrderItemMockMvc.perform(put("/api/pro-order-items")
@@ -538,6 +586,7 @@ public class ProOrderItemResourceIntTest {
         assertThat(testProOrderItem.getPrice()).isEqualTo(UPDATED_PRICE);
         assertThat(testProOrderItem.getCreatedTime()).isEqualTo(UPDATED_CREATED_TIME);
         assertThat(testProOrderItem.getUpdatedTime()).isEqualTo(UPDATED_UPDATED_TIME);
+        assertThat(testProOrderItem.getTransfer()).isEqualTo(UPDATED_TRANSFER);
     }
 
     @Test

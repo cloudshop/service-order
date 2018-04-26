@@ -28,6 +28,16 @@
         {
             "fieldName": "updatedTime",
             "fieldType": "Instant"
+        },
+        {
+            "fieldName": "transfer",
+            "fieldType": "BigDecimal",
+            "fieldValidateRules": [
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": "0",
+            "fieldValidateRulesMax": "1"
         }
     ],
     "changelogDate": "20180403120616",

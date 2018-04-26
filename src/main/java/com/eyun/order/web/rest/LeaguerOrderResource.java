@@ -10,6 +10,7 @@ import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
+import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.dto.LeaguerOrderCriteria;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
@@ -68,24 +69,33 @@ public class LeaguerOrderResource {
      *
      * @param leaguerOrderDTO the leaguerOrderDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new leaguerOrderDTO, or with status 400 (Bad Request) if the leaguerOrder has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @throws Exception 
      */
     @ApiOperation("创建增值业务的订单")
     @PostMapping("/leaguer-orders")
     @Timed
-    public ResponseEntity<String> createLeaguerOrder(@RequestBody LeaguerOrderDTO leaguerOrderDTO) throws URISyntaxException {
+    public ResponseEntity<String> createLeaguerOrder(@RequestBody LeaguerOrderDTO leaguerOrderDTO) throws Exception {
         log.debug("REST request to save LeaguerOrder : {}", leaguerOrderDTO);
         if (leaguerOrderDTO.getId() != null) {
             throw new BadRequestAlertException("A new leaguerOrder cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
+    	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	
+        
         
         String orderString = "";
         //设置订单编号
         leaguerOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
         leaguerOrderDTO.setCreatedTime(Instant.now());
         leaguerOrderDTO.setDeleted(false);
-        leaguerOrderDTO.setUpdatedTime(Instant.now());     
-        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
+        leaguerOrderDTO.setUpdatedTime(Instant.now());  
+        leaguerOrderDTO.setUserid(userDTO.getId());
+        leaguerOrderDTO.setStatus(1);
+        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);   
         //支付
         switch (leaguerOrderDTO.getPayType()) {
 		case 1:// 余额支付
@@ -106,6 +116,8 @@ public class LeaguerOrderResource {
 		default:
 			break;
 		} 
+        
+        leaguerOrderService.save(leaguerOrderDTO);   
         return new ResponseEntity<>(orderString,HttpStatus.OK);
     }
 
