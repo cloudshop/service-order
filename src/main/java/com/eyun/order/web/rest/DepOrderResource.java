@@ -11,7 +11,9 @@ import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.DepOrderDTO;
 import com.eyun.order.service.dto.UserDTO;
+import com.eyun.order.service.dto.BalanceDTO;
 import com.eyun.order.service.dto.DepOrderCriteria;
+import com.eyun.order.domain.DepOrder;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.domain.vo.DepOrderVO;
@@ -211,7 +213,19 @@ public class DepOrderResource {
     @PutMapping("/dep-orders/deposit/{orderNo}") 
     public ResponseEntity<String> depositNotify (@PathVariable("orderNo") String orderNo) {
     	try {
-			depOrderService.depositNotify(orderNo);
+			DepOrder depOrder = depOrderService.depositNotify(orderNo);
+			if (depOrder == null) {
+				return ResponseEntity.ok()
+						.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderNo))
+						.body("failure");
+			}
+			//调用钱包服务 添加余额
+			BalanceDTO balanceDTO = new BalanceDTO();
+			balanceDTO.setMoney(depOrder.getPayment());
+			balanceDTO.setOrderNo(depOrder.getOrderNo());
+			balanceDTO.setType(1);//1 充值
+			balanceDTO.setUserid(depOrder.getUserid());
+			Wallet wallet = walletService.updateBalance(balanceDTO);
 			return ResponseEntity.ok()
 					.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderNo))
 					.body("success");

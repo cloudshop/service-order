@@ -1,5 +1,6 @@
 package com.eyun.order.service;
 
+import com.eyun.order.domain.DepOrder;
 import com.eyun.order.service.dto.DepOrderDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +41,6 @@ public interface DepOrderService {
      */
     void delete(Long id);
 
-	void depositNotify(String orderNo) throws Exception;
+	DepOrder depositNotify(String orderNo) throws Exception;
 	
 }
