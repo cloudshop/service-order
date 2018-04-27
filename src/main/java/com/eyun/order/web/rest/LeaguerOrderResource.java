@@ -10,8 +10,10 @@ import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.OrderNoUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
+import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.dto.LeaguerOrderCriteria;
+import com.eyun.order.domain.LeaguerOrder;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.service.LeaguerOrderQueryService;
@@ -187,4 +189,20 @@ public class LeaguerOrderResource {
         leaguerOrderService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    /**
+     * 支付回调
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年4月27日
+     * @version 1.0
+     * @param payNotifyDTO
+     * @return
+     */
+    @PutMapping("/api/leaguer-order/pay/notify")
+	public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
+    	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
+    	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
+    }
+    
 }

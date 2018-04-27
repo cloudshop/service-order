@@ -2,9 +2,13 @@ package com.eyun.order.service.impl;
 
 import com.eyun.order.service.LeaguerOrderService;
 import com.eyun.order.domain.LeaguerOrder;
+import com.eyun.order.domain.ProOrder;
 import com.eyun.order.repository.LeaguerOrderRepository;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
+import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.mapper.LeaguerOrderMapper;
+import com.eyun.order.web.rest.errors.BadRequestAlertException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -83,4 +87,16 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
         log.debug("Request to delete LeaguerOrder : {}", id);
         leaguerOrderRepository.delete(id);
     }
+
+	@Override
+	public LeaguerOrderDTO leaguerOrderNotify(PayNotifyDTO payNotifyDTO) {
+		LeaguerOrder leaguerOrder = leaguerOrderRepository.findByOrderNo(payNotifyDTO.getOrderNo());
+		if (leaguerOrder.getStatus() != 1) {
+			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
+		}
+		leaguerOrder.setStatus(2);
+		leaguerOrder.setPayNo(payNotifyDTO.getPayNo());
+		LeaguerOrder save = leaguerOrderRepository.save(leaguerOrder);
+		return leaguerOrderMapper.toDto(save);
+	}
 }

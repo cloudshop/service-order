@@ -13,4 +13,6 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface LeaguerOrderRepository extends JpaRepository<LeaguerOrder, Long>, JpaSpecificationExecutor<LeaguerOrder> {
 
+	LeaguerOrder findByOrderNo(String orderNo);
+
 }

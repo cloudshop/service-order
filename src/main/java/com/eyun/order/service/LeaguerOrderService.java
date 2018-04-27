@@ -1,6 +1,9 @@
 package com.eyun.order.service;
 
+import com.eyun.order.domain.LeaguerOrder;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
+import com.eyun.order.service.dto.PayNotifyDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +42,6 @@ public interface LeaguerOrderService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+	LeaguerOrderDTO leaguerOrderNotify(PayNotifyDTO payNotifyDTO);
 }
