@@ -172,7 +172,7 @@ public class LeaguerOrderResource {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
     	//Future<String> future = asyncTask.notifyUserMicroservice(leaguerOrderDTO.getUserid());
     	UserDTO userDTO = new UserDTO();
-    	userDTO.setId(leaguerOrderDTO.getId());
+    	userDTO.setId(leaguerOrderDTO.getUserid());
 		userService.UpdaeUserStatus(userDTO);
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
     }
