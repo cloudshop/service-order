@@ -20,6 +20,7 @@ public class AsyncTask {
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(userid);
 		userService.UpdaeUserStatus(userDTO);
+		System.out.println(userid);
 		return new AsyncResult<String>("ok");
 	}
 

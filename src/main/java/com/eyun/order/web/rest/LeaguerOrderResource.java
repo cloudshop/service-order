@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.LeaguerOrderService;
 import com.eyun.order.service.PayService;
 import com.eyun.order.service.UaaService;
+import com.eyun.order.service.UserService;
 import com.eyun.order.service.WalletService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
@@ -57,8 +58,8 @@ public class LeaguerOrderResource {
     @Autowired
     private UaaService uaaService;
     
-    @Autowired
-    private AsyncTask asyncTask;
+	@Autowired
+	private UserService userService;
     
     public LeaguerOrderResource(LeaguerOrderService leaguerOrderService, LeaguerOrderQueryService leaguerOrderQueryService) {
         this.leaguerOrderService = leaguerOrderService;
@@ -169,7 +170,10 @@ public class LeaguerOrderResource {
     @PutMapping("/leaguer-order/pay/notify")
 	public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
-    	asyncTask.notifyUserMicroservice(leaguerOrderDTO.getUserid());
+    	//Future<String> future = asyncTask.notifyUserMicroservice(leaguerOrderDTO.getUserid());
+    	UserDTO userDTO = new UserDTO();
+    	userDTO.setId(leaguerOrderDTO.getId());
+		userService.UpdaeUserStatus(userDTO);
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
     }
     
