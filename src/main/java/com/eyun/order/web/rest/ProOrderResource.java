@@ -169,8 +169,9 @@ public class ProOrderResource {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
     	
-    	proOrderDTO.setcUserid(userDTO.getId());
-           return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
+    	   proOrderDTO.setcUserid(userDTO.getId());
+           
+    	   return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
      }
 
     @ApiOperation(value = "查看代付款1，已完成4，已取消订单5")

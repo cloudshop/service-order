@@ -16,6 +16,7 @@ import com.eyun.order.service.UserService;
 import com.eyun.order.service.dto.MercuryDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
 import com.eyun.order.service.dto.UserDTO;
+import com.eyun.order.web.rest.errors.BadRequestAlertException;
 @Component
 public class OrderUtils {
 	@Autowired
@@ -30,6 +31,10 @@ public class OrderUtils {
 	    	ProOrderBO pbo = new ProOrderBO();
 	    	pbo.setOrderid(proOrder.getId());
 	    	MercuryDTO mercuries = userService.getMercuries(proOrder.getShopId());
+	    	
+	    	if(mercuries == null){
+				throw new BadRequestAlertException("抱歉！无法获取店铺","","");
+	    	}
 	    	pbo.setShopName(mercuries.getName());
 	    	pbo.setStatus(proOrder.getStatus());
 	    	pbo.setOrderString(proOrder.getOrderString());
@@ -45,6 +50,9 @@ public class OrderUtils {
 	    		pItem.setPrice(proOrderItem.getPrice());
 	    		pItem.setPrice(proOrderItem.getPrice());
 	    		ProductSkuDTO sku = proService.getProductSku(proOrderItem.getProductSkuId());
+	    		if(sku == null){
+					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
+	    		}
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);
 			}

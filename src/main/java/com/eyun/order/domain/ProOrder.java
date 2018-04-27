@@ -1,6 +1,9 @@
 package com.eyun.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.swagger.annotations.ApiModelProperty;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -27,6 +30,7 @@ public class ProOrder implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    
     @Column(name = "c_userid")
     private Long cUserid;
 
@@ -44,7 +48,8 @@ public class ProOrder implements Serializable {
 
     @Column(name = "payment_time")
     private Instant paymentTime;
-
+    
+    @ApiModelProperty("运费")
     @Column(name = "post_fee", precision=10, scale=2)
     private BigDecimal postFee;
 

@@ -111,7 +111,13 @@ public class ProOrderServiceImpl implements ProOrderService {
 				// 计算总价
 				totalPrice =  totalPrice.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));
 				// 更改库存,添加让利
-				pro.setTransfer(proService.getProductSku(proOrderItemDTO.getProductSkuId()).getTransfer());
+				ProductSkuDTO productSku = proService.getProductSku(proOrderItemDTO.getProductSkuId());
+				if(productSku == null){
+					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
+				}
+				BigDecimal transfer = productSku.getTransfer();
+				
+				pro.setTransfer(transfer);
 				Integer i = new Integer(0);
 				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
 						proOrderItemDTO.getCount());
@@ -119,10 +125,12 @@ public class ProOrderServiceImpl implements ProOrderService {
 				
 				System.out.println("updateProductSkuCount " + updateProductSkuCount);
 				String message = (String) updateProductSkuCount.get("message");
+				
 				if (message.equals("failed")) {
-					return orderString = "库存不足";
+					throw new BadRequestAlertException("库存不足","","");
 				}
-				ProductSkuDTO pros = proService.getProductSku(proOrderItemDTO.getProductSkuId());
+				
+//				ProductSkuDTO pros = proService.getProductSku(proOrderItemDTO.getProductSkuId());
 				skuAll.add(proOrderItemDTO.getProductSkuId());
 				proOrder.getProOrderItems().add(pro);
 				proOrderItemRepository.saveAndFlush(pro);
@@ -131,6 +139,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			totalPrice = totalPrice.add(proOrder.getPostFee());
 			proOrder.setPayment(totalPrice);
 			proOrder.setDeletedB(false);
+			
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
 			}	
