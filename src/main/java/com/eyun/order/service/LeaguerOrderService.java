@@ -44,4 +44,6 @@ public interface LeaguerOrderService {
     void delete(Long id);
 
 	LeaguerOrderDTO leaguerOrderNotify(PayNotifyDTO payNotifyDTO);
+	
+	void createOrder();
 }
