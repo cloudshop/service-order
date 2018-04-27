@@ -169,9 +169,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 				break;
 			default:
 				break;
-			}
-		proOrderRepository.save(proOrder2);
-		
+			}		
 		return orderString;
 }
     /**

@@ -1,16 +1,27 @@
 package com.eyun.order.service.impl;
 
 import com.eyun.order.service.LeaguerOrderService;
+import com.eyun.order.service.PayService;
+import com.eyun.order.service.UaaService;
+import com.eyun.order.service.WalletService;
 import com.eyun.order.domain.LeaguerOrder;
 import com.eyun.order.domain.ProOrder;
+import com.eyun.order.domain.Wallet;
+import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.repository.LeaguerOrderRepository;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
 import com.eyun.order.service.dto.PayNotifyDTO;
+import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.mapper.LeaguerOrderMapper;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
+import com.eyun.order.web.rest.util.OrderNoUtil;
+
+import java.math.BigDecimal;
+import java.time.Instant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +41,16 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 
     private final LeaguerOrderMapper leaguerOrderMapper;
 
+    @Autowired
+    private WalletService walletService;
+    
+    @Autowired
+    private PayService payService;
+    
+    @Autowired
+    private LeaguerOrderService leaguerOrderService;
+    
+    
     public LeaguerOrderServiceImpl(LeaguerOrderRepository leaguerOrderRepository, LeaguerOrderMapper leaguerOrderMapper) {
         this.leaguerOrderRepository = leaguerOrderRepository;
         this.leaguerOrderMapper = leaguerOrderMapper;
@@ -99,4 +120,44 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 		LeaguerOrder save = leaguerOrderRepository.save(leaguerOrder);
 		return leaguerOrderMapper.toDto(save);
 	}
+
+	@Override
+	public String createOrder(UserDTO userDto ,LeaguerOrderDTO leaguerOrderDTO) {
+		 
+        String orderString = "";
+        //设置订单编号
+        leaguerOrderDTO.setOrderNo(OrderNoUtil.leaGuerNoPre());// 设置订单编号
+        leaguerOrderDTO.setCreatedTime(Instant.now());
+        leaguerOrderDTO.setDeleted(false);
+        leaguerOrderDTO.setUpdatedTime(Instant.now());  
+        leaguerOrderDTO.setUserid(userDto.getId());
+        leaguerOrderDTO.setStatus(1);
+        leaguerOrderDTO.setPayment(new BigDecimal("0.01"));
+        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);   
+        //支付
+        switch (result.getPayType()) {
+		case 1:// 余额支付
+			Wallet userWallet = walletService.getUserWallet();
+			BigDecimal balance = userWallet.getBalance();
+			BigDecimal subtract = balance.subtract(result.getPayment());
+			if (subtract.doubleValue() < 0.00) {
+				result.setDeleted(true);
+				throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
+			} else {
+				orderString = result.getOrderNo();
+			}
+			break;
+		case 2:// 支付宝支付
+			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", result.getOrderNo(), "leaguer", "支付", "30m",
+					result.getPayment().toString());
+			orderString = payService.createAlipayAppOrder(apiPayDTO);
+			break;
+		default:
+			break;
+		} 
+        
+        return orderString;		
+	}
+
+
 }

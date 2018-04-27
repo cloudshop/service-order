@@ -54,12 +54,6 @@ public class LeaguerOrderResource {
     
     @Autowired
     private UaaService uaaService;
-
-    @Autowired
-    private WalletService walletService;
-    
-    @Autowired
-    private PayService payService;
     
     public LeaguerOrderResource(LeaguerOrderService leaguerOrderService, LeaguerOrderQueryService leaguerOrderQueryService) {
         this.leaguerOrderService = leaguerOrderService;
@@ -81,50 +75,14 @@ public class LeaguerOrderResource {
         if (leaguerOrderDTO.getId() != null) {
             throw new BadRequestAlertException("A new leaguerOrder cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        
     	UserDTO userDTO=uaaService.getAccount();
     	if (userDTO==null){
     	    throw new Exception("获取当前登陆用户失败");
     	}
     	
-        
-        
-        String orderString = "";
-        //设置订单编号
-        leaguerOrderDTO.setOrderNo(OrderNoUtil.leaGuerNoPre());// 设置订单编号
-        leaguerOrderDTO.setCreatedTime(Instant.now());
-        leaguerOrderDTO.setDeleted(false);
-        leaguerOrderDTO.setUpdatedTime(Instant.now());  
-        leaguerOrderDTO.setUserid(userDTO.getId());
-        leaguerOrderDTO.setStatus(1);
-        leaguerOrderDTO.setPayment(new BigDecimal(998));
-        
-        
-        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);   
-        //支付
-        switch (result.getPayType()) {
-		case 1:// 余额支付
-			Wallet userWallet = walletService.getUserWallet();
-			BigDecimal balance = userWallet.getBalance();
-			BigDecimal subtract = balance.subtract(result.getPayment());
-			if (subtract.doubleValue() < 0.00) {
-				result.setDeleted(true);
-				throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
-			} else {
-				orderString = result.getOrderNo();
-			}
-			break;
-		case 2:// 支付宝支付
-			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", result.getOrderNo(), "leaguer", "支付", "30m",
-					result.getPayment().toString());
-			orderString = payService.createAlipayAppOrder(apiPayDTO);
-			break;
-		default:
-			break;
-		} 
-        
-        leaguerOrderService.save(result);   
-        return new ResponseEntity<>(orderString,HttpStatus.OK);
+        String createOrder = leaguerOrderService.createOrder(userDTO, leaguerOrderDTO);
+       
+        return new ResponseEntity<>(createOrder,HttpStatus.OK);
     }
 
     /**
@@ -203,7 +161,7 @@ public class LeaguerOrderResource {
      * @param payNotifyDTO
      * @return
      */
-    @PutMapping("/api/leaguer-order/pay/notify")
+    @PutMapping("/leaguer-order/pay/notify")
 	public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);

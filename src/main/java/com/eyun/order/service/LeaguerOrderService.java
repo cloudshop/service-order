@@ -3,6 +3,7 @@ package com.eyun.order.service;
 import com.eyun.order.domain.LeaguerOrder;
 import com.eyun.order.service.dto.LeaguerOrderDTO;
 import com.eyun.order.service.dto.PayNotifyDTO;
+import com.eyun.order.service.dto.UserDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,5 +46,5 @@ public interface LeaguerOrderService {
 
 	LeaguerOrderDTO leaguerOrderNotify(PayNotifyDTO payNotifyDTO);
 	
-	void createOrder();
+	public String createOrder(UserDTO userDto ,LeaguerOrderDTO leaguerOrderDTO);
 }
