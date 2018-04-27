@@ -17,7 +17,7 @@ public interface UserService {
 	@GetMapping("/api/mercuries/{id}")
 	public MercuryDTO getMercuries(@PathVariable("id") Long id);
 	
-	@PostMapping("/user-annexes-UpdaeUserStatus")
+	@PostMapping("/api/user-annexes-UpdaeUserStatus")
     public ResponseEntity UpdaeUserStatus(@RequestBody UserDTO userDTO);
 	
 }
