@@ -91,6 +91,9 @@ public class LeaguerOrderQueryService extends QueryService<LeaguerOrder> {
             if (criteria.getPayment() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getPayment(), LeaguerOrder_.payment));
             }
+            if (criteria.getTicket() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getTicket(), LeaguerOrder_.ticket));
+            }
             if (criteria.getPayType() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getPayType(), LeaguerOrder_.payType));
             }

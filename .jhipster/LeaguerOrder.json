@@ -18,6 +18,10 @@
             "fieldName": "payment",
             "fieldType": "BigDecimal"
         },
+		{
+            "fieldName": "ticket",
+            "fieldType": "BigDecimal"
+        },
         {
             "fieldName": "payType",
             "fieldType": "Integer"

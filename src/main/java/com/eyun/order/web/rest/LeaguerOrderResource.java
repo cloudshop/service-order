@@ -110,7 +110,7 @@ public class LeaguerOrderResource {
 			}
 			break;
 		case 2:// 支付宝支付
-			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", leaguerOrderDTO.getOrderNo(), "product", "支付", "30m",
+			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", leaguerOrderDTO.getOrderNo(), "leaguer", "支付", "30m",
 					leaguerOrderDTO.getPayment().toString());
 			orderString = payService.createAlipayAppOrder(apiPayDTO);
 			break;

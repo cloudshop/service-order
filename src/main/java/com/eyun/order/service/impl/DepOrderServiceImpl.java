@@ -105,7 +105,7 @@ public class DepOrderServiceImpl implements DepOrderService {
     }
 
 	@Override
-	public void depositNotify(String orderNo) throws Exception {
+	public DepOrder depositNotify(String orderNo) throws Exception {
 		DepOrder depOrder = depOrderRepository.findByOrderNoAndStatus(orderNo,1);
 		String queryOrder = payService.queryOrder(orderNo);
 		JSONObject jsonObject = new JSONObject(queryOrder);
@@ -121,14 +121,9 @@ public class DepOrderServiceImpl implements DepOrderService {
 			Date date = sdf.parse(pay_date);
 			depOrder.setPayTime(date.toInstant());
 			depOrder.setStatus(2);
-			depOrderRepository.save(depOrder);
-			//调用钱包服务 添加余额
-			BalanceDTO balanceDTO = new BalanceDTO();
-			balanceDTO.setMoney(depOrder.getPayment());
-			balanceDTO.setOrderNo(depOrder.getOrderNo());
-			balanceDTO.setType(1);//1 充值
-			balanceDTO.setUserid(depOrder.getUserid());
-			Wallet wallet = walletService.updateBalance(balanceDTO);
+			return depOrderRepository.save(depOrder);
+		} else {
+			return null;
 		}
 		
 	}
