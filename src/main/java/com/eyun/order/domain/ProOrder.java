@@ -15,7 +15,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
-
 /**
  * A ProOrder.
  */
@@ -49,7 +48,6 @@ public class ProOrder implements Serializable {
     @Column(name = "payment_time")
     private Instant paymentTime;
     
-    @ApiModelProperty("运费")
     @Column(name = "post_fee", precision=10, scale=2)
     private BigDecimal postFee;
 

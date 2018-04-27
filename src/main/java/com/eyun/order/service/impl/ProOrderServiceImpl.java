@@ -143,7 +143,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
 			}	
-			ProOrder proOrder2 = proOrderRepository.saveAndFlush(proOrder);
+			ProOrder proOrder2 = proOrderRepository.save(proOrder);
 			switch (proOrderDTO.getPaymentType()) {
 			case 1:// 余额支付
 				Wallet userWallet = walletService.getUserWallet();
@@ -170,7 +170,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			default:
 				break;
 			}
-		proOrderRepository.saveAndFlush(proOrder2);
+		proOrderRepository.save(proOrder2);
 		
 		return orderString;
 }

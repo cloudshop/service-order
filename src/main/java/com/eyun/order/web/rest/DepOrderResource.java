@@ -167,7 +167,7 @@ public class DepOrderResource {
     public OrderString createdDepostOrder(@RequestBody DepOrderVO depOrderVO) {
     	OrderString orderString2 = new OrderString();
     	String orderString = "";
-    	String orderNo = OrderNoUtil.getOrderNoUtil();
+    	String orderNo = OrderNoUtil.depositNoPre();
     	switch (depOrderVO.getPayType()) {
 		case 1: //阿里支付
 			AlipayDTO alipay = new AlipayDTO();

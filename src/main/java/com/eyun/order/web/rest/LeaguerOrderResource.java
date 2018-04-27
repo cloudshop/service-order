@@ -91,13 +91,13 @@ public class LeaguerOrderResource {
         
         String orderString = "";
         //设置订单编号
-        leaguerOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
+        leaguerOrderDTO.setOrderNo(OrderNoUtil.leaGuerNoPre());// 设置订单编号
         leaguerOrderDTO.setCreatedTime(Instant.now());
         leaguerOrderDTO.setDeleted(false);
         leaguerOrderDTO.setUpdatedTime(Instant.now());  
         leaguerOrderDTO.setUserid(userDTO.getId());
         leaguerOrderDTO.setStatus(1);
-        leaguerOrderDTO.setPayment(new BigDecimal(998));
+        leaguerOrderDTO.setPayment(new BigDecimal("998"));
         LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);   
         //支付
         switch (leaguerOrderDTO.getPayType()) {
