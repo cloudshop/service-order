@@ -114,8 +114,6 @@ public class ProOrderServiceImpl implements ProOrderService {
 				// 计算总价
 				totalPrice =  totalPrice.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));
 				// 更改库存,添加让利
-				System.out.println("-------------" + proService.getProductSku(proOrderItemDTO.getProductSkuId()).toString());
-				System.out.println("=============" + proService.getProductSku(proOrderItemDTO.getProductSkuId()).getTransfer());
 				pro.setTransfer(proService.getProductSku(proOrderItemDTO.getProductSkuId()).getTransfer());
 				Integer i = new Integer(0);
 				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),

@@ -103,7 +103,8 @@ public class LeaguerOrderResource {
 			BigDecimal balance = userWallet.getBalance();
 			BigDecimal subtract = balance.subtract(leaguerOrderDTO.getPayment());
 			if (subtract.doubleValue() < 0.00) {
-				orderString = "账户余额不足";
+				leaguerOrderDTO.setDeleted(true);
+				throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
 			} else {
 				orderString = leaguerOrderDTO.getOrderNo();
 			}
