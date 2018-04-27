@@ -95,6 +95,7 @@ public class LeaguerOrderResource {
         leaguerOrderDTO.setUpdatedTime(Instant.now());  
         leaguerOrderDTO.setUserid(userDTO.getId());
         leaguerOrderDTO.setStatus(1);
+        leaguerOrderDTO.setPayment(new BigDecimal(998));
         LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);   
         //支付
         switch (leaguerOrderDTO.getPayType()) {
