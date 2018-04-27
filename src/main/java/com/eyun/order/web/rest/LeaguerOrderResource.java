@@ -16,6 +16,7 @@ import com.eyun.order.service.dto.LeaguerOrderCriteria;
 import com.eyun.order.domain.LeaguerOrder;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
+import com.eyun.order.service.AsyncTask;
 import com.eyun.order.service.LeaguerOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +37,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Future;
 
 /**
  * REST controller for managing LeaguerOrder.
@@ -54,6 +56,9 @@ public class LeaguerOrderResource {
     
     @Autowired
     private UaaService uaaService;
+    
+    @Autowired
+    private AsyncTask asyncTask;
     
     public LeaguerOrderResource(LeaguerOrderService leaguerOrderService, LeaguerOrderQueryService leaguerOrderQueryService) {
         this.leaguerOrderService = leaguerOrderService;
@@ -164,6 +169,7 @@ public class LeaguerOrderResource {
     @PutMapping("/leaguer-order/pay/notify")
 	public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
+    	asyncTask.notifyUserMicroservice(leaguerOrderDTO.getUserid());
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
     }
     
