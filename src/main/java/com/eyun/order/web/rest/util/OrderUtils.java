@@ -47,7 +47,6 @@ public class OrderUtils {
 	    		ProductSkuDTO sku = proService.getProductSku(proOrderItem.getProductSkuId());
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);
-	    		System.out.println("ProOrderBo 的所有值 " + pbo.getProOrderItems().size());
 			}
 	    	proVo.add(pbo);
 	    

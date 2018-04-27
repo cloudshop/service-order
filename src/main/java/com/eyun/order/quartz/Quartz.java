@@ -16,11 +16,10 @@ public class Quartz {
      */    
     @Bean(name = "jobDetail")    
     public MethodInvokingJobDetailFactoryBean detailFactoryBean(Schedutask task) {// ScheduleTask为需要执行的任务    
-        MethodInvokingJobDetailFactoryBean jobDetail = new MethodInvokingJobDetailFactoryBean();    
-          
+        MethodInvokingJobDetailFactoryBean jobDetail = new MethodInvokingJobDetailFactoryBean();  
         jobDetail.setConcurrent(false);// 是否并发执行   
-        jobDetail.setName("updateOrder");// 设置任务的名字    
-        jobDetail.setGroup("updateOrderJobGroup");// 设置任务的分组，这些属性都可以存储在数据库中，在多任务的时候使用    
+        jobDetail.setName("execute");// 设置任务的名字    
+        jobDetail.setGroup("executeJobGroup");// 设置任务的分组，这些属性都可以存储在数据库中，在多任务的时候使用    
         /*  
          * 为需要执行的实体类对应的对象  
          */    
@@ -29,7 +28,7 @@ public class Quartz {
          * 添加需要执行的方法  
          * 通过这几个配置，告诉JobDetailFactoryBean我们需要执行定时执行ScheduleTask类中的需要执行方法  
          */   
-        jobDetail.setTargetMethod("updateOrder");    
+        jobDetail.setTargetMethod("execute");    
         return jobDetail;  
     }  
         
@@ -42,7 +41,7 @@ public class Quartz {
         CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();    
         tigger.setJobDetail(jobDetail.getObject());    
         tigger.setCronExpression("0 0/5 * * * ? *");// 初始时的cron表达式  ，每5分钟执行一次  
-        tigger.setName("updateOrderTrigger");// trigger的name  
+        tigger.setName("executeTrigger");// trigger的name  
         return tigger;    
     
     }    

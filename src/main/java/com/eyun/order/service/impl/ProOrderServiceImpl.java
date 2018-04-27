@@ -88,17 +88,14 @@ public class ProOrderServiceImpl implements ProOrderService {
 		String orderString = "";
 		Long orderId = null;
 		List<ProOrderItemDTO> itemList = new ArrayList<>();
-		/*try {	*/
 			BigDecimal totalPrice = new BigDecimal(0);
 			String sbody = "";
 			List skuAll = new ArrayList<Long>();// 统计所有订单的子项
 			proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
-//			proOrderDTO.setStatus(1);// 设置订单状态
 			proOrderDTO.setCreatedTime(Instant.now());// 设置创建时间
 			proOrderDTO.setUpdateTime(Instant.now());// 设置更新时间
 			proOrderDTO.setDeletedB(false);// 初始化删除状态
 			proOrderDTO.setDeletedC(false);
-			
 			Set<ProOrderItemDTO> proOrderItems = proOrderDTO.getProOrderItems();// 获取订单的所有子项
 			ProOrder proOrder = proOrderMapper.toEntity(proOrderDTO);// proOrderDTO转换实体，但是proOrderDTO中的Item并没有转
 			ProOrder save = proOrderRepository.save(proOrder);
@@ -138,7 +135,6 @@ public class ProOrderServiceImpl implements ProOrderService {
 				shoppingCartService.del(skuAll);
 			}	
 			ProOrder proOrder2 = proOrderRepository.saveAndFlush(proOrder);
-			System.out.println("订单id" + orderId);
 			switch (proOrderDTO.getPaymentType()) {
 			case 1:// 余额支付
 				Wallet userWallet = walletService.getUserWallet();
@@ -165,14 +161,6 @@ public class ProOrderServiceImpl implements ProOrderService {
 			default:
 				break;
 			}
-		/*} catch (Exception e) {
-			//出现任何异常 库存返回，并返回页面“订单失败“,1.需要更改订单状态（取消订单）2.商品回库存
-			ProOrder order = proOrderRepository.getOne(orderId);
-			order.setDeletedB(true);
-			proOrderRepository.save(order);
-			
-			orderString = "订单失败" + e;	
-		}*/
 		proOrderRepository.saveAndFlush(proOrder2);
 		
 		return orderString;
@@ -226,7 +214,6 @@ public class ProOrderServiceImpl implements ProOrderService {
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
 			proOrderRepository.save(order);
-			System.out.println("定时调度++++" + order.toString());
 		}
 	}
 
@@ -293,6 +280,19 @@ public class ProOrderServiceImpl implements ProOrderService {
 		proOrder.setStatus(integer);
 		ProOrder save = proOrderRepository.save(proOrder);
 		return true;
+	}
+
+	@Override
+	public void updateStatus() {
+	    List<BigInteger> dispatureStatus = proOrderRepository.updateDispatureStatus();
+		for (BigInteger btId : dispatureStatus) {
+			ProOrder order = proOrderRepository.findOne(btId.longValue());
+			//已收货
+			order.setStatus(4); 
+			order.setDeletedB(true);
+			order.setUpdateTime(Instant.now());
+			proOrderRepository.save(order);
+		}
 	}
 
 

@@ -63,4 +63,6 @@ public interface ProOrderService {
 	List<ProOrderBO> findAllOrder(long l, int page, int size);
 
 	Boolean updateOrderStatus(String string, Integer integer);
+
+	void updateStatus();
 }

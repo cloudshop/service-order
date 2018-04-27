@@ -19,11 +19,11 @@ public class Schedutask {
 		@Autowired
 		private ProOrderService proOrderService;
 		
-	     public void updateOrder(){
-	    	 log.debug("update order quartz start ...");
+	     public void execute(){
 	 
 	    	 proOrderService.updateOrderById();
 	    	 
-	    	log.debug("update orders end ...");
+	    	 proOrderService.updateStatus();
+	    	 
 	     }
 }
