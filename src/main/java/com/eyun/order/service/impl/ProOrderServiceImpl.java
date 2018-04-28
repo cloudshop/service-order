@@ -317,6 +317,12 @@ public class ProOrderServiceImpl implements ProOrderService {
 		proOrderItemRepository.findAllByOrderId(orderId);
 		return proOrderItemRepository.findAllByOrderId(orderId);
 	}
+
+	@Override
+	public List<BigInteger> findOrderItemBySkuId(Long skuId) {
+		return proOrderItemRepository.findOrerItemBySkuId(skuId);
+		
+	}
 	
 	
 

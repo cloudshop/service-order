@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -303,4 +304,9 @@ public class ProOrderResource {
     	return  new ResponseEntity<>(proOrderService.findOrderById(orderId),HttpStatus.OK);
     }
     
+    @ApiOperation("根据skuid，获得订单商品详情")
+    @GetMapping("/findOrderItemByskuid/{skuId}")
+    public ResponseEntity<List<BigInteger>> findOrderItemBySkuId(@PathVariable("skuId") Long skuId){
+    	return new ResponseEntity<>(proOrderService.findOrderItemBySkuId(skuId),HttpStatus.OK);
+    } 
 }

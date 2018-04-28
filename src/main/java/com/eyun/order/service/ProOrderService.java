@@ -5,6 +5,7 @@ import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -73,4 +74,7 @@ public interface ProOrderService {
 	List<ProOrder> findAll();
 
 	List<ProOrderItem> findOrderById(Long orderId);
+
+
+	List<BigInteger> findOrderItemBySkuId(Long skuId);
 	}
