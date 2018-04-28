@@ -285,6 +285,9 @@ public class ProOrderResource {
     	if(status == 0){
     		return new ResponseEntity<>(proOrderService.findAll(),HttpStatus.OK);
     	}else{
+    		
+    		//设置状态列
+    		
     		return  new ResponseEntity<>(proOrderService.findOrderByStatus(status),HttpStatus.OK);
     	}
     }
@@ -292,6 +295,11 @@ public class ProOrderResource {
     @ApiOperation("根据orderid查询订单详情")
     @GetMapping("/manage/findOrderById/{orderId}")
     public ResponseEntity<List<ProOrderItem>>  findOrderById(@PathVariable("orderId") Long orderId){
+    	
+    	if(orderId == null){
+			throw new BadRequestAlertException("该订单号有误", orderId.toString(), ""); 
+
+    	}
     	return  new ResponseEntity<>(proOrderService.findOrderById(orderId),HttpStatus.OK);
     }
     
