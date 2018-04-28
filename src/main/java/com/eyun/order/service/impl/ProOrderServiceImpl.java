@@ -302,5 +302,23 @@ public class ProOrderServiceImpl implements ProOrderService {
 		}
 	}
 
+	@Override
+	public List<ProOrder> findOrderByStatus(Integer status) {
+		return proOrderRepository.findOrderByStatus(status);
+	}
+
+	@Override
+	public List<ProOrder> findAll() {
+		return proOrderRepository.findAll();
+	}
+
+	@Override
+	public List<ProOrderItem> findOrderById(Long orderId) {
+		proOrderItemRepository.findAllByOrderId(orderId);
+		return proOrderItemRepository.findAllByOrderId(orderId);
+	}
+	
+	
+
 
 }

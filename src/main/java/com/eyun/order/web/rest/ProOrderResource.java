@@ -278,4 +278,21 @@ public class ProOrderResource {
 		return new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
     }
     
+    @ApiOperation("后台管理的查询")
+    @GetMapping("/manage/findOrderByStatus/{status}")
+    public ResponseEntity<List<ProOrder>>  findOrderByStatus(@PathVariable("status") Integer status){	
+    	
+    	if(status == 0){
+    		return new ResponseEntity<>(proOrderService.findAll(),HttpStatus.OK);
+    	}else{
+    		return  new ResponseEntity<>(proOrderService.findOrderByStatus(status),HttpStatus.OK);
+    	}
+    }
+    
+    @ApiOperation("根据orderid查询订单详情")
+    @GetMapping("/manage/findOrderById/{orderId}")
+    public ResponseEntity<List<ProOrderItem>>  findOrderById(@PathVariable("orderId") Long orderId){
+    	return  new ResponseEntity<>(proOrderService.findOrderById(orderId),HttpStatus.OK);
+    }
+    
 }

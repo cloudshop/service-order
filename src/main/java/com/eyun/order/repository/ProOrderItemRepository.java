@@ -17,4 +17,7 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface ProOrderItemRepository extends JpaRepository<ProOrderItem, Long>, JpaSpecificationExecutor<ProOrderItem> {
 
+	@Query(value = "SELECT * FROM pro_order_item p WHERE pro_order_id = ?1",nativeQuery = true)
+	List<ProOrderItem> findAllByOrderId(Long orderId);
+
 }

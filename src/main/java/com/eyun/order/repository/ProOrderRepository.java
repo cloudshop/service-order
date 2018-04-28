@@ -39,4 +39,9 @@ public interface ProOrderRepository extends JpaRepository<ProOrder, Long>, JpaSp
 	@Query(value = "SELECT o.id FROM pro_order o WHERE o.status = 3 AND  TIMESTAMPDIFF(SECOND,UPDATE_TIME,NOW()) > 604800 AND deleted_c = FALSE AND deleted_b = FALSE",nativeQuery = true)
 	public List<BigInteger> updateDispatureStatus();
 	
+	@Query(value = "select * from pro_order p where status = ?1",nativeQuery = true)
+	public List<ProOrder> findOrderByStatus(Integer status);
+
+	
+	
 }

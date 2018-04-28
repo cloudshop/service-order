@@ -1,6 +1,7 @@
 package com.eyun.order.service;
 
 import com.eyun.order.domain.ProOrder;
+import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
 
@@ -65,4 +66,11 @@ public interface ProOrderService {
 	Boolean updateOrderStatus(String string, Integer integer);
 
 	void updateStatus();
-}
+
+
+	List<ProOrder> findOrderByStatus(Integer status);
+
+	List<ProOrder> findAll();
+
+	List<ProOrderItem> findOrderById(Long orderId);
+	}
