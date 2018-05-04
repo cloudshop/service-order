@@ -72,6 +72,8 @@ public class ProOrderCriteria implements Serializable {
 
     private StringFilter orderString;
 
+    private BigDecimalFilter transferAmount;
+
     private LongFilter proOrderItemId;
 
     public ProOrderCriteria() {
@@ -261,6 +263,14 @@ public class ProOrderCriteria implements Serializable {
         this.orderString = orderString;
     }
 
+    public BigDecimalFilter getTransferAmount() {
+        return transferAmount;
+    }
+
+    public void setTransferAmount(BigDecimalFilter transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
     public LongFilter getProOrderItemId() {
         return proOrderItemId;
     }
@@ -295,6 +305,7 @@ public class ProOrderCriteria implements Serializable {
                 (shopId != null ? "shopId=" + shopId + ", " : "") +
                 (payNo != null ? "payNo=" + payNo + ", " : "") +
                 (orderString != null ? "orderString=" + orderString + ", " : "") +
+                (transferAmount != null ? "transferAmount=" + transferAmount + ", " : "") +
                 (proOrderItemId != null ? "proOrderItemId=" + proOrderItemId + ", " : "") +
             "}";
     }

@@ -96,6 +96,9 @@ public class ProOrder implements Serializable {
     @Column(name = "order_string")
     private String orderString;
 
+    @Column(name = "transfer_amount", precision=10, scale=2)
+    private BigDecimal transferAmount;
+
     @OneToMany(mappedBy = "proOrder")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -396,6 +399,19 @@ public class ProOrder implements Serializable {
         this.orderString = orderString;
     }
 
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
+    }
+
+    public ProOrder transferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+        return this;
+    }
+
+    public void setTransferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
     public Set<ProOrderItem> getProOrderItems() {
         return proOrderItems;
     }
@@ -468,6 +484,7 @@ public class ProOrder implements Serializable {
             ", shopId=" + getShopId() +
             ", payNo='" + getPayNo() + "'" +
             ", orderString='" + getOrderString() + "'" +
+            ", transferAmount=" + getTransferAmount() +
             "}";
     }
 }

@@ -96,6 +96,10 @@
         {
             "fieldName": "orderString",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "transferAmount",
+            "fieldType": "BigDecimal"
         }
     ],
     "changelogDate": "20180403115228",

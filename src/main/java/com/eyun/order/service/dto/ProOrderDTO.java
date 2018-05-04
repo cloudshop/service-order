@@ -61,6 +61,10 @@ public class ProOrderDTO implements Serializable {
     private String shopName;
 	
 	private String orderString;
+	
+	private BigDecimal transferAmount;
+	
+	private Long shopId;
 
     public String getShopName() {
 		return shopName;
@@ -280,6 +284,14 @@ public class ProOrderDTO implements Serializable {
         this.orderString = orderString;
     }
 
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
+    }
+
+    public void setTransferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -327,6 +339,7 @@ public class ProOrderDTO implements Serializable {
             ", shopId=" + getShopId() +
             ", payNo='" + getPayNo() + "'" +
             ", orderString='" + getOrderString() + "'" +
+            ", transferAmount=" + getTransferAmount() +
             "}";
     }
 }

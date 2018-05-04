@@ -115,6 +115,9 @@ public class ProOrderResourceIntTest {
     private static final String DEFAULT_ORDER_STRING = "AAAAAAAAAA";
     private static final String UPDATED_ORDER_STRING = "BBBBBBBBBB";
 
+    private static final BigDecimal DEFAULT_TRANSFER_AMOUNT = new BigDecimal(1);
+    private static final BigDecimal UPDATED_TRANSFER_AMOUNT = new BigDecimal(2);
+
     @Autowired
     private ProOrderRepository proOrderRepository;
 
@@ -183,7 +186,8 @@ public class ProOrderResourceIntTest {
             .deletedC(DEFAULT_DELETED_C)
             .shopId(DEFAULT_SHOP_ID)
             .payNo(DEFAULT_PAY_NO)
-            .orderString(DEFAULT_ORDER_STRING);
+            .orderString(DEFAULT_ORDER_STRING)
+            .transferAmount(DEFAULT_TRANSFER_AMOUNT);
         return proOrder;
     }
 
@@ -230,6 +234,7 @@ public class ProOrderResourceIntTest {
         assertThat(testProOrder.getShopId()).isEqualTo(DEFAULT_SHOP_ID);
         assertThat(testProOrder.getPayNo()).isEqualTo(DEFAULT_PAY_NO);
         assertThat(testProOrder.getOrderString()).isEqualTo(DEFAULT_ORDER_STRING);
+        assertThat(testProOrder.getTransferAmount()).isEqualTo(DEFAULT_TRANSFER_AMOUNT);
     }
 
     @Test
@@ -284,7 +289,8 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].deletedC").value(hasItem(DEFAULT_DELETED_C.booleanValue())))
             .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())))
             .andExpect(jsonPath("$.[*].payNo").value(hasItem(DEFAULT_PAY_NO.toString())))
-            .andExpect(jsonPath("$.[*].orderString").value(hasItem(DEFAULT_ORDER_STRING.toString())));
+            .andExpect(jsonPath("$.[*].orderString").value(hasItem(DEFAULT_ORDER_STRING.toString())))
+            .andExpect(jsonPath("$.[*].transferAmount").value(hasItem(DEFAULT_TRANSFER_AMOUNT.intValue())));
     }
 
     @Test
@@ -319,7 +325,8 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.deletedC").value(DEFAULT_DELETED_C.booleanValue()))
             .andExpect(jsonPath("$.shopId").value(DEFAULT_SHOP_ID.intValue()))
             .andExpect(jsonPath("$.payNo").value(DEFAULT_PAY_NO.toString()))
-            .andExpect(jsonPath("$.orderString").value(DEFAULT_ORDER_STRING.toString()));
+            .andExpect(jsonPath("$.orderString").value(DEFAULT_ORDER_STRING.toString()))
+            .andExpect(jsonPath("$.transferAmount").value(DEFAULT_TRANSFER_AMOUNT.intValue()));
     }
 
     @Test
@@ -1290,6 +1297,45 @@ public class ProOrderResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllProOrdersByTransferAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where transferAmount equals to DEFAULT_TRANSFER_AMOUNT
+        defaultProOrderShouldBeFound("transferAmount.equals=" + DEFAULT_TRANSFER_AMOUNT);
+
+        // Get all the proOrderList where transferAmount equals to UPDATED_TRANSFER_AMOUNT
+        defaultProOrderShouldNotBeFound("transferAmount.equals=" + UPDATED_TRANSFER_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByTransferAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where transferAmount in DEFAULT_TRANSFER_AMOUNT or UPDATED_TRANSFER_AMOUNT
+        defaultProOrderShouldBeFound("transferAmount.in=" + DEFAULT_TRANSFER_AMOUNT + "," + UPDATED_TRANSFER_AMOUNT);
+
+        // Get all the proOrderList where transferAmount equals to UPDATED_TRANSFER_AMOUNT
+        defaultProOrderShouldNotBeFound("transferAmount.in=" + UPDATED_TRANSFER_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByTransferAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where transferAmount is not null
+        defaultProOrderShouldBeFound("transferAmount.specified=true");
+
+        // Get all the proOrderList where transferAmount is null
+        defaultProOrderShouldNotBeFound("transferAmount.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllProOrdersByProOrderItemIsEqualToSomething() throws Exception {
         // Initialize the database
         ProOrderItem proOrderItem = ProOrderItemResourceIntTest.createEntity(em);
@@ -1335,7 +1381,8 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].deletedC").value(hasItem(DEFAULT_DELETED_C.booleanValue())))
             .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())))
             .andExpect(jsonPath("$.[*].payNo").value(hasItem(DEFAULT_PAY_NO.toString())))
-            .andExpect(jsonPath("$.[*].orderString").value(hasItem(DEFAULT_ORDER_STRING.toString())));
+            .andExpect(jsonPath("$.[*].orderString").value(hasItem(DEFAULT_ORDER_STRING.toString())))
+            .andExpect(jsonPath("$.[*].transferAmount").value(hasItem(DEFAULT_TRANSFER_AMOUNT.intValue())));
     }
 
     /**
@@ -1391,7 +1438,8 @@ public class ProOrderResourceIntTest {
             .deletedC(UPDATED_DELETED_C)
             .shopId(UPDATED_SHOP_ID)
             .payNo(UPDATED_PAY_NO)
-            .orderString(UPDATED_ORDER_STRING);
+            .orderString(UPDATED_ORDER_STRING)
+            .transferAmount(UPDATED_TRANSFER_AMOUNT);
         ProOrderDTO proOrderDTO = proOrderMapper.toDto(updatedProOrder);
 
         restProOrderMockMvc.perform(put("/api/pro-orders")
@@ -1425,6 +1473,7 @@ public class ProOrderResourceIntTest {
         assertThat(testProOrder.getShopId()).isEqualTo(UPDATED_SHOP_ID);
         assertThat(testProOrder.getPayNo()).isEqualTo(UPDATED_PAY_NO);
         assertThat(testProOrder.getOrderString()).isEqualTo(UPDATED_ORDER_STRING);
+        assertThat(testProOrder.getTransferAmount()).isEqualTo(UPDATED_TRANSFER_AMOUNT);
     }
 
     @Test
