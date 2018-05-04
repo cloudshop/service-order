@@ -22,6 +22,8 @@ public class ProOrderDTO implements Serializable {
 
     private String orderNo;
 
+    private BigDecimal price;
+
     private Integer status;
 
     private BigDecimal payment;

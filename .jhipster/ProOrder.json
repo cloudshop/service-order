@@ -18,6 +18,10 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "price",
+            "fieldType": "BigDecimal"
+        },
+        {
             "fieldName": "status",
             "fieldType": "Integer"
         },

@@ -55,6 +55,9 @@ public class ProOrderResourceIntTest {
     private static final String DEFAULT_ORDER_NO = "AAAAAAAAAA";
     private static final String UPDATED_ORDER_NO = "BBBBBBBBBB";
 
+    private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
+    private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
+
     private static final Integer DEFAULT_STATUS = 1;
     private static final Integer UPDATED_STATUS = 2;
 
@@ -167,6 +170,7 @@ public class ProOrderResourceIntTest {
         ProOrder proOrder = new ProOrder()
             .cUserid(DEFAULT_C_USERID)
             .orderNo(DEFAULT_ORDER_NO)
+            .price(DEFAULT_PRICE)
             .status(DEFAULT_STATUS)
             .payment(DEFAULT_PAYMENT)
             .paymentType(DEFAULT_PAYMENT_TYPE)
@@ -214,6 +218,7 @@ public class ProOrderResourceIntTest {
         ProOrder testProOrder = proOrderList.get(proOrderList.size() - 1);
         assertThat(testProOrder.getcUserid()).isEqualTo(DEFAULT_C_USERID);
         assertThat(testProOrder.getOrderNo()).isEqualTo(DEFAULT_ORDER_NO);
+        assertThat(testProOrder.getPrice()).isEqualTo(DEFAULT_PRICE);
         assertThat(testProOrder.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testProOrder.getPayment()).isEqualTo(DEFAULT_PAYMENT);
         assertThat(testProOrder.getPaymentType()).isEqualTo(DEFAULT_PAYMENT_TYPE);
@@ -270,6 +275,7 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(proOrder.getId().intValue())))
             .andExpect(jsonPath("$.[*].cUserid").value(hasItem(DEFAULT_C_USERID.intValue())))
             .andExpect(jsonPath("$.[*].orderNo").value(hasItem(DEFAULT_ORDER_NO.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].payment").value(hasItem(DEFAULT_PAYMENT.intValue())))
             .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE)))
@@ -306,6 +312,7 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.id").value(proOrder.getId().intValue()))
             .andExpect(jsonPath("$.cUserid").value(DEFAULT_C_USERID.intValue()))
             .andExpect(jsonPath("$.orderNo").value(DEFAULT_ORDER_NO.toString()))
+            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
             .andExpect(jsonPath("$.payment").value(DEFAULT_PAYMENT.intValue()))
             .andExpect(jsonPath("$.paymentType").value(DEFAULT_PAYMENT_TYPE))
@@ -432,6 +439,45 @@ public class ProOrderResourceIntTest {
 
         // Get all the proOrderList where orderNo is null
         defaultProOrderShouldNotBeFound("orderNo.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByPriceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where price equals to DEFAULT_PRICE
+        defaultProOrderShouldBeFound("price.equals=" + DEFAULT_PRICE);
+
+        // Get all the proOrderList where price equals to UPDATED_PRICE
+        defaultProOrderShouldNotBeFound("price.equals=" + UPDATED_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByPriceIsInShouldWork() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where price in DEFAULT_PRICE or UPDATED_PRICE
+        defaultProOrderShouldBeFound("price.in=" + DEFAULT_PRICE + "," + UPDATED_PRICE);
+
+        // Get all the proOrderList where price equals to UPDATED_PRICE
+        defaultProOrderShouldNotBeFound("price.in=" + UPDATED_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProOrdersByPriceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        proOrderRepository.saveAndFlush(proOrder);
+
+        // Get all the proOrderList where price is not null
+        defaultProOrderShouldBeFound("price.specified=true");
+
+        // Get all the proOrderList where price is null
+        defaultProOrderShouldNotBeFound("price.specified=false");
     }
 
     @Test
@@ -1362,6 +1408,7 @@ public class ProOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(proOrder.getId().intValue())))
             .andExpect(jsonPath("$.[*].cUserid").value(hasItem(DEFAULT_C_USERID.intValue())))
             .andExpect(jsonPath("$.[*].orderNo").value(hasItem(DEFAULT_ORDER_NO.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].payment").value(hasItem(DEFAULT_PAYMENT.intValue())))
             .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE)))
@@ -1419,6 +1466,7 @@ public class ProOrderResourceIntTest {
         updatedProOrder
             .cUserid(UPDATED_C_USERID)
             .orderNo(UPDATED_ORDER_NO)
+            .price(UPDATED_PRICE)
             .status(UPDATED_STATUS)
             .payment(UPDATED_PAYMENT)
             .paymentType(UPDATED_PAYMENT_TYPE)
@@ -1453,6 +1501,7 @@ public class ProOrderResourceIntTest {
         ProOrder testProOrder = proOrderList.get(proOrderList.size() - 1);
         assertThat(testProOrder.getcUserid()).isEqualTo(UPDATED_C_USERID);
         assertThat(testProOrder.getOrderNo()).isEqualTo(UPDATED_ORDER_NO);
+        assertThat(testProOrder.getPrice()).isEqualTo(UPDATED_PRICE);
         assertThat(testProOrder.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testProOrder.getPayment()).isEqualTo(UPDATED_PAYMENT);
         assertThat(testProOrder.getPaymentType()).isEqualTo(UPDATED_PAYMENT_TYPE);

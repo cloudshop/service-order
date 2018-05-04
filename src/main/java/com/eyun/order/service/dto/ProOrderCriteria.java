@@ -32,6 +32,8 @@ public class ProOrderCriteria implements Serializable {
 
     private StringFilter orderNo;
 
+    private BigDecimalFilter price;
+
     private IntegerFilter status;
 
     private BigDecimalFilter payment;
@@ -101,6 +103,14 @@ public class ProOrderCriteria implements Serializable {
 
     public void setOrderNo(StringFilter orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public BigDecimalFilter getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimalFilter price) {
+        this.price = price;
     }
 
     public IntegerFilter getStatus() {
@@ -285,6 +295,7 @@ public class ProOrderCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (cUserid != null ? "cUserid=" + cUserid + ", " : "") +
                 (orderNo != null ? "orderNo=" + orderNo + ", " : "") +
+                (price != null ? "price=" + price + ", " : "") +
                 (status != null ? "status=" + status + ", " : "") +
                 (payment != null ? "payment=" + payment + ", " : "") +
                 (paymentType != null ? "paymentType=" + paymentType + ", " : "") +

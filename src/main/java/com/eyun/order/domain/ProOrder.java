@@ -36,6 +36,9 @@ public class ProOrder implements Serializable {
     @Column(name = "order_no")
     private String orderNo;
 
+    @Column(name = "price", precision=10, scale=2)
+    private BigDecimal price;
+
     @Column(name = "status")
     private Integer status;
 
@@ -137,6 +140,19 @@ public class ProOrder implements Serializable {
 
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public ProOrder price(BigDecimal price) {
+        this.price = price;
+        return this;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Integer getStatus() {
@@ -464,6 +480,7 @@ public class ProOrder implements Serializable {
             "id=" + getId() +
             ", cUserid=" + getcUserid() +
             ", orderNo='" + getOrderNo() + "'" +
+            ", price=" + getPrice() +
             ", status=" + getStatus() +
             ", payment=" + getPayment() +
             ", paymentType=" + getPaymentType() +
