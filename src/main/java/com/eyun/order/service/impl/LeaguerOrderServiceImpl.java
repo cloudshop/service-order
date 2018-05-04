@@ -43,14 +43,14 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 
     @Autowired
     private WalletService walletService;
-    
+
     @Autowired
     private PayService payService;
-    
+
     @Autowired
     private LeaguerOrderService leaguerOrderService;
-    
-    
+
+
     public LeaguerOrderServiceImpl(LeaguerOrderRepository leaguerOrderRepository, LeaguerOrderMapper leaguerOrderMapper) {
         this.leaguerOrderRepository = leaguerOrderRepository;
         this.leaguerOrderMapper = leaguerOrderMapper;
@@ -123,17 +123,17 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 
 	@Override
 	public String createOrder(UserDTO userDto ,LeaguerOrderDTO leaguerOrderDTO) {
-		 
+
         String orderString = "";
         //设置订单编号
         leaguerOrderDTO.setOrderNo(OrderNoUtil.leaGuerNoPre());// 设置订单编号
         leaguerOrderDTO.setCreatedTime(Instant.now());
         leaguerOrderDTO.setDeleted(false);
-        leaguerOrderDTO.setUpdatedTime(Instant.now());  
+        leaguerOrderDTO.setUpdatedTime(Instant.now());
         leaguerOrderDTO.setUserid(userDto.getId());
         leaguerOrderDTO.setStatus(1);
-        leaguerOrderDTO.setPayment(new BigDecimal("0.01"));
-        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);   
+        leaguerOrderDTO.setPayment(new BigDecimal("998"));
+        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
         //支付
         switch (result.getPayType()) {
 		case 1:// 余额支付
@@ -154,9 +154,9 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 			break;
 		default:
 			break;
-		} 
-        
-        return orderString;		
+		}
+
+        return orderString;
 	}
 
 
