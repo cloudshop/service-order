@@ -57,16 +57,15 @@ public class ProOrderDTO implements Serializable {
     private Boolean deletedB;
 
     private Boolean deletedC;
-	
+
 	private String payNo;
-    
+
     private String shopName;
-	
+
 	private String orderString;
-	
+
 	private BigDecimal transferAmount;
-	
-	private Long shopId;
+
 
     public String getShopName() {
 		return shopName;
@@ -89,15 +88,15 @@ public class ProOrderDTO implements Serializable {
 	}
 
 	private Long shopId;
-    
-    
-    
+
+
+
     private Set<ProOrderItemDTO> proOrderItems = new HashSet<>();
-    
+
     public Set<ProOrderItemDTO> getProOrderItems() {
 		return proOrderItems;
 	}
-    
+
 	public void setProOrderItems(Set<ProOrderItemDTO> proOrderItems) {
 		this.proOrderItems = proOrderItems;
 	}
