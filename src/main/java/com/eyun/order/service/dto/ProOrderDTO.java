@@ -125,7 +125,15 @@ public class ProOrderDTO implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public Integer getStatus() {
+    public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public Integer getStatus() {
         return status;
     }
 

@@ -80,7 +80,8 @@ public class ProOrderServiceImpl implements ProOrderService {
 	/**
 	 * Save a proOrder. 创建总的订单 详情订单
 	 * 1.创建总订单（设置：订单号，用户id，状态，创建时间，更改时间，评价默认值，删除默认值） 2.创建订单详情（设置：创建时间，更改时间,订单id）
-	 * 3.定时器 4.库存 5.购物车 6.支付 订单状态：[1.未支付，2.已付款(未发货)，3.已发货，4.交易成功，5.交易关闭]
+	 * 3.定时器 4.库存 5.购物车 6.支付 订单状态：[1.未支付，2.已付款(未发货)，3.已发货，4.交易成功，5.交易关闭] 7. 计算支付金额，让利额，让利之前的金额
+	 * 
 	 */
 	@Override
 	public String createOrder(ProOrderDTO proOrderDTO, Integer type) {
@@ -88,7 +89,9 @@ public class ProOrderServiceImpl implements ProOrderService {
 		String orderString = "";
 		Long orderId = null;
 		List<ProOrderItemDTO> itemList = new ArrayList<>();
-			BigDecimal totalPrice = new BigDecimal(0);
+			BigDecimal payment = new BigDecimal(0);
+			BigDecimal price = new BigDecimal(0);
+			BigDecimal transfor_amount = new BigDecimal(0);
 			String sbody = "";
 			List skuAll = new ArrayList<Long>();// 统计所有订单的子项
 			proOrderDTO.setOrderNo(OrderNoUtil.getOrderNoUtil());// 设置订单编号
@@ -108,16 +111,16 @@ public class ProOrderServiceImpl implements ProOrderService {
 				pro.setPrice(proOrderItemDTO.getPrice());
 				pro.setProOrder(proOrder);
 				pro.setProductSkuId(proOrderItemDTO.getProductSkuId());
-				// 计算总价
-				totalPrice =  totalPrice.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));
 				// 更改库存,添加让利
 				ProductSkuDTO productSku = proService.getProductSku(proOrderItemDTO.getProductSkuId());
 				if(productSku == null){
 					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
 				}
 				BigDecimal transfer = productSku.getTransfer();
-				
 				pro.setTransfer(transfer);
+				price = price.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));//让利之前的金额
+				
+				transfor_amount = transfor_amount.add((proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())).multiply(transfer)));//计算让利额
 				Integer i = new Integer(0);
 				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
 						proOrderItemDTO.getCount());
@@ -130,25 +133,29 @@ public class ProOrderServiceImpl implements ProOrderService {
 					throw new BadRequestAlertException("库存不足","","");
 				}
 				
-//				ProductSkuDTO pros = proService.getProductSku(proOrderItemDTO.getProductSkuId());
 				skuAll.add(proOrderItemDTO.getProductSkuId());
 				proOrder.getProOrderItems().add(pro);
 				proOrderItemRepository.saveAndFlush(pro);
 			}
-			//计算总价totalPrice
-			totalPrice = totalPrice.add(proOrder.getPostFee());
-			proOrder.setPayment(totalPrice);
+			
+			//计算支付金额
+			proOrder.setTransferAmount(transfor_amount);
+			proOrder.setPrice(price);
+			payment = payment.add(price).subtract(transfor_amount);//计算让利之后的金额
+			payment = payment.add(proOrder.getPostFee());//支付金额 = 总金额 — 让利额  + 运费	
+			proOrder.setPayment(payment);
 			proOrder.setDeletedB(false);
 			
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
-			}	
+			}
+			
 			ProOrder proOrder2 = proOrderRepository.save(proOrder);
 			switch (proOrderDTO.getPaymentType()) {
 			case 1:// 余额支付
 				Wallet userWallet = walletService.getUserWallet();
 				BigDecimal balance = userWallet.getBalance();
-				BigDecimal subtract = balance.subtract(totalPrice);
+				BigDecimal subtract = balance.subtract(payment);
 				if (subtract.doubleValue() < 0.00) {
 					proOrder.setDeletedB(true);
 					throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
@@ -162,7 +169,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 				break;
 			case 2:// 支付宝支付
 				AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", proOrder.getOrderNo(), "product", "支付", "30m",
-						totalPrice.toString());
+						payment.toString());
 				orderString = payService.createAlipayAppOrder(apiPayDTO);
 				proOrder2.setOrderString(orderString);
 				proOrder2.setStatus(1);
