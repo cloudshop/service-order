@@ -119,14 +119,11 @@ public class ProOrderServiceImpl implements ProOrderService {
 				BigDecimal transfer = productSku.getTransfer();
 				pro.setTransfer(transfer);
 				price = price.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));//让利之前的金额
-				
 				transfor_amount = transfor_amount.add((proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())).multiply(transfer)));//计算让利额
 				Integer i = new Integer(0);
 				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
 						proOrderItemDTO.getCount());
 				itemList.add(proOrderItemDTO);
-				
-				System.out.println("updateProductSkuCount " + updateProductSkuCount);
 				String message = (String) updateProductSkuCount.get("message");
 				
 				if (message.equals("failed")) {
@@ -135,7 +132,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 				
 				skuAll.add(proOrderItemDTO.getProductSkuId());
 				proOrder.getProOrderItems().add(pro);
-				proOrderItemRepository.saveAndFlush(pro);
+				proOrderItemRepository.save(pro);
 			}
 			
 			//计算支付金额
