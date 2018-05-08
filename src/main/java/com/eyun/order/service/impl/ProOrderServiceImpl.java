@@ -138,8 +138,9 @@ public class ProOrderServiceImpl implements ProOrderService {
 			//计算支付金额
 			proOrder.setTransferAmount(transfor_amount);
 			proOrder.setPrice(price);
-			payment = payment.add(price).subtract(transfor_amount);//计算让利之后的金额
-			payment = payment.add(proOrder.getPostFee());//支付金额 = 总金额 — 让利额  + 运费	
+//			payment = payment.add(price).subtract(transfor_amount);//计算让利之后的金额
+//			payment = payment.add(proOrder.getPostFee());//支付金额 = 总金额 — 让利额  + 运费	
+			payment = payment.add(proOrder.getPostFee()).add(price);
 			proOrder.setPayment(payment);
 			proOrder.setDeletedB(false);
 			
