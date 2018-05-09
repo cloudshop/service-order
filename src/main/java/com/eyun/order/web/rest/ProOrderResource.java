@@ -261,8 +261,8 @@ public class ProOrderResource {
 		if(orderDTO == null){
 			throw new BadRequestAlertException("该订单号不存在", "", ""); 
 		}
-    	orderDTO.setShipingCode((String) map.get("shipName"));
-    	orderDTO.setShippingName((String) map.get("shipCode"));
+    	orderDTO.setShipingCode((String) map.get("shipCode"));
+    	orderDTO.setShippingName((String) map.get("shipName"));
     	orderDTO.setStatus(3);
     	ProOrderDTO save = proOrderService.save(orderDTO);
     	return new ResponseEntity<>(null,HttpStatus.OK);
@@ -309,4 +309,5 @@ public class ProOrderResource {
     public ResponseEntity<List<BigInteger>> findOrderItemBySkuId(@PathVariable("skuId") Long skuId){
     	return new ResponseEntity<>(proOrderService.findOrderItemBySkuId(skuId),HttpStatus.OK);
     } 
+    
 }

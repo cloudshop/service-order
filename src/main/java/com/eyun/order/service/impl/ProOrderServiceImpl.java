@@ -284,12 +284,16 @@ public class ProOrderServiceImpl implements ProOrderService {
 	}
 
 	@Override
-	public Boolean updateOrderStatus(String string, Integer integer) {
+	public Boolean updateOrderStatus(String string, Integer status) {
 		ProOrder proOrder = proOrderRepository.getOrderByOrderNo(string);
 		if(proOrder == null){
 			throw new BadRequestAlertException("该订单号不存在", "", ""); 
 		}
-		proOrder.setStatus(integer);
+		//确认收货
+		if(status == 4){
+			
+		}
+		proOrder.setStatus(status);
 		ProOrder save = proOrderRepository.save(proOrder);
 		return true;
 	}
