@@ -18,6 +18,7 @@ import com.eyun.order.domain.LeaguerOrder;
 import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.service.AsyncTask;
+import com.eyun.order.service.CommisionService;
 import com.eyun.order.service.LeaguerOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
@@ -63,6 +64,9 @@ public class LeaguerOrderResource {
     
 	@Autowired
 	private PayService payService;
+	
+	@Autowired
+	private CommisionService commissionService;
 	
     public LeaguerOrderResource(LeaguerOrderService leaguerOrderService, LeaguerOrderQueryService leaguerOrderQueryService) {
         this.leaguerOrderService = leaguerOrderService;
@@ -188,11 +192,21 @@ public class LeaguerOrderResource {
      * @version 1.0
      * @param payNotifyDTO
      * @return
+     * @throws Exception 
      */
     @PutMapping("/leaguer-order/pay/notify2")
-    public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify2(@RequestBody PayNotifyDTO payNotifyDTO) {
+    public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify2(@RequestBody PayNotifyDTO payNotifyDTO) throws Exception {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
     	// TODO 添加修改用户身份 服务商
+    	UserDTO userDTO=uaaService.getAccount();
+    	if (userDTO==null){
+    	    throw new Exception("获取当前登陆用户失败");
+    	}
+    	
+    	//更改状态
+    	userService.userAnnexesChangeService(userDTO.getId());
+    	//调用给直接或间接的服务商加钱
+    	commissionService.joinMoney(userDTO.getId());
     	
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
     }

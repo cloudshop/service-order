@@ -340,12 +340,8 @@ public class ProOrderServiceImpl implements ProOrderService {
 			order.setDeletedB(true);
 			return true;
 		} catch (Exception e) {
-			return false;
+			e.printStackTrace();
+			throw new BadRequestAlertException("删除失败","order","delete failed");
 		}
-		
 	}
-	
-	
-
-
 }
