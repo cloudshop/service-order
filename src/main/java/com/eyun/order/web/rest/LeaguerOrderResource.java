@@ -61,6 +61,9 @@ public class LeaguerOrderResource {
 	@Autowired
 	private UserService userService;
     
+	@Autowired
+	private PayService payService;
+	
     public LeaguerOrderResource(LeaguerOrderService leaguerOrderService, LeaguerOrderQueryService leaguerOrderQueryService) {
         this.leaguerOrderService = leaguerOrderService;
         this.leaguerOrderQueryService = leaguerOrderQueryService;
@@ -159,7 +162,7 @@ public class LeaguerOrderResource {
     }
     
     /**
-     * 支付回调
+     * 998支付回调
      * @author 逍遥子
      * @email 756898059@qq.com
      * @date 2018年4月27日
@@ -175,6 +178,70 @@ public class LeaguerOrderResource {
     	userDTO.setId(leaguerOrderDTO.getUserid());
 		userService.UpdaeUserStatus(userDTO);
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
+    }
+    
+    /**
+     * 20000支付回调/服务商
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年4月27日
+     * @version 1.0
+     * @param payNotifyDTO
+     * @return
+     */
+    @PutMapping("/leaguer-order/pay/notify2")
+    public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify2(@RequestBody PayNotifyDTO payNotifyDTO) {
+    	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
+    	// TODO 添加修改用户身份 服务商
+    	
+    	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
+    }
+    
+    /**
+     * 创建服务商订单
+     * @author 逍遥子
+     * @email 756898059@qq.com
+     * @date 2018年5月10日
+     * @version 1.0
+     * @param loDTO
+     * @return
+     */
+    @ApiOperation("创建服务商订单")
+    @PostMapping("/leaguer-order/serviceProvider")
+    public ResponseEntity<String> createServiceProviderOrder(@RequestBody LeaguerOrderDTO loDTO) {
+    	UserDTO user = uaaService.getAccount();
+    	 //设置订单编号
+    	LeaguerOrderDTO leaguerOrderDTO = new LeaguerOrderDTO();
+        leaguerOrderDTO.setOrderNo(OrderNoUtil.leaGuerNoPre());// 设置订单编号
+        leaguerOrderDTO.setCreatedTime(Instant.now());
+        leaguerOrderDTO.setDeleted(false);
+        leaguerOrderDTO.setUpdatedTime(Instant.now());
+        leaguerOrderDTO.setUserid(user.getId());
+        leaguerOrderDTO.setStatus(1);
+        leaguerOrderDTO.setPayment(new BigDecimal("20000.00"));
+        leaguerOrderDTO.setPayType(loDTO.getPayType());
+        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
+        //支付
+        switch (result.getPayType()) {
+//		case 1:// 余额支付
+//			Wallet userWallet = walletService.getUserWallet();
+//			BigDecimal balance = userWallet.getBalance();
+//			BigDecimal subtract = balance.subtract(result.getPayment());
+//			if (subtract.doubleValue() < 0.00) {
+//				result.setDeleted(true);
+//				throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
+//			} else {
+//				orderString = result.getOrderNo();
+//			}
+//			break;
+		case 2:// 支付宝支付
+			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", result.getOrderNo(), "leaguer2", "支付", "30m",
+					result.getPayment().toString());
+			String orderString = payService.createAlipayAppOrder(apiPayDTO);
+			return new ResponseEntity<String>(orderString, HttpStatus.OK);
+		default:
+			throw new BadRequestAlertException("信息有误", "err", "err");
+		}
     }
     
 }
