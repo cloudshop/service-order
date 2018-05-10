@@ -9,6 +9,7 @@ import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
+import com.eyun.order.service.dto.ShipDTO;
 import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.impl.ProOrderServiceImpl;
 import com.eyun.order.service.dto.PayNotifyDTO;
@@ -255,14 +256,14 @@ public class ProOrderResource {
      */
     @ApiOperation(value = "填物流单号，物流名称,更改订单为已发货状态")
     @PostMapping("/updateOrderByShip")
-    public ResponseEntity<Void>  updateOrderByShip(@RequestBody Map map ){
+    public ResponseEntity<Void>  updateOrderByShip(@RequestBody ShipDTO shipDTO ){
     	
-		ProOrderDTO orderDTO =  proOrderService.findOrderByOrderNo((String) map.get("orderNo"));
+		ProOrderDTO orderDTO =  proOrderService.findOrderByOrderNo(shipDTO.getOrderNo());
 		if(orderDTO == null){
 			throw new BadRequestAlertException("该订单号不存在", "", ""); 
 		}
-    	orderDTO.setShipingCode((String) map.get("shipCode"));
-    	orderDTO.setShippingName((String) map.get("shipName"));
+    	orderDTO.setShipingCode(shipDTO.getShipingCode());
+    	orderDTO.setShippingName(shipDTO.getShippingName());
     	orderDTO.setStatus(3);
     	ProOrderDTO save = proOrderService.save(orderDTO);
     	return new ResponseEntity<>(null,HttpStatus.OK);
@@ -308,6 +309,7 @@ public class ProOrderResource {
     @GetMapping("/findOrderItemByskuid/{skuId}")
     public ResponseEntity<List<BigInteger>> findOrderItemBySkuId(@PathVariable("skuId") Long skuId){
     	return new ResponseEntity<>(proOrderService.findOrderItemBySkuId(skuId),HttpStatus.OK);
-    } 
+    }
+    
     
 }
