@@ -262,6 +262,7 @@ public class ProOrderResource {
 		if(orderDTO == null){
 			throw new BadRequestAlertException("该订单号不存在", "", ""); 
 		}
+		System.out.println("######################################" + shipDTO.getShipingCode() + "****" + shipDTO.getShippingName());
     	orderDTO.setShipingCode(shipDTO.getShipingCode());
     	orderDTO.setShippingName(shipDTO.getShippingName());
     	orderDTO.setStatus(3);
