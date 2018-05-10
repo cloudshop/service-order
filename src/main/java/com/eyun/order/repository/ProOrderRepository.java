@@ -42,6 +42,4 @@ public interface ProOrderRepository extends JpaRepository<ProOrder, Long>, JpaSp
 	@Query(value = "select * from pro_order p where status = ?1",nativeQuery = true)
 	public List<ProOrder> findOrderByStatus(Integer status);
 
-	
-	
 }
