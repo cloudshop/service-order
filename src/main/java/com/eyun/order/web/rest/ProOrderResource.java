@@ -312,5 +312,11 @@ public class ProOrderResource {
     	return new ResponseEntity<>(proOrderService.findOrderItemBySkuId(skuId),HttpStatus.OK);
     }
     
+    @ApiOperation("后台管理，根据orderNo逻辑删除订单")
+    @GetMapping("/manage/deleteOrder/{orderId}")
+    public ResponseEntity<Boolean> deleteOrder(@PathVariable("orderId") Long orderId){
+		return new ResponseEntity<>( proOrderService.proOrderDelete(orderId),HttpStatus.OK);
+    }
+    
     
 }

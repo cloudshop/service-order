@@ -332,6 +332,18 @@ public class ProOrderServiceImpl implements ProOrderService {
 		return proOrderItemRepository.findOrerItemBySkuId(skuId);
 		
 	}
+
+	@Override
+	public Boolean proOrderDelete(Long orderId) {
+		try {
+			ProOrder order = proOrderRepository.findOne(orderId);
+			order.setDeletedB(true);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		
+	}
 	
 	
 

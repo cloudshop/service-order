@@ -77,4 +77,7 @@ public interface ProOrderService {
 
 
 	List<BigInteger> findOrderItemBySkuId(Long skuId);
+
+
+	Boolean proOrderDelete(Long orderId);
 	}
