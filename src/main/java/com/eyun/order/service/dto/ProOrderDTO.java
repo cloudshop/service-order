@@ -65,6 +65,7 @@ public class ProOrderDTO implements Serializable {
 	private String orderString;
 
 	private BigDecimal transferAmount;
+		
 
 
     public String getShopName() {

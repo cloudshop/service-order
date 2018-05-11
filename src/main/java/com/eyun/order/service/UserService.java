@@ -1,5 +1,7 @@
 package com.eyun.order.service;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +24,9 @@ public interface UserService {
 	
 	@GetMapping("/api/user-annexes-changeService/{id}")
 	public void userAnnexesChangeService(@PathVariable("id") Long id);
-
 	
+
+    @GetMapping("/api/mercuries/getUserIdMercuryId")
+    public Map findUserMercuryId();	
 }
 

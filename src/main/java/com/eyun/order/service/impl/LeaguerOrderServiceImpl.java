@@ -47,9 +47,6 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
     @Autowired
     private PayService payService;
 
-    @Autowired
-    private LeaguerOrderService leaguerOrderService;
-
 
     public LeaguerOrderServiceImpl(LeaguerOrderRepository leaguerOrderRepository, LeaguerOrderMapper leaguerOrderMapper) {
         this.leaguerOrderRepository = leaguerOrderRepository;
@@ -133,29 +130,28 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
         leaguerOrderDTO.setUserid(userDto.getId());
         leaguerOrderDTO.setStatus(1);
         leaguerOrderDTO.setPayment(new BigDecimal("998"));
-        LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
         //支付
-        switch (result.getPayType()) {
+        switch (leaguerOrderDTO.getPayType()) {
 		case 1:// 余额支付
 			Wallet userWallet = walletService.getUserWallet();
 			BigDecimal balance = userWallet.getBalance();
-			BigDecimal subtract = balance.subtract(result.getPayment());
+			BigDecimal subtract = balance.subtract(leaguerOrderDTO.getPayment());
 			if (subtract.doubleValue() < 0.00) {
-				result.setDeleted(true);
+				leaguerOrderDTO.setDeleted(true);
 				throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
 			} else {
-				orderString = result.getOrderNo();
+				orderString = leaguerOrderDTO.getOrderNo();
 			}
 			break;
 		case 2:// 支付宝支付
-			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", result.getOrderNo(), "leaguer", "支付", "30m",
-					result.getPayment().toString());
+			AlipayDTO apiPayDTO = new AlipayDTO("贡融积分商城", leaguerOrderDTO.getOrderNo(), "leaguer", "支付", "30m",
+					leaguerOrderDTO.getPayment().toString());
 			orderString = payService.createAlipayAppOrder(apiPayDTO);
 			break;
 		default:
 			break;
 		}
-
+        leaguerOrderRepository.save(leaguerOrderMapper.toEntity(leaguerOrderDTO));
         return orderString;
 	}
 

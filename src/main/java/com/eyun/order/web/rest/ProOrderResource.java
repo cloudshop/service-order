@@ -3,6 +3,7 @@ package com.eyun.order.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.ProOrderService;
 import com.eyun.order.service.UaaService;
+import com.eyun.order.service.UserService;
 import com.eyun.order.service.WalletService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
@@ -72,6 +73,9 @@ public class ProOrderResource {
     
     @Autowired
     private WalletService walletService;
+    
+    @Autowired
+    private UserService userService;
 
     public ProOrderResource(ProOrderService proOrderService, ProOrderQueryService proOrderQueryService) {
         this.proOrderService = proOrderService;
@@ -288,11 +292,12 @@ public class ProOrderResource {
 		return new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
     }
 
-    @ApiOperation("分页查询后台订单")
+    @ApiOperation("分页查询订单")
     @PostMapping("/manage/findOrderByStatus")
     public ResponseEntity<OrderDateDTO> findOrderByStatus(@RequestBody PageOrder pageOrder){    
 		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
 		UserDTO user;
+		Page<ProOrderDTO> findByCriteria;
 		try {
 			user = uaaService.getAccount();
 			if(user == null){
@@ -300,8 +305,7 @@ public class ProOrderResource {
 			}
 		} catch (Exception e) {
             throw new BadRequestAlertException("用户服务异常", "userService", "userService down!");
-		}
-    	
+		}    	
 		OrderDateDTO list = new OrderDateDTO();
 		//userId条件
 		LongFilter longFilter = new LongFilter();
@@ -319,20 +323,52 @@ public class ProOrderResource {
 		criteria.setDeletedB(booleanFilterB);
 		criteria.setDeletedC(booleanFilterC);
 		if(pageOrder.getStatus() == 0){			
-			Page<ProOrderDTO> findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
-	    	list.setProOrderAmount(findByCriteria.getTotalElements());
-	    	list.setProOrder(findByCriteria.getContent());
-			return new ResponseEntity<>(list,HttpStatus.OK);
+			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
 		}else{
 			criteria.setStatus(integerFilter);
-			Page<ProOrderDTO> findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
-	    	list.setProOrderAmount(findByCriteria.getTotalElements());
-	    	list.setProOrder(findByCriteria.getContent());
-			return new ResponseEntity<>(list,HttpStatus.OK);
-
+			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
 		}
+		
+		list.setProOrderAmount(findByCriteria.getTotalElements());
+    	list.setProOrder(findByCriteria.getContent());
+		return new ResponseEntity<>(list,HttpStatus.OK);
     }
     
+    
+    
+    @ApiOperation("后台管理分页查询商家订单")
+    @PostMapping("/manage/findMercuOrderByStatus")
+    public ResponseEntity<OrderDateDTO> findMercuOrderByStatus(@RequestBody PageOrder pageOrder){    
+		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
+		
+		Page<ProOrderDTO> findByCriteria;	
+		Map findUserMercuryId = userService.findUserMercuryId();
+		OrderDateDTO list = new OrderDateDTO();
+		//userId条件
+		LongFilter longFilter = new LongFilter();
+		longFilter.setEquals(Long.valueOf(String.valueOf(findUserMercuryId.get("id"))));
+		//status
+		IntegerFilter integerFilter = new IntegerFilter();
+		integerFilter.setEquals(pageOrder.getStatus());
+		//deleted
+		BooleanFilter booleanFilterB = new BooleanFilter();
+		booleanFilterB.setEquals(false);		
+		BooleanFilter booleanFilterC = new BooleanFilter();
+		booleanFilterC.setEquals(false);		
+		ProOrderCriteria criteria = new ProOrderCriteria();
+		criteria.setShopId(longFilter);
+		criteria.setDeletedB(booleanFilterB);
+		criteria.setDeletedC(booleanFilterC);
+		if(pageOrder.getStatus() == 0){			
+			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
+		}else{
+			criteria.setStatus(integerFilter);
+			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
+		}
+		list.setProOrderAmount(findByCriteria.getTotalElements());
+    	list.setProOrder(findByCriteria.getContent());
+		return new ResponseEntity<>(list,HttpStatus.OK);
+    }
     
     
     @ApiOperation("根据orderid查询订单详情")
