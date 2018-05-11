@@ -78,6 +78,9 @@ public class ProOrderResource {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CommisionService commissionService;
+    
     public ProOrderResource(ProOrderService proOrderService, ProOrderQueryService proOrderQueryService) {
         this.proOrderService = proOrderService;
         this.proOrderQueryService = proOrderQueryService;
@@ -290,7 +293,9 @@ public class ProOrderResource {
     @ApiOperation("更改订单状态")
     @PostMapping("/updateOrderStatus")
     public ResponseEntity<Boolean> updateOrderStatus(@RequestBody Map map) throws Exception{
-		return new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
+		ResponseEntity<Boolean> resp = new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
+		commissionService.orderSettlement((String)map.get("orderNo"));
+		return resp;
     }
 
     @ApiOperation("分页查询订单")
