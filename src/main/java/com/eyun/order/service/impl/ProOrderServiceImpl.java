@@ -1,5 +1,6 @@
 package com.eyun.order.service.impl;
 
+import com.eyun.order.service.CommisionService;
 import com.eyun.order.service.PayService;
 import com.eyun.order.service.ProOrderBO;
 import com.eyun.order.service.ProOrderService;
@@ -78,6 +79,9 @@ public class ProOrderServiceImpl implements ProOrderService {
     
     @Autowired
     private WalletService walletService;
+    
+    @Autowired
+    private CommisionService commissionService;
     
     @Autowired
     private OrderUtils orderUtils;
@@ -282,6 +286,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 		proOrder.setStatus(2);
 		proOrder.setPayNo(payNotifyDTO.getPayNo());
 		ProOrder save = proOrderRepository.save(proOrder);
+		commissionService.handleFacilitatorWallet(proOrder.getShopId(), proOrder.getPayment(), proOrder.getOrderNo());	
 		return proOrderMapper.toDto(save);
 	}
 
