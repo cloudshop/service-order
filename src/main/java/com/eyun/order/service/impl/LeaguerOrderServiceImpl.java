@@ -154,6 +154,4 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
         leaguerOrderRepository.save(leaguerOrderMapper.toEntity(leaguerOrderDTO));
         return orderString;
 	}
-
-
 }
