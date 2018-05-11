@@ -305,7 +305,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 		}
 		//确认收货
 		if(status == 4){
-			
+			commissionService.orderSettlement(proOrder.getOrderNo());
 		}
 		proOrder.setStatus(status);
 		ProOrder save = proOrderRepository.save(proOrder);
