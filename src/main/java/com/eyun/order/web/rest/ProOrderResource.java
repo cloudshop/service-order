@@ -12,6 +12,8 @@ import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ShipDTO;
 import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.impl.ProOrderServiceImpl;
+import com.eyun.order.service.dto.OrderDateDTO;
+import com.eyun.order.service.dto.PageOrder;
 import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.PayOrderDTO;
 import com.eyun.order.service.dto.ProOrderCriteria;
@@ -19,6 +21,11 @@ import com.eyun.order.domain.ProOrder;
 import com.eyun.order.domain.ProOrderItem;
 import com.eyun.order.service.ProOrderBO;
 import com.eyun.order.service.ProOrderQueryService;
+
+import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LongFilter;
+import io.github.jhipster.service.filter.StringFilter;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 
@@ -26,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -210,12 +219,11 @@ public class ProOrderResource {
     @GetMapping("/findAllOrder/{page}/{size}")
     public ResponseEntity<List<ProOrderBO>> findAllOrder(@PathVariable int page,@PathVariable int size) throws Exception{		
     	UserDTO userDTO;
-  	  try {
+  	    try {
   		 userDTO=uaaService.getAccount();	
 			  } catch (Exception e) {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
-    	
     	List<ProOrderBO> pros = proOrderService.findAllOrder(userDTO.getId(),page,size); 
     	return new ResponseEntity<>(pros,HttpStatus.OK);	
     }
@@ -262,7 +270,6 @@ public class ProOrderResource {
 		if(orderDTO == null){
 			throw new BadRequestAlertException("该订单号不存在", "", ""); 
 		}
-		System.out.println("######################################" + shipDTO.getShipingCode() + "****" + shipDTO.getShippingName());
     	orderDTO.setShipingCode(shipDTO.getShipingCode());
     	orderDTO.setShippingName(shipDTO.getShippingName());
     	orderDTO.setStatus(3);
@@ -280,20 +287,53 @@ public class ProOrderResource {
     public ResponseEntity<Boolean> updateOrderStatus(@RequestBody Map map) throws Exception{
 		return new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
     }
-    
-    @ApiOperation("后台管理的查询")
-    @GetMapping("/manage/findOrderByStatus/{status}")
-    public ResponseEntity<List<ProOrder>>  findOrderByStatus(@PathVariable("status") Integer status){	
+
+    @ApiOperation("分页查询后台订单")
+    @PostMapping("/manage/findOrderByStatus")
+    public ResponseEntity<OrderDateDTO> findOrderByStatus(@RequestBody PageOrder pageOrder){    
+		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
+		UserDTO user;
+		try {
+			user = uaaService.getAccount();
+			if(user == null){
+				throw new BadRequestAlertException("用户不存在", "userId doesn't exits", "");
+			}
+		} catch (Exception e) {
+            throw new BadRequestAlertException("用户服务异常", "userService", "userService down!");
+		}
     	
-    	if(status == 0){
-    		return new ResponseEntity<>(proOrderService.findAll(),HttpStatus.OK);
-    	}else{
-    		
-    		//设置状态列
-    		
-    		return  new ResponseEntity<>(proOrderService.findOrderByStatus(status),HttpStatus.OK);
-    	}
+		OrderDateDTO list = new OrderDateDTO();
+		//userId条件
+		LongFilter longFilter = new LongFilter();
+		longFilter.setEquals(user.getId());
+		//status
+		IntegerFilter integerFilter = new IntegerFilter();
+		integerFilter.setEquals(pageOrder.getStatus());
+		//deleted
+		BooleanFilter booleanFilterB = new BooleanFilter();
+		booleanFilterB.setEquals(false);		
+		BooleanFilter booleanFilterC = new BooleanFilter();
+		booleanFilterC.setEquals(false);		
+		ProOrderCriteria criteria = new ProOrderCriteria();
+		criteria.setcUserid(longFilter);
+		criteria.setDeletedB(booleanFilterB);
+		criteria.setDeletedC(booleanFilterC);
+		if(pageOrder.getStatus() == 0){			
+			Page<ProOrderDTO> findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
+	    	list.setProOrderAmount(findByCriteria.getTotalElements());
+	    	list.setProOrder(findByCriteria.getContent());
+			return new ResponseEntity<>(list,HttpStatus.OK);
+		}else{
+			criteria.setStatus(integerFilter);
+			Page<ProOrderDTO> findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
+	    	list.setProOrderAmount(findByCriteria.getTotalElements());
+	    	list.setProOrder(findByCriteria.getContent());
+			return new ResponseEntity<>(list,HttpStatus.OK);
+
+		}
     }
+    
+    
     
     @ApiOperation("根据orderid查询订单详情")
     @GetMapping("/manage/findOrderById/{orderId}")
