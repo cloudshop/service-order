@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="autoIncrement" value="true"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity ProOrder.
+    -->
+    <changeSet id="20180403115228-1" author="jhipster">
+        <createTable tableName="pro_order">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="c_userid" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="order_no" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="price" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="status" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="payment" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="payment_type" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="payment_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="post_fee" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="consign_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="end_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="close_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="shipping_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="shiping_code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="buyer_message" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="buyer_nick" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="buyer_rate" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="created_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="update_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="deleted_b" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="deleted_c" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="shop_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="pay_no" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="order_string" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="transfer_amount" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+        <dropDefaultValue tableName="pro_order" columnName="payment_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="pro_order" columnName="consign_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="pro_order" columnName="end_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="pro_order" columnName="close_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="pro_order" columnName="created_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="pro_order" columnName="update_time" columnDataType="datetime"/>
+        
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>
