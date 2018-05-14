@@ -12,14 +12,14 @@ import com.eyun.order.client.AuthorizedFeignClient;
 
 @AuthorizedFeignClient(name="commission")
 public interface CommisionService {
-	
-	
+
+
 	@GetMapping("/api/serviceProvider/{userId}")
 	public void joinMoney(@PathVariable("userId") Long userId);
-	
+
 	@GetMapping("/order/facilitator/wallet")
 	public ResponseEntity handleFacilitatorWallet(@RequestParam("shopId") Long shopId, @RequestParam("payment")BigDecimal payment,@RequestParam("orderNo")String orderNo);
-	
-	@PostMapping("/order/settlement/{orderNo}")
+
+	@GetMapping("/order/settlement/{orderNo}")
 	public void orderSettlement(@PathVariable("orderNo") String orderNo);
 }

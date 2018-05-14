@@ -68,19 +68,19 @@ public class ProOrderResource {
     private final ProOrderService proOrderService;
 
     private final ProOrderQueryService proOrderQueryService;
-    
+
     @Autowired
     private UaaService uaaService;
-    
+
     @Autowired
     private WalletService walletService;
-    
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private CommisionService commissionService;
-    
+
     public ProOrderResource(ProOrderService proOrderService, ProOrderQueryService proOrderQueryService) {
         this.proOrderService = proOrderService;
         this.proOrderQueryService = proOrderQueryService;
@@ -175,68 +175,68 @@ public class ProOrderResource {
      * 提交商家proOrder信息
      * @param list
      * @return
-     * @throws Exception 
-     */ 
-    
+     * @throws Exception
+     */
+
     @ApiOperation(value = "商品直接购买(待付款购买)type:0，购物车购买type:1,")
     @PostMapping("/depproorders/{type}")
     public ResponseEntity<String> depproorders(@RequestBody ProOrderDTO proOrderDTO,@PathVariable Integer type) throws Exception{
     	UserDTO userDTO;
     	  try {
-    		 userDTO=uaaService.getAccount();	
+    		 userDTO=uaaService.getAccount();
 			  } catch (Exception e) {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
-    	
+
     	   proOrderDTO.setcUserid(userDTO.getId());
-           
-    	   return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);	    		    	
+
+    	   return new ResponseEntity<>(proOrderService.createOrder(proOrderDTO,type),HttpStatus.OK);
      }
 
     @ApiOperation(value = "查看代付款1，已完成4，已取消订单5")
     @GetMapping("/findAllItemsByStatus/{status}/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size) throws Exception{		
+    public ResponseEntity<List<ProOrderBO>> findOrderByStatuAndUserid(@PathVariable int status,@PathVariable int page,@PathVariable int size) throws Exception{
     	UserDTO userDTO;
   	  try {
-  		 userDTO=uaaService.getAccount();	
+  		 userDTO=uaaService.getAccount();
 			  } catch (Exception e) {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
-  	
-    	
-    	List<ProOrderBO>  pros= proOrderService.findOrderByStatuAndUserid(userDTO.getId(),status,page,size);  	
-    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+
+
+    	List<ProOrderBO>  pros= proOrderService.findOrderByStatuAndUserid(userDTO.getId(),status,page,size);
+    	return new ResponseEntity<>(pros,HttpStatus.OK);
     }
-    
+
     @ApiOperation(value = "查看待收货订单(status:2,3)")
     @GetMapping("/findDispatchItems/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findDispatchItems(@PathVariable int page,@PathVariable int size) throws Exception{		
-    	
+    public ResponseEntity<List<ProOrderBO>> findDispatchItems(@PathVariable int page,@PathVariable int size) throws Exception{
+
     	UserDTO userDTO;
   	  try {
-  		 userDTO=uaaService.getAccount();	
+  		 userDTO=uaaService.getAccount();
 			  } catch (Exception e) {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
-  	
-    	List<ProOrderBO> pros = proOrderService.findDispatchItems(userDTO.getId(),page,size); 
-    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+
+    	List<ProOrderBO> pros = proOrderService.findDispatchItems(userDTO.getId(),page,size);
+    	return new ResponseEntity<>(pros,HttpStatus.OK);
     }
-    
+
     @ApiOperation(value = "查看全部订单")
     @GetMapping("/findAllOrder/{page}/{size}")
-    public ResponseEntity<List<ProOrderBO>> findAllOrder(@PathVariable int page,@PathVariable int size) throws Exception{		
+    public ResponseEntity<List<ProOrderBO>> findAllOrder(@PathVariable int page,@PathVariable int size) throws Exception{
     	UserDTO userDTO;
   	    try {
-  		 userDTO=uaaService.getAccount();	
+  		 userDTO=uaaService.getAccount();
 			  } catch (Exception e) {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
-    	List<ProOrderBO> pros = proOrderService.findAllOrder(userDTO.getId(),page,size); 
-    	return new ResponseEntity<>(pros,HttpStatus.OK);	
+    	List<ProOrderBO> pros = proOrderService.findAllOrder(userDTO.getId(),page,size);
+    	return new ResponseEntity<>(pros,HttpStatus.OK);
     }
-   
-   
+
+
     /**
      * 支付通知回调修改订单状态
      * @author 逍遥子
@@ -250,7 +250,7 @@ public class ProOrderResource {
     	ProOrderDTO proOrderDTO = proOrderService.proOrderNotify(payNotifyDTO);
     	return new ResponseEntity<ProOrderDTO>(proOrderDTO, HttpStatus.OK);
     }
-    
+
     /**
      * 根据OrderNo查询订单
      * @author 逍遥子
@@ -258,7 +258,7 @@ public class ProOrderResource {
      * @date 2018年4月19日
      * @version 1.0
      * @param orderNo
-     * @return 
+     * @return
      * @return
      */
     @GetMapping("/findOrderByOrderNo/{orderNo}")
@@ -266,17 +266,17 @@ public class ProOrderResource {
     	ProOrderDTO proOrderDTO = proOrderService.findOrderByOrderNo(orderNo);
     	return ResponseUtil.wrapOrNotFound(Optional.ofNullable(proOrderDTO));
     }
-    
+
     /**
      * 已发货 根据orderNo来存物流名称 物流单号
      */
     @ApiOperation(value = "填物流单号，物流名称,更改订单为已发货状态")
     @PostMapping("/updateOrderByShip")
     public ResponseEntity<Void>  updateOrderByShip(@RequestBody ShipDTO shipDTO ){
-    	
+
 		ProOrderDTO orderDTO =  proOrderService.findOrderByOrderNo(shipDTO.getOrderNo());
 		if(orderDTO == null){
-			throw new BadRequestAlertException("该订单号不存在", "", ""); 
+			throw new BadRequestAlertException("该订单号不存在", "", "");
 		}
     	orderDTO.setShipingCode(shipDTO.getShipingCode());
     	orderDTO.setShippingName(shipDTO.getShippingName());
@@ -284,23 +284,25 @@ public class ProOrderResource {
     	ProOrderDTO save = proOrderService.save(orderDTO);
     	return new ResponseEntity<>(null,HttpStatus.OK);
     }
-    
+
     /**
      * 更改订单状态接口
      * @param orderNo,status
-     * @throws Exception 
+     * @throws Exception
      */
     @ApiOperation("更改订单状态")
     @PostMapping("/updateOrderStatus")
     public ResponseEntity<Boolean> updateOrderStatus(@RequestBody Map map) throws Exception{
 		ResponseEntity<Boolean> resp = new ResponseEntity<>(proOrderService.updateOrderStatus((String)map.get("orderNo"),(Integer)map.get("status")),HttpStatus.OK);
 		commissionService.orderSettlement((String)map.get("orderNo"));
-		return resp;
+		//确认收货
+        //	commissionService.handleFacilitatorWallet(proOrder.getShopId(), proOrder.getPayment(), proOrder.getOrderNo());
+        return resp;
     }
 
     @ApiOperation("分页查询订单")
     @PostMapping("/manage/findOrderByStatus")
-    public ResponseEntity<OrderDateDTO> findOrderByStatus(@RequestBody PageOrder pageOrder){    
+    public ResponseEntity<OrderDateDTO> findOrderByStatus(@RequestBody PageOrder pageOrder){
 		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
 		UserDTO user;
 		Page<ProOrderDTO> findByCriteria;
@@ -311,7 +313,7 @@ public class ProOrderResource {
 			}
 		} catch (Exception e) {
             throw new BadRequestAlertException("用户服务异常", "userService", "userService down!");
-		}    	
+		}
 		OrderDateDTO list = new OrderDateDTO();
 		//userId条件
 		LongFilter longFilter = new LongFilter();
@@ -321,33 +323,33 @@ public class ProOrderResource {
 		integerFilter.setEquals(pageOrder.getStatus());
 		//deleted
 		BooleanFilter booleanFilterB = new BooleanFilter();
-		booleanFilterB.setEquals(false);		
+		booleanFilterB.setEquals(false);
 		BooleanFilter booleanFilterC = new BooleanFilter();
-		booleanFilterC.setEquals(false);		
+		booleanFilterC.setEquals(false);
 		ProOrderCriteria criteria = new ProOrderCriteria();
 		criteria.setcUserid(longFilter);
 		criteria.setDeletedB(booleanFilterB);
 		criteria.setDeletedC(booleanFilterC);
-		if(pageOrder.getStatus() == 0){			
+		if(pageOrder.getStatus() == 0){
 			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
 		}else{
 			criteria.setStatus(integerFilter);
 			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
 		}
-		
+
 		list.setProOrderAmount(findByCriteria.getTotalElements());
     	list.setProOrder(findByCriteria.getContent());
 		return new ResponseEntity<>(list,HttpStatus.OK);
     }
-    
-    
-    
+
+
+
     @ApiOperation("后台管理分页查询商家订单")
     @PostMapping("/manage/findMercuOrderByStatus")
-    public ResponseEntity<OrderDateDTO> findMercuOrderByStatus(@RequestBody PageOrder pageOrder){    
+    public ResponseEntity<OrderDateDTO> findMercuOrderByStatus(@RequestBody PageOrder pageOrder){
 		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
-		
-		Page<ProOrderDTO> findByCriteria;	
+
+		Page<ProOrderDTO> findByCriteria;
 //		Map findUserMercuryId = userService.findUserMercuryId();
 		OrderDateDTO list = new OrderDateDTO();
 		//userId条件
@@ -358,14 +360,14 @@ public class ProOrderResource {
 		integerFilter.setEquals(pageOrder.getStatus());
 		//deleted
 		BooleanFilter booleanFilterB = new BooleanFilter();
-		booleanFilterB.setEquals(false);		
+		booleanFilterB.setEquals(false);
 		BooleanFilter booleanFilterC = new BooleanFilter();
-		booleanFilterC.setEquals(false);		
+		booleanFilterC.setEquals(false);
 		ProOrderCriteria criteria = new ProOrderCriteria();
 //		criteria.setShopId(longFilter);
 		criteria.setDeletedB(booleanFilterB);
 		criteria.setDeletedC(booleanFilterC);
-		if(pageOrder.getStatus() == 0){			
+		if(pageOrder.getStatus() == 0){
 			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
 		}else{
 			criteria.setStatus(integerFilter);
@@ -375,30 +377,30 @@ public class ProOrderResource {
     	list.setProOrder(findByCriteria.getContent());
 		return new ResponseEntity<>(list,HttpStatus.OK);
     }
-    
-    
+
+
     @ApiOperation("根据orderid查询订单详情")
     @GetMapping("/manage/findOrderById/{orderId}")
     public ResponseEntity<List<ProOrderItem>>  findOrderById(@PathVariable("orderId") Long orderId){
-    	
+
     	if(orderId == null){
-			throw new BadRequestAlertException("该订单号有误", orderId.toString(), ""); 
+			throw new BadRequestAlertException("该订单号有误", orderId.toString(), "");
 
     	}
     	return  new ResponseEntity<>(proOrderService.findOrderById(orderId),HttpStatus.OK);
     }
-    
+
     @ApiOperation("根据skuid，获得订单商品详情")
     @GetMapping("/findOrderItemByskuid/{skuId}")
     public ResponseEntity<List<BigInteger>> findOrderItemBySkuId(@PathVariable("skuId") Long skuId){
     	return new ResponseEntity<>(proOrderService.findOrderItemBySkuId(skuId),HttpStatus.OK);
     }
-    
+
     @ApiOperation("后台管理，根据orderNo逻辑删除订单")
     @GetMapping("/manage/deleteOrder/{orderId}")
     public ResponseEntity<Boolean> deleteOrder(@PathVariable("orderId") Long orderId){
 		return new ResponseEntity<>( proOrderService.proOrderDelete(orderId),HttpStatus.OK);
     }
-    
-    
+
+
 }

@@ -56,33 +56,33 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProOrderServiceImpl implements ProOrderService {
-	
+
 
     private final Logger log = LoggerFactory.getLogger(ProOrderServiceImpl.class);
 
     private final ProOrderRepository proOrderRepository;
-    
+
     @Autowired
     private ProOrderItemServiceImpl proOrderItemServiceImpl;
-    
+
     private final ProOrderMapper proOrderMapper;
     @Autowired
     private ProService proService;
     @Autowired
     private PayService payService;
-    
+
     @Autowired
     private ShoppingCartService shoppingCartService;
 
     @Autowired
     private ProOrderItemRepository proOrderItemRepository;
-    
+
     @Autowired
     private WalletService walletService;
-    
+
     @Autowired
     private CommisionService commissionService;
-    
+
     @Autowired
     private OrderUtils orderUtils;
     public ProOrderServiceImpl(ProOrderRepository proOrderRepository, ProOrderMapper proOrderMapper) {
@@ -94,11 +94,11 @@ public class ProOrderServiceImpl implements ProOrderService {
 	 * Save a proOrder. 创建总的订单 详情订单
 	 * 1.创建总订单（设置：订单号，用户id，状态，创建时间，更改时间，评价默认值，删除默认值） 2.创建订单详情（设置：创建时间，更改时间,订单id）
 	 * 3.定时器 4.库存 5.购物车 6.支付 订单状态：[1.未支付，2.已付款(未发货)，3.已发货，4.交易成功，5.交易关闭] 7. 计算支付金额，让利额，让利之前的金额
-	 * 
+	 *
 	 */
 	@Override
 	public String createOrder(ProOrderDTO proOrderDTO, Integer type) {
-		
+
 		String orderString = "";
 		Long orderId = null;
 		List<ProOrderItemDTO> itemList = new ArrayList<>();
@@ -138,29 +138,29 @@ public class ProOrderServiceImpl implements ProOrderService {
 						proOrderItemDTO.getCount());
 				itemList.add(proOrderItemDTO);
 				String message = (String) updateProductSkuCount.get("message");
-				
+
 				if (message.equals("failed")) {
 					throw new BadRequestAlertException("库存不足","","");
 				}
-				
+
 				skuAll.add(proOrderItemDTO.getProductSkuId());
 				proOrder.getProOrderItems().add(pro);
 				proOrderItemRepository.save(pro);
 			}
-			
+
 			//计算支付金额
 			proOrder.setTransferAmount(transfor_amount);
 			proOrder.setPrice(price);
 //			payment = payment.add(price).subtract(transfor_amount);//计算让利之后的金额
-//			payment = payment.add(proOrder.getPostFee());//支付金额 = 总金额 — 让利额  + 运费	
+//			payment = payment.add(proOrder.getPostFee());//支付金额 = 总金额 — 让利额  + 运费
 			payment = payment.add(proOrder.getPostFee()).add(price);
 			proOrder.setPayment(payment);
 			proOrder.setDeletedB(false);
-			
+
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
 			}
-			
+
 			ProOrder proOrder2 = proOrderRepository.save(proOrder);
 			switch (proOrderDTO.getPaymentType()) {
 			case 1:// 余额支付
@@ -187,7 +187,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 				break;
 			default:
 				break;
-			}		
+			}
 		return orderString;
 }
     /**
@@ -253,10 +253,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 	public List<ProOrderBO> getProOrderItemsByUser(int i, int page, int size) {
 		int key = (page-1)*size;
 		List<ProOrder> allProOrderByUser = proOrderRepository.getOrderByUserId(1l,key,size);
-		List<ProOrderBO> showOrder = orderUtils.showOrder(allProOrderByUser);	
+		List<ProOrderBO> showOrder = orderUtils.showOrder(allProOrderByUser);
 		return showOrder;
 	}
-	
+
 	@Override
 	public List<ProOrderBO> findOrderByStatuAndUserid(Long userId, Integer status,Integer page,Integer size) {
 		List<ProOrder> orders = proOrderRepository.findOrderByStatuAndUserid(userId,status,(page-1)*size,size);
@@ -286,7 +286,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 		proOrder.setStatus(2);
 		proOrder.setPayNo(payNotifyDTO.getPayNo());
 		ProOrder save = proOrderRepository.save(proOrder);
-		commissionService.handleFacilitatorWallet(proOrder.getShopId(), proOrder.getPayment(), proOrder.getOrderNo());	
+	//	commissionService.handleFacilitatorWallet(proOrder.getShopId(), proOrder.getPayment(), proOrder.getOrderNo());
 		return proOrderMapper.toDto(save);
 	}
 
@@ -301,11 +301,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 	public Boolean updateOrderStatus(String string, Integer status) {
 		ProOrder proOrder = proOrderRepository.getOrderByOrderNo(string);
 		if(proOrder == null){
-			throw new BadRequestAlertException("该订单号不存在", "", ""); 
+			throw new BadRequestAlertException("该订单号不存在", "", "");
 		}
 		//确认收货
 		if(status == 4){
-			
 		}
 		proOrder.setStatus(status);
 		ProOrder save = proOrderRepository.save(proOrder);
@@ -318,7 +317,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 		for (BigInteger btId : dispatureStatus) {
 			ProOrder order = proOrderRepository.findOne(btId.longValue());
 			//已收货
-			order.setStatus(4); 
+			order.setStatus(4);
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
 			proOrderRepository.save(order);
@@ -344,7 +343,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 	@Override
 	public List<BigInteger> findOrderItemBySkuId(Long skuId) {
 		return proOrderItemRepository.findOrerItemBySkuId(skuId);
-		
+
 	}
 
 	@Override
