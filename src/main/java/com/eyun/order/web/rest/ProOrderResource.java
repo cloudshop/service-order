@@ -401,6 +401,25 @@ public class ProOrderResource {
     public ResponseEntity<Boolean> deleteOrder(@PathVariable("orderId") Long orderId){
 		return new ResponseEntity<>( proOrderService.proOrderDelete(orderId),HttpStatus.OK);
     }
+    
+    @ApiOperation("确认收货")
+    @GetMapping("/ConfirmPro/{orderNo}")
+    public ResponseEntity<Boolean> ConfiremPro(@PathVariable("orderNo") String orderNo){
+    try {
+        //确认收货，更改订单状态
+        proOrderService.updateOrderStatus(orderNo,4);
+        //订单，商家分佣
+        ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
+    	commissionService.orderSettlement(orderNo);
+    	//确认收货
+        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());
+	} catch (Exception e) {
+		throw new BadRequestAlertException("服务出现异常", "", "");
+	}
+
+	return new ResponseEntity<>(true,HttpStatus.OK);
+    }
+        
 
 
 }
