@@ -30,8 +30,12 @@ public class OrderUtils {
 	    for (ProOrder proOrder : allProOrderByUser) {
 	    	ProOrderBO pbo = new ProOrderBO();
 	    	pbo.setOrderid(proOrder.getId());
-	    	MercuryDTO mercuries = userService.getMercuries(proOrder.getShopId());
-	    	
+	    	MercuryDTO mercuries = null;
+	    	try {
+		    	mercuries = userService.getMercuries(proOrder.getShopId());
+			} catch (Exception e) {
+				continue;
+			}
 	    	if(mercuries == null){
 				throw new BadRequestAlertException("抱歉！无法获取店铺","","");
 	    	}

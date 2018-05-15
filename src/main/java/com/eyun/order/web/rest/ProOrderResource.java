@@ -350,11 +350,11 @@ public class ProOrderResource {
 		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
 
 		Page<ProOrderDTO> findByCriteria;
-//		Map findUserMercuryId = userService.findUserMercuryId();
+		Map findUserMercuryId = userService.findUserMercuryId();
 		OrderDateDTO list = new OrderDateDTO();
 		//userId条件
-//		LongFilter longFilter = new LongFilter();
-//		longFilter.setEquals(Long.valueOf(String.valueOf(findUserMercuryId.get("id"))));
+		LongFilter longFilter = new LongFilter();
+		longFilter.setEquals(Long.valueOf(String.valueOf(findUserMercuryId.get("id"))));
 		//status
 		IntegerFilter integerFilter = new IntegerFilter();
 		integerFilter.setEquals(pageOrder.getStatus());
@@ -364,7 +364,7 @@ public class ProOrderResource {
 		BooleanFilter booleanFilterC = new BooleanFilter();
 		booleanFilterC.setEquals(false);
 		ProOrderCriteria criteria = new ProOrderCriteria();
-//		criteria.setShopId(longFilter);
+		criteria.setShopId(longFilter);
 		criteria.setDeletedB(booleanFilterB);
 		criteria.setDeletedC(booleanFilterC);
 		if(pageOrder.getStatus() == 0){
