@@ -66,8 +66,10 @@ public class ProOrderServiceImpl implements ProOrderService {
     private ProOrderItemServiceImpl proOrderItemServiceImpl;
 
     private final ProOrderMapper proOrderMapper;
+    
     @Autowired
     private ProService proService;
+   
     @Autowired
     private PayService payService;
 
@@ -299,15 +301,13 @@ public class ProOrderServiceImpl implements ProOrderService {
 
 	@Override
 	public Boolean updateOrderStatus(String string, Integer status) {
-		ProOrder proOrder = proOrderRepository.getOrderByOrderNo(string);
+		ProOrder proOrder = proOrderRepository.findOrderByOrderNo(string);
 		if(proOrder == null){
 			throw new BadRequestAlertException("该订单号不存在", "", "");
 		}
 		//确认收货
-		if(status == 4){
-		}
 		proOrder.setStatus(status);
-		ProOrder save = proOrderRepository.save(proOrder);
+		proOrderRepository.save(proOrder);
 		return true;
 	}
 
