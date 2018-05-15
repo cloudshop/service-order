@@ -347,12 +347,11 @@ public class ProOrderResource {
     @ApiOperation("后台管理分页查询商家订单")
     @PostMapping("/manage/findMercuOrderByStatus")
     public ResponseEntity<OrderDateDTO> findMercuOrderByStatus(@RequestBody PageOrder pageOrder){
-		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
-
+		Pageable pageable = new PageRequest(pageOrder.getPage()-1,pageOrder.getSize());
 		Page<ProOrderDTO> findByCriteria;
 		Map findUserMercuryId = userService.findUserMercuryId();
 		OrderDateDTO list = new OrderDateDTO();
-		//userId条件
+		//shopId条件
 		LongFilter longFilter = new LongFilter();
 		longFilter.setEquals(Long.valueOf(String.valueOf(findUserMercuryId.get("id"))));
 		//status
@@ -411,14 +410,14 @@ public class ProOrderResource {
         //订单，商家分佣
         ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
     	commissionService.orderSettlement(orderNo);
-    	//确认收货
         commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());
 	} catch (Exception e) {
 		throw new BadRequestAlertException("服务出现异常", "", "");
 	}
-
 	return new ResponseEntity<>(true,HttpStatus.OK);
     }
+    
+    
         
 
 
