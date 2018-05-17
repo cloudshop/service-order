@@ -409,13 +409,13 @@ public class ProOrderResource {
         proOrderService.updateOrderStatus(orderNo,4);
         //订单，商家分佣
         ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
-//    	commissionService.orderSettlement(orderNo);
-//        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());
+        //邀请人加积分
+    	commissionService.orderSettlement(orderNo);
+    	//给服务商加钱
+        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());
         } catch (Exception e) {
 		throw new BadRequestAlertException("服务出现异常", "", "");
 	}
 	return new ResponseEntity<>(true,HttpStatus.OK);
     }
-
-    
 }

@@ -120,6 +120,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			orderId = save.getId();
 			for (ProOrderItemDTO proOrderItemDTO : proOrderItems) {
 				ProOrderItem pro = new ProOrderItem();
+				Map updateProductSkuCount = null;
 				pro.setCount(proOrderItemDTO.getCount());
 				pro.setCreatedTime(Instant.now());
 				pro.setUpdatedTime(Instant.now());
@@ -136,8 +137,14 @@ public class ProOrderServiceImpl implements ProOrderService {
 				price = price.add(proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())));//让利之前的金额
 				transfor_amount = transfor_amount.add((proOrderItemDTO.getPrice().multiply(new BigDecimal(proOrderItemDTO.getCount())).multiply(transfer)));//计算让利额
 				Integer i = new Integer(0);
-				Map updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
-						proOrderItemDTO.getCount());
+				try {
+					        updateProductSkuCount = proService.updateProductSkuCount(i, proOrderItemDTO.getProductSkuId(),
+							proOrderItemDTO.getCount());
+					        System.out.println(updateProductSkuCount.toString());
+				} catch (Exception e) {
+							throw new BadRequestAlertException("更改库存失败", "productSkuCount failed", "");
+				}
+				
 				itemList.add(proOrderItemDTO);
 				String message = (String) updateProductSkuCount.get("message");
 
@@ -320,6 +327,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 			order.setStatus(4);
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
+			//邀请人加积分
+	    	commissionService.orderSettlement(order.getOrderNo());
+	    	//给服务商加钱
+	        commissionService.handleFacilitatorWallet(order.getShopId(), order.getPayment(), order.getOrderNo());
 			proOrderRepository.save(order);
 		}
 	}
