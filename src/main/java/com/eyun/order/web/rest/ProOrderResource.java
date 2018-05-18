@@ -404,18 +404,16 @@ public class ProOrderResource {
     @ApiOperation("确认收货")
     @GetMapping("/ConfirmPro/{orderNo}")
     public ResponseEntity<Boolean> ConfiremPro(@PathVariable("orderNo") String orderNo){
-    try {
+  
         //确认收货，更改订单状态
         proOrderService.updateOrderStatus(orderNo,4);
         //订单，商家分佣
-       /* ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
+        ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
         //给用户加钱
     	commissionService.orderSettlement(orderNo);
     	//给服务商加钱
-        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());*/
-        } catch (Exception e) {
-		throw new BadRequestAlertException("服务出现异常", "", "");
-	}
+        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());
+	
 	return new ResponseEntity<>(true,HttpStatus.OK);
     }
 }
