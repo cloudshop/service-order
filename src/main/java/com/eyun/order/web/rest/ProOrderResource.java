@@ -407,12 +407,12 @@ public class ProOrderResource {
   
         //确认收货，更改订单状态
         proOrderService.updateOrderStatus(orderNo,4);
-        //订单，商家分佣
+/*      //订单，商家分佣
         ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
         //给用户加钱
     	commissionService.orderSettlement(orderNo);
     	//给服务商加钱
-        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());
+        commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo());*/
 	    return new ResponseEntity<>(true,HttpStatus.OK);
     }
 }

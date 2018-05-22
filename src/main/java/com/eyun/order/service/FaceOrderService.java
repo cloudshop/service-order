@@ -1,6 +1,8 @@
 package com.eyun.order.service;
 
 import com.eyun.order.service.dto.FaceOrderDTO;
+import com.eyun.order.service.dto.PayNotifyDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +41,8 @@ public interface FaceOrderService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+	String createOrder(FaceOrderDTO faceOrderDTO);
+
+	FaceOrderDTO faceOrderNotify(PayNotifyDTO payNotifyDTO);
 }

@@ -13,4 +13,6 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface FaceOrderRepository extends JpaRepository<FaceOrder, Long>, JpaSpecificationExecutor<FaceOrder> {
 
+	public FaceOrder findOrderByOrderNo(String orderNo);
+
 }

@@ -2,15 +2,23 @@ package com.eyun.order.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.FaceOrderService;
+import com.eyun.order.service.UaaService;
+import com.eyun.order.service.UserService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.FaceOrderDTO;
+import com.eyun.order.service.dto.PayNotifyDTO;
+import com.eyun.order.service.dto.ProOrderDTO;
+import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.dto.FaceOrderCriteria;
 import com.eyun.order.service.FaceOrderQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +46,12 @@ public class FaceOrderResource {
     private final FaceOrderService faceOrderService;
 
     private final FaceOrderQueryService faceOrderQueryService;
+    
+    @Autowired
+    private UaaService uaaService;
+    
+    @Autowired
+    private UserService userService;
 
     public FaceOrderResource(FaceOrderService faceOrderService, FaceOrderQueryService faceOrderQueryService) {
         this.faceOrderService = faceOrderService;
@@ -129,4 +143,26 @@ public class FaceOrderResource {
         faceOrderService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    @ApiOperation("线下支付接口")
+    @PostMapping("/face_orders/createOrder")
+    @Timed
+    public ResponseEntity<String> faceTransOrder(@RequestBody FaceOrderDTO faceOrderDTO){
+    	UserDTO userDTO;
+  	    try {
+  		 userDTO=uaaService.getAccount();
+			  } catch (Exception e) {
+				  throw new BadRequestAlertException("获取当前用户失败", "", "");
+			 }
+
+  	  faceOrderDTO.setBuserId(userDTO.getId());
+
+  	   return new ResponseEntity<>(faceOrderService.createOrder(faceOrderDTO),HttpStatus.OK);
+    }
+    
+    @PutMapping("/face-order/pay/notify")
+   	public ResponseEntity<FaceOrderDTO> faceOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
+       	FaceOrderDTO faceOrderDTO = faceOrderService.faceOrderNotify(payNotifyDTO);
+       	return new ResponseEntity<FaceOrderDTO>(faceOrderDTO, HttpStatus.OK);
+       }
 }
