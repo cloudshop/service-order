@@ -170,6 +170,13 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		}
 		faceOrder.setStatus(2);
 		FaceOrder save = faceOrderRepository.save(faceOrder);
+		System.out.println("---------------------------==========================");
 		return faceOrderMapper.toDto(save);
+	}
+
+	@Override
+	public FaceOrderDTO findFaceOrderByOrderNo(String orderNo) {
+		FaceOrder findOrderByOrderNo = faceOrderRepository.findOrderByOrderNo(orderNo);
+		return faceOrderMapper.toDto(findOrderByOrderNo);
 	}
 }

@@ -45,4 +45,6 @@ public interface FaceOrderService {
 	String createOrder(FaceOrderDTO faceOrderDTO);
 
 	FaceOrderDTO faceOrderNotify(PayNotifyDTO payNotifyDTO);
+
+	FaceOrderDTO findFaceOrderByOrderNo(String orderNo);
 }

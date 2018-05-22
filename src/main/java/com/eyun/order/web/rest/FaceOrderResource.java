@@ -164,4 +164,9 @@ public class FaceOrderResource {
        	FaceOrderDTO faceOrderDTO = faceOrderService.faceOrderNotify(payNotifyDTO);
        	return new ResponseEntity<FaceOrderDTO>(faceOrderDTO, HttpStatus.OK);
        }
+    @ApiOperation("根据FaceOrderNO查找订单")
+    @GetMapping("/face-order/findFaceOrderByOrderNo/{orderNo}")
+    public ResponseEntity<FaceOrderDTO> findFaceOrderByOrderNo(@PathVariable String orderNo){
+    	FaceOrderDTO faceOrder = faceOrderService.findFaceOrderByOrderNo(orderNo);
+    	return new ResponseEntity<FaceOrderDTO>(faceOrder, HttpStatus.OK);    }
 }
