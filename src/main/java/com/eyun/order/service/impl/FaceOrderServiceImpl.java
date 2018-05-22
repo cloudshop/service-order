@@ -165,12 +165,13 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 	@Override
 	public FaceOrderDTO faceOrderNotify(PayNotifyDTO payNotifyDTO) {
 		FaceOrder faceOrder = faceOrderRepository.findOrderByOrderNo(payNotifyDTO.getOrderNo());
+		System.out.println("faceOrder++++++++++++++++++++++++++++++++++++" + faceOrder.toString());
+		System.out.println("payNotifyDTO==============" + payNotifyDTO.toString());
 		if(faceOrder.getStatus()!= 1){
 			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
 		}
 		faceOrder.setStatus(2);
 		FaceOrder save = faceOrderRepository.save(faceOrder);
-		System.out.println("---------------------------==========================");
 		return faceOrderMapper.toDto(save);
 	}
 

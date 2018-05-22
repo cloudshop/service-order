@@ -159,14 +159,27 @@ public class FaceOrderResource {
   	   return new ResponseEntity<>(faceOrderService.createOrder(faceOrderDTO),HttpStatus.OK);
     }
     
+    @ApiOperation("支付宝回调")
     @PutMapping("/face-order/pay/notify")
    	public ResponseEntity<FaceOrderDTO> faceOrderNotify(@RequestBody PayNotifyDTO payNotifyDTO) {
        	FaceOrderDTO faceOrderDTO = faceOrderService.faceOrderNotify(payNotifyDTO);
        	return new ResponseEntity<FaceOrderDTO>(faceOrderDTO, HttpStatus.OK);
        }
+    
     @ApiOperation("根据FaceOrderNO查找订单")
     @GetMapping("/face-order/findFaceOrderByOrderNo/{orderNo}")
     public ResponseEntity<FaceOrderDTO> findFaceOrderByOrderNo(@PathVariable String orderNo){
     	FaceOrderDTO faceOrder = faceOrderService.findFaceOrderByOrderNo(orderNo);
     	return new ResponseEntity<FaceOrderDTO>(faceOrder, HttpStatus.OK);    }
+    
+    @ApiOperation("更改faceOrder状态")
+    @GetMapping("/face-order/upstateOrderStatus/{orderNo}")
+    public ResponseEntity<FaceOrderDTO> upstatesOrderStatus(@PathVariable String orderNo){
+    	FaceOrderDTO findFaceOrderByOrderNo = faceOrderService.findFaceOrderByOrderNo(orderNo);
+    	findFaceOrderByOrderNo.setStatus(2);
+    	FaceOrderDTO save = faceOrderService.save(findFaceOrderByOrderNo);
+		return new ResponseEntity<FaceOrderDTO>(save,HttpStatus.OK);
+    }
+    
+    
 }

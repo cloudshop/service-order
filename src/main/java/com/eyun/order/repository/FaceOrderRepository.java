@@ -1,6 +1,8 @@
 package com.eyun.order.repository;
 
 import com.eyun.order.domain.FaceOrder;
+import com.eyun.order.domain.ProOrder;
+
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
