@@ -154,9 +154,8 @@ public class FaceOrderResource {
 			  } catch (Exception e) {
 				  throw new BadRequestAlertException("获取当前用户失败", "", "");
 			 }
-
-  	  faceOrderDTO.setBuserId(userDTO.getId());
-
+  	   //设置客户id
+  	   faceOrderDTO.setCuserId(userDTO.getId());
   	   return new ResponseEntity<>(faceOrderService.createOrder(faceOrderDTO),HttpStatus.OK);
     }
     
