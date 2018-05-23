@@ -165,7 +165,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			payment = payment.add(proOrder.getPostFee()).add(price);
 			proOrder.setPayment(payment);
 			proOrder.setDeletedB(false);
-
+			proOrder.setStatus(1);
 			if (type == 0) {
 				shoppingCartService.del(skuAll);
 			}
@@ -192,8 +192,12 @@ public class ProOrderServiceImpl implements ProOrderService {
 						payment.toString());
 				orderString = payService.createAlipayAppOrder(apiPayDTO);
 				proOrder2.setOrderString(orderString);
-				proOrder2.setStatus(1);
 				break;
+			case 3:
+				BigDecimal payment1 = proOrder2.getPayment();
+				BigDecimal multiply = payment1.multiply(new BigDecimal("100"));
+				orderString = payService.prePay(proOrder2.getOrderNo(), multiply.toString(), "product");
+				proOrder2.setOrderString(orderString);
 			default:
 				break;
 			}
@@ -318,8 +322,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 /*		 //给用户加钱
     	commissionService.orderSettlement(save.getOrderNo());
     	//给服务商加钱
-        commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo());*/
-        
+        commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo());*/ 
 		return true;
 	}
 

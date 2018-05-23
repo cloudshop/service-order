@@ -148,6 +148,10 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 					leaguerOrderDTO.getPayment().toString());
 			orderString = payService.createAlipayAppOrder(apiPayDTO);
 			break;
+		case 3:
+			BigDecimal payment = leaguerOrderDTO.getPayment();
+			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
+			orderString = payService.prePay(leaguerOrderDTO.getOrderNo(), multiply.toString(), "leaguer");
 		default:
 			break;
 		}

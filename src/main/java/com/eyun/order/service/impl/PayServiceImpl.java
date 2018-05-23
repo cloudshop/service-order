@@ -20,4 +20,10 @@ public class PayServiceImpl implements PayService{
 		return null;
 	}
 
+	@Override
+	public String prePay(String out_trade_no, String total_fee, String attach) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

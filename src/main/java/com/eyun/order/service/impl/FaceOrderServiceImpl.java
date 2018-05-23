@@ -154,7 +154,10 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 			orderString = payService.createAlipayAppOrder(apiPayDTO);
 			break;
 		case 5://微信
-			//TODO 调用微信支付接口
+			BigDecimal payment = faceOrderDTO.getPayment();
+			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
+			orderString = payService.prePay(faceOrderDTO.getOrderNo(), multiply.toString(), "faceTrans");
+			break;
 		default:
 			break;
 		}

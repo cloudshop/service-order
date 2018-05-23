@@ -252,6 +252,11 @@ public class LeaguerOrderResource {
 					result.getPayment().toString());
 			String orderString = payService.createAlipayAppOrder(apiPayDTO);
 			return new ResponseEntity<String>(orderString, HttpStatus.OK);
+		case 3://微信支付
+			BigDecimal payment = leaguerOrderDTO.getPayment();
+			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
+			orderString = payService.prePay(leaguerOrderDTO.getOrderNo(), multiply.toString(), "leaguer2");
+			return new ResponseEntity<String>(orderString, HttpStatus.OK);
 		default:
 			throw new BadRequestAlertException("信息有误", "err", "err");
 		}
