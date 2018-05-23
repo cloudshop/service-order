@@ -227,7 +227,15 @@ public class DepOrderResource {
 			BalanceDTO balanceDTO = new BalanceDTO();
 			balanceDTO.setMoney(depOrder.getPayment());
 			balanceDTO.setOrderNo(depOrder.getOrderNo());
-			balanceDTO.setType(1);//1 充值
+			switch (depOrder.getPayType()) {//1 支付宝支付 2 微信支付
+			case 1:
+				balanceDTO.setType(1);
+				break;
+			case 2:
+				balanceDTO.setType(2);
+				break;
+			}
+			balanceDTO.setType(1);
 			balanceDTO.setUserid(depOrder.getUserid());
 			Wallet wallet = walletService.updateBalance(balanceDTO);
 			return ResponseEntity.ok()
