@@ -183,7 +183,7 @@ public class DepOrderResource {
 		case 2: //微信支付
 			BigDecimal payment = depOrderVO.getPayment();
 			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
-			orderString = payService.prePay(orderNo, multiply.toString(), "deposit");
+			orderString = payService.prePay(orderNo, multiply.intValue()+"", "deposit");
 			break;
 		default:
 			break;
