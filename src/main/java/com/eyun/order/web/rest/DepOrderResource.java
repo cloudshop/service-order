@@ -32,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
@@ -180,6 +181,9 @@ public class DepOrderResource {
 			orderString = payService.createAlipayAppOrder(alipay);
 			break;
 		case 2: //微信支付
+			BigDecimal payment = depOrderVO.getPayment();
+			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
+			orderString = payService.prePay(orderNo, multiply.toString(), "deposit");
 			break;
 		default:
 			break;

@@ -107,6 +107,12 @@ public class DepOrderServiceImpl implements DepOrderService {
 	@Override
 	public DepOrder depositNotify(String orderNo) throws Exception {
 		DepOrder depOrder = depOrderRepository.findByOrderNoAndStatus(orderNo,1);
+		if (depOrder.getPayType() == 2) {
+			depOrder.updatedTime(Instant.now());
+			//TODO 回查订单
+			depOrder.setStatus(2);
+			return depOrderRepository.save(depOrder);
+		}
 		String queryOrder = payService.queryOrder(orderNo);
 		JSONObject jsonObject = new JSONObject(queryOrder);
 		JSONObject resp = jsonObject.getJSONObject("alipay_trade_query_response");
