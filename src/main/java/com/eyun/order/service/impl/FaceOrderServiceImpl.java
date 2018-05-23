@@ -115,7 +115,7 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		case 1://余额支付
 			Wallet userWallet = walletService.getUserWallet();
 			BigDecimal balance = userWallet.getBalance();
-			BigDecimal subtract = balance.subtract(faceOrderDTO.getPayment());
+			BigDecimal subtract = balance.subtract(faceOrderDTO.getBalance());
 			if (subtract.doubleValue() < 0.00) {
 				throw new BadRequestAlertException("账户余额不足", balance.toString(),subtract.toString());
 			} else {
@@ -129,9 +129,9 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 			 */
 			Wallet userWallet1 = walletService.getUserWallet();
 			BigDecimal balance1 = userWallet1.getBalance();
-			if(faceOrderDTO.getTicket().add(faceOrderDTO.getPayment()).equals(faceOrderDTO.getAmount())==false){
+			if(faceOrderDTO.getTicket().add(faceOrderDTO.getBalance()).equals(faceOrderDTO.getAmount())==false){
 				throw new BadRequestAlertException("总金额不足", "", "");
-			}else if (balance1.subtract(faceOrderDTO.getPayment()).doubleValue() < 0.00) {
+			}else if (balance1.subtract(faceOrderDTO.getBalance()).doubleValue() < 0.00) {
 				throw new BadRequestAlertException("账户余额不足", balance1.toString(),balance1.subtract(faceOrderDTO.getPayment()).toString());
 			}else if(userWallet1.getTicket().subtract(faceOrderDTO.getTicket()).doubleValue() < 0.00){
 				throw new BadRequestAlertException("账户券不足", userWallet1.getTicket().toString(), userWallet1.getTicket().subtract(faceOrderDTO.getTicket()).toString());

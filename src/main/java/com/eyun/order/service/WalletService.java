@@ -21,7 +21,7 @@ public interface WalletService {
 	@GetMapping("/api/wallets/user")
 	public Wallet getUserWallet();
 	
-	@GetMapping("/pay-orders/{payNo}")
+	@GetMapping("/api/pay-orders/{payNo}")
     public ResponseEntity<PayOrderDTO> getPayOrderByPayNo(@PathVariable("payNo") String payNo);
 	
 }
