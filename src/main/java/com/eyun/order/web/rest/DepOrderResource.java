@@ -235,7 +235,6 @@ public class DepOrderResource {
 				balanceDTO.setType(2);
 				break;
 			}
-			balanceDTO.setType(1);
 			balanceDTO.setUserid(depOrder.getUserid());
 			Wallet wallet = walletService.updateBalance(balanceDTO);
 			return ResponseEntity.ok()
