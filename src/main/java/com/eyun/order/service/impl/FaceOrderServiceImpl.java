@@ -185,9 +185,9 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		faceOrder.setUpdatedTime(Instant.now());
 		
 		//线下支付 分佣
-		commissionService.orderSettlement(faceOrder.getOrderNo());
-		ResponseEntity<OwnerRelationDTO> ownerRelationByUserid = userService.getOwnerRelationByUserid(faceOrder.getBuserId());
-		commissionService.handleFacilitatorWallet(ownerRelationByUserid.getBody().getMercuryId(),faceOrder.getPayment(), faceOrder.getOrderNo(),faceOrder.getTransferAmount());		
+		//commissionService.orderSettlement(faceOrder.getOrderNo());
+		//ResponseEntity<OwnerRelationDTO> ownerRelationByUserid = userService.getOwnerRelationByUserid(faceOrder.getBuserId());
+		//commissionService.handleFacilitatorWallet(ownerRelationByUserid.getBody().getMercuryId(),faceOrder.getPayment(), faceOrder.getOrderNo(),faceOrder.getTransferAmount());		
 		FaceOrder save = faceOrderRepository.save(faceOrder);
 		return faceOrderMapper.toDto(save);
 	}

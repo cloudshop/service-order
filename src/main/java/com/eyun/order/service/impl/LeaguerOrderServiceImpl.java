@@ -111,7 +111,8 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 		LeaguerOrder leaguerOrder = leaguerOrderRepository.findByOrderNo(payNotifyDTO.getOrderNo());
 		System.out.println(leaguerOrder.toString()+"=============================");
 		if (leaguerOrder.getStatus() != 1) {
-			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
+			log.info("-----------------------");
+//			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
 		}
 		leaguerOrder.setStatus(2);
 		leaguerOrder.setPayNo(payNotifyDTO.getPayNo());
