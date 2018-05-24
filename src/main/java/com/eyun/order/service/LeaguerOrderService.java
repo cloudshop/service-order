@@ -47,4 +47,5 @@ public interface LeaguerOrderService {
 	LeaguerOrderDTO leaguerOrderNotify(PayNotifyDTO payNotifyDTO);
 	
 	public String createOrder(UserDTO userDto ,LeaguerOrderDTO leaguerOrderDTO);
+	public LeaguerOrderDTO findOrderByOrderNo(String orderNo);
 }

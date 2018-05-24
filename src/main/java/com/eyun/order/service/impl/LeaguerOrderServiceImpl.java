@@ -160,4 +160,10 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
         leaguerOrderRepository.save(leaguerOrderMapper.toEntity(leaguerOrderDTO));
         return orderString;
 	}
+	
+	public LeaguerOrderDTO findOrderByOrderNo(String orderNo){
+		LeaguerOrder findByOrderNo = leaguerOrderRepository.findByOrderNo(orderNo);
+		
+		return leaguerOrderMapper.toDto(findByOrderNo);
+	}
 }

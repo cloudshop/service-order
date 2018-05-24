@@ -198,10 +198,10 @@ public class LeaguerOrderResource {
     public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify2(@RequestBody PayNotifyDTO payNotifyDTO) throws Exception {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
     	// TODO 添加修改用户身份 服务商
-    	UserDTO userDTO=uaaService.getAccount();
-    	System.out.println("============" + userDTO.toString());
+    	//UserDTO userDTO=uaaService.getAccount();
+    	LeaguerOrderDTO order = leaguerOrderService.findOrderByOrderNo(payNotifyDTO.getOrderNo());
     	//更改状态
-    	ResponseEntity userAnnexesChangeService = userService.userAnnexesChangeService((long) 1065);
+    	ResponseEntity userAnnexesChangeService = userService.userAnnexesChangeService(order.getUserid());
     	//调用给直接或间接的服务商加钱
     	//commissionService.joinMoney(userDTO.getId());	
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
