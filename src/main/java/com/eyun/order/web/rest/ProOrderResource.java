@@ -410,7 +410,7 @@ public class ProOrderResource {
       //订单，商家分佣
         ProOrderDTO findOrderByOrderNo = proOrderService.findOrderByOrderNo(orderNo);
         //给用户加钱
-    	//commissionService.orderSettlement(orderNo);
+    	commissionService.orderSettlement(orderNo);
     	//给服务商加钱
         commissionService.handleFacilitatorWallet(findOrderByOrderNo.getShopId(), findOrderByOrderNo.getPayment(), findOrderByOrderNo.getOrderNo(),findOrderByOrderNo.getTransferAmount());
 	    return new ResponseEntity<>(true,HttpStatus.OK);

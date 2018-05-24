@@ -27,6 +27,7 @@ public interface UserService {
 	
 
     @GetMapping("/api/mercuries/getUserIdMercuryId")
-    public Map findUserMercuryId();	
+    public Map findUserMercuryId();
+   
 }
 

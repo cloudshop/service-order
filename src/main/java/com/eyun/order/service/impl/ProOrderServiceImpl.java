@@ -325,6 +325,7 @@ public class ProOrderServiceImpl implements ProOrderService {
     	commissionService.orderSettlement(save.getOrderNo());
     	//给服务商加钱
         commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo());*/ 
+		commissionService.orderSettlement(save.getOrderNo());
         commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo(),save.getTransferAmount());
 		return true;
 	}

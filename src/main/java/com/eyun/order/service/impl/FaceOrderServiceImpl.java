@@ -1,7 +1,9 @@
 package com.eyun.order.service.impl;
 
+import com.eyun.order.service.CommisionService;
 import com.eyun.order.service.FaceOrderService;
 import com.eyun.order.service.PayService;
+import com.eyun.order.service.UserService;
 import com.eyun.order.service.WalletService;
 import com.eyun.order.domain.FaceOrder;
 import com.eyun.order.domain.ProOrder;
@@ -44,7 +46,11 @@ public class FaceOrderServiceImpl implements FaceOrderService {
     private WalletService walletService;
     @Autowired
     private PayService payService;
-
+    @Autowired
+    private CommisionService commissionService;
+    @Autowired
+    private UserService userService;
+   
     public FaceOrderServiceImpl(FaceOrderRepository faceOrderRepository, FaceOrderMapper faceOrderMapper) {
         this.faceOrderRepository = faceOrderRepository;
         this.faceOrderMapper = faceOrderMapper;
@@ -161,6 +167,11 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		default:
 			break;
 		}
+		
+		commissionService.orderSettlement(faceOrderDTO.getOrderNo());
+		
+//        commissionService.handleFacilitatorWallet(faceOrderDTO.getShopId(), faceOrderDTO.getPayment(), faceOrderDTO.getOrderNo(),faceOrderDTO.getTransferAmount());
+		
 		faceOrderDTO.setTransferAmount(faceOrderDTO.getAmount().multiply(faceOrderDTO.getTransfer()));
 		faceOrderRepository.save(faceOrderMapper.toEntity(faceOrderDTO));
         return orderString;
@@ -183,4 +194,5 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		FaceOrder findOrderByOrderNo = faceOrderRepository.findOrderByOrderNo(orderNo);
 		return faceOrderMapper.toDto(findOrderByOrderNo);
 	}
+	
 }
