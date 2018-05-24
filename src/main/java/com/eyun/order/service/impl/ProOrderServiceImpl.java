@@ -253,6 +253,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 			order.setStatus(5);
 			order.setDeletedB(true);
 			order.setUpdateTime(Instant.now());
+			 //给用户加钱
+	    	commissionService.orderSettlement(order.getOrderNo());
+	    	//给服务商加钱
+	        commissionService.handleFacilitatorWallet(order.getShopId(), order.getPayment(), order.getOrderNo(),order.getTransferAmount());
 			proOrderRepository.save(order);
 		}
 	}

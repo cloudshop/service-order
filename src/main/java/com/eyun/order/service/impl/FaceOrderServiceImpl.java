@@ -11,6 +11,7 @@ import com.eyun.order.domain.Wallet;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.repository.FaceOrderRepository;
 import com.eyun.order.service.dto.FaceOrderDTO;
+import com.eyun.order.service.dto.OwnerRelationDTO;
 import com.eyun.order.service.dto.PayNotifyDTO;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.mapper.FaceOrderMapper;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -167,11 +169,7 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		default:
 			break;
 		}
-		
-		commissionService.orderSettlement(faceOrderDTO.getOrderNo());
-		
-//        commissionService.handleFacilitatorWallet(faceOrderDTO.getShopId(), faceOrderDTO.getPayment(), faceOrderDTO.getOrderNo(),faceOrderDTO.getTransferAmount());
-		
+			
 		faceOrderDTO.setTransferAmount(faceOrderDTO.getAmount().multiply(faceOrderDTO.getTransfer()));
 		faceOrderRepository.save(faceOrderMapper.toEntity(faceOrderDTO));
         return orderString;
@@ -185,6 +183,11 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		}
 		faceOrder.setStatus(2);
 		faceOrder.setUpdatedTime(Instant.now());
+		
+		//线下支付 分佣
+		commissionService.orderSettlement(faceOrder.getOrderNo());
+		ResponseEntity<OwnerRelationDTO> ownerRelationByUserid = userService.getOwnerRelationByUserid(faceOrder.getBuserId());
+		commissionService.handleFacilitatorWallet(ownerRelationByUserid.getBody().getMercuryId(),faceOrder.getPayment(), faceOrder.getOrderNo(),faceOrder.getTransferAmount());		
 		FaceOrder save = faceOrderRepository.save(faceOrder);
 		return faceOrderMapper.toDto(save);
 	}

@@ -109,6 +109,7 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 	@Override
 	public LeaguerOrderDTO leaguerOrderNotify(PayNotifyDTO payNotifyDTO) {
 		LeaguerOrder leaguerOrder = leaguerOrderRepository.findByOrderNo(payNotifyDTO.getOrderNo());
+		System.out.println(leaguerOrder.toString()+"=============================");
 		if (leaguerOrder.getStatus() != 1) {
 			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
 		}
