@@ -197,7 +197,6 @@ public class LeaguerOrderResource {
     @PutMapping("/leaguer-order/pay/notify2")
     public ResponseEntity<LeaguerOrderDTO> leaguerOrderNotify2(@RequestBody PayNotifyDTO payNotifyDTO) throws Exception {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
-    	// TODO 添加修改用户身份 服务商
     	//UserDTO userDTO=uaaService.getAccount();
     	LeaguerOrderDTO order = leaguerOrderService.findOrderByOrderNo(payNotifyDTO.getOrderNo());
     	//更改状态
@@ -228,7 +227,7 @@ public class LeaguerOrderResource {
         leaguerOrderDTO.setUpdatedTime(Instant.now());
         leaguerOrderDTO.setUserid(user.getId());
         leaguerOrderDTO.setStatus(1);
-        leaguerOrderDTO.setPayment(new BigDecimal("0.01"));
+        leaguerOrderDTO.setPayment(new BigDecimal("20000"));
         leaguerOrderDTO.setPayType(loDTO.getPayType());
         LeaguerOrderDTO result = leaguerOrderService.save(leaguerOrderDTO);
         //支付
