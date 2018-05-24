@@ -31,6 +31,6 @@ public interface UserService {
     public Map findUserMercuryId();
     
     @GetMapping("/owner-relation/{userId}")
-    public ResponseEntity<OwnerRelationDTO> getOwnerRelationByUserid(@PathVariable Long userId);
+    public ResponseEntity<OwnerRelationDTO> getOwnerRelationByUserid(@PathVariable("userId") Long userId);
 }
 
