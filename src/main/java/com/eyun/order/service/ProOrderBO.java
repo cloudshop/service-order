@@ -20,7 +20,19 @@ public class ProOrderBO {
 
     private String shipingCode;
     
-    public String getShippingName() {
+    private Integer paymentType;
+    
+    
+
+	public Integer getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(Integer paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public String getShippingName() {
 		return shippingName;
 	}
 

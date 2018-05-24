@@ -47,6 +47,7 @@ public class OrderUtils {
 	    	pbo.setOrderNo(proOrder.getOrderNo());
 	    	pbo.setShippingName(proOrder.getShippingName());
 	    	pbo.setShipingCode(proOrder.getShipingCode());
+	    	pbo.setPaymentType(proOrder.getPaymentType());
 	    	Set<ProOrderItem> proOrderItems = proOrder.getProOrderItems();
 	    	for (ProOrderItem proOrderItem : proOrderItems) {
 	    		ProOrderItemBO pItem = new ProOrderItemBO();
