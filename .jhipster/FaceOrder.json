@@ -46,6 +46,14 @@
         {
             "fieldName": "updatedTime",
             "fieldType": "Instant"
+        },
+        {
+            "fieldName": "transferAmount",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "transfer",
+            "fieldType": "BigDecimal"
         }
     ],
     "changelogDate": "20180521104028",

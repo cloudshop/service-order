@@ -50,6 +50,10 @@ public class FaceOrderCriteria implements Serializable {
 
     private InstantFilter updatedTime;
 
+    private BigDecimalFilter transferAmount;
+
+    private BigDecimalFilter transfer;
+
     public FaceOrderCriteria() {
     }
 
@@ -149,6 +153,22 @@ public class FaceOrderCriteria implements Serializable {
         this.updatedTime = updatedTime;
     }
 
+    public BigDecimalFilter getTransferAmount() {
+        return transferAmount;
+    }
+
+    public void setTransferAmount(BigDecimalFilter transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
+    public BigDecimalFilter getTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(BigDecimalFilter transfer) {
+        this.transfer = transfer;
+    }
+
     @Override
     public String toString() {
         return "FaceOrderCriteria{" +
@@ -164,6 +184,8 @@ public class FaceOrderCriteria implements Serializable {
                 (status != null ? "status=" + status + ", " : "") +
                 (createdTime != null ? "createdTime=" + createdTime + ", " : "") +
                 (updatedTime != null ? "updatedTime=" + updatedTime + ", " : "") +
+                (transferAmount != null ? "transferAmount=" + transferAmount + ", " : "") +
+                (transfer != null ? "transfer=" + transfer + ", " : "") +
             "}";
     }
 

@@ -81,6 +81,12 @@ public class FaceOrderResourceIntTest {
     private static final Instant DEFAULT_UPDATED_TIME = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_UPDATED_TIME = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
+    private static final BigDecimal DEFAULT_TRANSFER_AMOUNT = new BigDecimal(1);
+    private static final BigDecimal UPDATED_TRANSFER_AMOUNT = new BigDecimal(2);
+
+    private static final BigDecimal DEFAULT_TRANSFER = new BigDecimal(1);
+    private static final BigDecimal UPDATED_TRANSFER = new BigDecimal(2);
+
     @Autowired
     private FaceOrderRepository faceOrderRepository;
 
@@ -138,7 +144,9 @@ public class FaceOrderResourceIntTest {
             .ticket(DEFAULT_TICKET)
             .status(DEFAULT_STATUS)
             .createdTime(DEFAULT_CREATED_TIME)
-            .updatedTime(DEFAULT_UPDATED_TIME);
+            .updatedTime(DEFAULT_UPDATED_TIME)
+            .transferAmount(DEFAULT_TRANSFER_AMOUNT)
+            .transfer(DEFAULT_TRANSFER);
         return faceOrder;
     }
 
@@ -174,6 +182,8 @@ public class FaceOrderResourceIntTest {
         assertThat(testFaceOrder.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testFaceOrder.getCreatedTime()).isEqualTo(DEFAULT_CREATED_TIME);
         assertThat(testFaceOrder.getUpdatedTime()).isEqualTo(DEFAULT_UPDATED_TIME);
+        assertThat(testFaceOrder.getTransferAmount()).isEqualTo(DEFAULT_TRANSFER_AMOUNT);
+        assertThat(testFaceOrder.getTransfer()).isEqualTo(DEFAULT_TRANSFER);
     }
 
     @Test
@@ -217,7 +227,9 @@ public class FaceOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].ticket").value(hasItem(DEFAULT_TICKET.intValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].createdTime").value(hasItem(DEFAULT_CREATED_TIME.toString())))
-            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())));
+            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())))
+            .andExpect(jsonPath("$.[*].transferAmount").value(hasItem(DEFAULT_TRANSFER_AMOUNT.intValue())))
+            .andExpect(jsonPath("$.[*].transfer").value(hasItem(DEFAULT_TRANSFER.intValue())));
     }
 
     @Test
@@ -241,7 +253,9 @@ public class FaceOrderResourceIntTest {
             .andExpect(jsonPath("$.ticket").value(DEFAULT_TICKET.intValue()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
             .andExpect(jsonPath("$.createdTime").value(DEFAULT_CREATED_TIME.toString()))
-            .andExpect(jsonPath("$.updatedTime").value(DEFAULT_UPDATED_TIME.toString()));
+            .andExpect(jsonPath("$.updatedTime").value(DEFAULT_UPDATED_TIME.toString()))
+            .andExpect(jsonPath("$.transferAmount").value(DEFAULT_TRANSFER_AMOUNT.intValue()))
+            .andExpect(jsonPath("$.transfer").value(DEFAULT_TRANSFER.intValue()));
     }
 
     @Test
@@ -780,6 +794,84 @@ public class FaceOrderResourceIntTest {
         // Get all the faceOrderList where updatedTime is null
         defaultFaceOrderShouldNotBeFound("updatedTime.specified=false");
     }
+
+    @Test
+    @Transactional
+    public void getAllFaceOrdersByTransferAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        faceOrderRepository.saveAndFlush(faceOrder);
+
+        // Get all the faceOrderList where transferAmount equals to DEFAULT_TRANSFER_AMOUNT
+        defaultFaceOrderShouldBeFound("transferAmount.equals=" + DEFAULT_TRANSFER_AMOUNT);
+
+        // Get all the faceOrderList where transferAmount equals to UPDATED_TRANSFER_AMOUNT
+        defaultFaceOrderShouldNotBeFound("transferAmount.equals=" + UPDATED_TRANSFER_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllFaceOrdersByTransferAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        faceOrderRepository.saveAndFlush(faceOrder);
+
+        // Get all the faceOrderList where transferAmount in DEFAULT_TRANSFER_AMOUNT or UPDATED_TRANSFER_AMOUNT
+        defaultFaceOrderShouldBeFound("transferAmount.in=" + DEFAULT_TRANSFER_AMOUNT + "," + UPDATED_TRANSFER_AMOUNT);
+
+        // Get all the faceOrderList where transferAmount equals to UPDATED_TRANSFER_AMOUNT
+        defaultFaceOrderShouldNotBeFound("transferAmount.in=" + UPDATED_TRANSFER_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllFaceOrdersByTransferAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        faceOrderRepository.saveAndFlush(faceOrder);
+
+        // Get all the faceOrderList where transferAmount is not null
+        defaultFaceOrderShouldBeFound("transferAmount.specified=true");
+
+        // Get all the faceOrderList where transferAmount is null
+        defaultFaceOrderShouldNotBeFound("transferAmount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllFaceOrdersByTransferIsEqualToSomething() throws Exception {
+        // Initialize the database
+        faceOrderRepository.saveAndFlush(faceOrder);
+
+        // Get all the faceOrderList where transfer equals to DEFAULT_TRANSFER
+        defaultFaceOrderShouldBeFound("transfer.equals=" + DEFAULT_TRANSFER);
+
+        // Get all the faceOrderList where transfer equals to UPDATED_TRANSFER
+        defaultFaceOrderShouldNotBeFound("transfer.equals=" + UPDATED_TRANSFER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllFaceOrdersByTransferIsInShouldWork() throws Exception {
+        // Initialize the database
+        faceOrderRepository.saveAndFlush(faceOrder);
+
+        // Get all the faceOrderList where transfer in DEFAULT_TRANSFER or UPDATED_TRANSFER
+        defaultFaceOrderShouldBeFound("transfer.in=" + DEFAULT_TRANSFER + "," + UPDATED_TRANSFER);
+
+        // Get all the faceOrderList where transfer equals to UPDATED_TRANSFER
+        defaultFaceOrderShouldNotBeFound("transfer.in=" + UPDATED_TRANSFER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllFaceOrdersByTransferIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        faceOrderRepository.saveAndFlush(faceOrder);
+
+        // Get all the faceOrderList where transfer is not null
+        defaultFaceOrderShouldBeFound("transfer.specified=true");
+
+        // Get all the faceOrderList where transfer is null
+        defaultFaceOrderShouldNotBeFound("transfer.specified=false");
+    }
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -798,7 +890,9 @@ public class FaceOrderResourceIntTest {
             .andExpect(jsonPath("$.[*].ticket").value(hasItem(DEFAULT_TICKET.intValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].createdTime").value(hasItem(DEFAULT_CREATED_TIME.toString())))
-            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())));
+            .andExpect(jsonPath("$.[*].updatedTime").value(hasItem(DEFAULT_UPDATED_TIME.toString())))
+            .andExpect(jsonPath("$.[*].transferAmount").value(hasItem(DEFAULT_TRANSFER_AMOUNT.intValue())))
+            .andExpect(jsonPath("$.[*].transfer").value(hasItem(DEFAULT_TRANSFER.intValue())));
     }
 
     /**
@@ -843,7 +937,9 @@ public class FaceOrderResourceIntTest {
             .ticket(UPDATED_TICKET)
             .status(UPDATED_STATUS)
             .createdTime(UPDATED_CREATED_TIME)
-            .updatedTime(UPDATED_UPDATED_TIME);
+            .updatedTime(UPDATED_UPDATED_TIME)
+            .transferAmount(UPDATED_TRANSFER_AMOUNT)
+            .transfer(UPDATED_TRANSFER);
         FaceOrderDTO faceOrderDTO = faceOrderMapper.toDto(updatedFaceOrder);
 
         restFaceOrderMockMvc.perform(put("/api/face-orders")
@@ -866,6 +962,8 @@ public class FaceOrderResourceIntTest {
         assertThat(testFaceOrder.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testFaceOrder.getCreatedTime()).isEqualTo(UPDATED_CREATED_TIME);
         assertThat(testFaceOrder.getUpdatedTime()).isEqualTo(UPDATED_UPDATED_TIME);
+        assertThat(testFaceOrder.getTransferAmount()).isEqualTo(UPDATED_TRANSFER_AMOUNT);
+        assertThat(testFaceOrder.getTransfer()).isEqualTo(UPDATED_TRANSFER);
     }
 
     @Test

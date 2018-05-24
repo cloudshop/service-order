@@ -66,6 +66,14 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="transfer_amount" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="transfer" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="face_order" columnName="created_time" columnDataType="datetime"/>

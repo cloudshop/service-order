@@ -112,6 +112,12 @@ public class FaceOrderQueryService extends QueryService<FaceOrder> {
             if (criteria.getUpdatedTime() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getUpdatedTime(), FaceOrder_.updatedTime));
             }
+            if (criteria.getTransferAmount() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getTransferAmount(), FaceOrder_.transferAmount));
+            }
+            if (criteria.getTransfer() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getTransfer(), FaceOrder_.transfer));
+            }
         }
         return specification;
     }

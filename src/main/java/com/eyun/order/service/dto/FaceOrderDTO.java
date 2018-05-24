@@ -35,6 +35,10 @@ public class FaceOrderDTO implements Serializable {
 
     private Instant updatedTime;
 
+    private BigDecimal transferAmount;
+
+    private BigDecimal transfer;
+
     public Long getId() {
         return id;
     }
@@ -131,6 +135,22 @@ public class FaceOrderDTO implements Serializable {
         this.updatedTime = updatedTime;
     }
 
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
+    }
+
+    public void setTransferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
+    public BigDecimal getTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(BigDecimal transfer) {
+        this.transfer = transfer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -167,6 +187,8 @@ public class FaceOrderDTO implements Serializable {
             ", status=" + getStatus() +
             ", createdTime='" + getCreatedTime() + "'" +
             ", updatedTime='" + getUpdatedTime() + "'" +
+            ", transferAmount=" + getTransferAmount() +
+            ", transfer=" + getTransfer() +
             "}";
     }
 }

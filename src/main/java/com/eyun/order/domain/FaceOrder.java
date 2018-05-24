@@ -57,6 +57,12 @@ public class FaceOrder implements Serializable {
     @Column(name = "updated_time")
     private Instant updatedTime;
 
+    @Column(name = "transfer_amount", precision=10, scale=2)
+    private BigDecimal transferAmount;
+
+    @Column(name = "transfer", precision=10, scale=2)
+    private BigDecimal transfer;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -208,6 +214,32 @@ public class FaceOrder implements Serializable {
     public void setUpdatedTime(Instant updatedTime) {
         this.updatedTime = updatedTime;
     }
+
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
+    }
+
+    public FaceOrder transferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+        return this;
+    }
+
+    public void setTransferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+    }
+
+    public BigDecimal getTransfer() {
+        return transfer;
+    }
+
+    public FaceOrder transfer(BigDecimal transfer) {
+        this.transfer = transfer;
+        return this;
+    }
+
+    public void setTransfer(BigDecimal transfer) {
+        this.transfer = transfer;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -245,6 +277,8 @@ public class FaceOrder implements Serializable {
             ", status=" + getStatus() +
             ", createdTime='" + getCreatedTime() + "'" +
             ", updatedTime='" + getUpdatedTime() + "'" +
+            ", transferAmount=" + getTransferAmount() +
+            ", transfer=" + getTransfer() +
             "}";
     }
 }
