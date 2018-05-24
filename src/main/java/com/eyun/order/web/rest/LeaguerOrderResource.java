@@ -199,12 +199,9 @@ public class LeaguerOrderResource {
     	LeaguerOrderDTO leaguerOrderDTO = leaguerOrderService.leaguerOrderNotify(payNotifyDTO);
     	// TODO 添加修改用户身份 服务商
     	UserDTO userDTO=uaaService.getAccount();
-    	if (userDTO==null){
-    	    throw new Exception("获取当前登陆用户失败");
-    	}
-    	
+    	System.out.println("============" + userDTO.toString());
     	//更改状态
-    	userService.userAnnexesChangeService(userDTO.getId());
+    	ResponseEntity userAnnexesChangeService = userService.userAnnexesChangeService((long) 1065);
     	//调用给直接或间接的服务商加钱
     	//commissionService.joinMoney(userDTO.getId());	
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
