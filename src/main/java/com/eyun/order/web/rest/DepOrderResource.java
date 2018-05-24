@@ -188,7 +188,6 @@ public class DepOrderResource {
 		default:
 			break;
 		}
-		
     	DepOrderDTO depOrderDTO = new DepOrderDTO();
     	depOrderDTO.setOrderNo(orderNo);
     	depOrderDTO.setCreatedTime(Instant.now());

@@ -18,7 +18,7 @@ public interface CommisionService {
 	public void joinMoney(@PathVariable("userId") Long userId);
 
 	@GetMapping("/api/order/facilitator/wallet")
-	public ResponseEntity handleFacilitatorWallet(@RequestParam("shopId") Long shopId, @RequestParam("payment")BigDecimal payment,@RequestParam("orderNo")String orderNo);
+	public ResponseEntity handleFacilitatorWallet(@RequestParam("shopId") Long shopId, @RequestParam("payment")BigDecimal payment,@RequestParam("orderNo")String orderNo,@RequestParam("transfer")BigDecimal transfer);
 
 	@PostMapping("/api/order/settlement/{orderNo}")
 	public void orderSettlement(@PathVariable("orderNo") String orderNo);

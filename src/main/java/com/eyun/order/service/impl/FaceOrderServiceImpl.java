@@ -161,6 +161,7 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		default:
 			break;
 		}
+		faceOrderDTO.setTransferAmount(faceOrderDTO.getAmount().multiply(faceOrderDTO.getTransfer()));
 		faceOrderRepository.save(faceOrderMapper.toEntity(faceOrderDTO));
         return orderString;
 		}
@@ -168,12 +169,11 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 	@Override
 	public FaceOrderDTO faceOrderNotify(PayNotifyDTO payNotifyDTO) {
 		FaceOrder faceOrder = faceOrderRepository.findOrderByOrderNo(payNotifyDTO.getOrderNo());
-		System.out.println("faceOrder++++++++++++++++++++++++++++++++++++" + faceOrder.toString());
-		System.out.println("payNotifyDTO==============" + payNotifyDTO.toString());
 		if(faceOrder.getStatus()!= 1){
 			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
 		}
 		faceOrder.setStatus(2);
+		faceOrder.setUpdatedTime(Instant.now());
 		FaceOrder save = faceOrderRepository.save(faceOrder);
 		return faceOrderMapper.toDto(save);
 	}

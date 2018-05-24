@@ -119,6 +119,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			ProOrder save = proOrderRepository.save(proOrder);
 			orderId = save.getId();
 			for (ProOrderItemDTO proOrderItemDTO : proOrderItems) {
+				BigDecimal transfor = new BigDecimal(0);
 				ProOrderItem pro = new ProOrderItem();
 				Map updateProductSkuCount = null;
 				pro.setCount(proOrderItemDTO.getCount());
@@ -128,6 +129,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 				pro.setProOrder(proOrder);
 				pro.setProductSkuId(proOrderItemDTO.getProductSkuId());
 				// 更改库存,添加让利
+				
 				ProductSkuDTO productSku = proService.getProductSku(proOrderItemDTO.getProductSkuId());
 				if(productSku == null){
 					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
@@ -323,6 +325,7 @@ public class ProOrderServiceImpl implements ProOrderService {
     	commissionService.orderSettlement(save.getOrderNo());
     	//给服务商加钱
         commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo());*/ 
+        commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo(),save.getTransferAmount());
 		return true;
 	}
 
@@ -338,7 +341,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			//邀请人加积分
 	    	commissionService.orderSettlement(order.getOrderNo());
 	    	//给服务商加钱
-	        commissionService.handleFacilitatorWallet(order.getShopId(), order.getPayment(), order.getOrderNo());
+	        commissionService.handleFacilitatorWallet(order.getShopId(), order.getPayment(), order.getOrderNo(), order.getTransferAmount());
 			proOrderRepository.save(order);
 		}
 	}

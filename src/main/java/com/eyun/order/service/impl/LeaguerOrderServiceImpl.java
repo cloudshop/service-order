@@ -129,7 +129,7 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
         leaguerOrderDTO.setUpdatedTime(Instant.now());
         leaguerOrderDTO.setUserid(userDto.getId());
         leaguerOrderDTO.setStatus(1);
-        leaguerOrderDTO.setPayment(new BigDecimal("998"));
+        leaguerOrderDTO.setPayment(new BigDecimal("0.01"));
         //支付
         switch (leaguerOrderDTO.getPayType()) {
 		case 1:// 余额支付
