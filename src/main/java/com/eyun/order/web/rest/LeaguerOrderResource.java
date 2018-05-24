@@ -255,7 +255,7 @@ public class LeaguerOrderResource {
 		case 3://微信支付
 			BigDecimal payment = leaguerOrderDTO.getPayment();
 			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
-			orderString = payService.prePay(leaguerOrderDTO.getOrderNo(), multiply.toString(), "leaguer2");
+			orderString = payService.prePay(leaguerOrderDTO.getOrderNo(),multiply.intValue()+"", "leaguer2");
 			return new ResponseEntity<String>(orderString, HttpStatus.OK);
 		default:
 			throw new BadRequestAlertException("信息有误", "err", "err");

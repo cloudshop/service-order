@@ -156,7 +156,7 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		case 5://微信
 			BigDecimal payment = faceOrderDTO.getPayment();
 			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
-			orderString = payService.prePay(faceOrderDTO.getOrderNo(), multiply.toString(), "faceTrans");
+			orderString = payService.prePay(faceOrderDTO.getOrderNo(), multiply.intValue()+"", "faceTrans");
 			break;
 		default:
 			break;

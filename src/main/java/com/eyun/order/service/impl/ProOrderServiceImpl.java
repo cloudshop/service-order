@@ -196,7 +196,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			case 3:
 				BigDecimal payment1 = proOrder2.getPayment();
 				BigDecimal multiply = payment1.multiply(new BigDecimal("100"));
-				orderString = payService.prePay(proOrder2.getOrderNo(), multiply.toString(), "product");
+				orderString = payService.prePay(proOrder2.getOrderNo(),multiply.intValue()+"", "product");
 				proOrder2.setOrderString(orderString);
 			default:
 				break;

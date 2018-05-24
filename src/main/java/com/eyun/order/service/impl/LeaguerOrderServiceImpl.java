@@ -151,7 +151,7 @@ public class LeaguerOrderServiceImpl implements LeaguerOrderService {
 		case 3:
 			BigDecimal payment = leaguerOrderDTO.getPayment();
 			BigDecimal multiply = payment.multiply(new BigDecimal("100"));
-			orderString = payService.prePay(leaguerOrderDTO.getOrderNo(), multiply.toString(), "leaguer");
+			orderString = payService.prePay(leaguerOrderDTO.getOrderNo(), multiply.intValue()+"", "leaguer");
 		default:
 			break;
 		}
