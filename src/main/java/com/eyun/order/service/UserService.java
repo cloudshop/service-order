@@ -21,11 +21,8 @@ public interface UserService {
 	
 	@PostMapping("/api/user-annexes-UpdaeUserStatus")
     public ResponseEntity UpdaeUserStatus(@RequestBody UserDTO userDTO);
-	
 	@GetMapping("/api/user-annexes-changeService/{id}")
-	public void userAnnexesChangeService(@PathVariable("id") Long id);
-	
-
+	public ResponseEntity userAnnexesChangeService(@PathVariable("id") Long id);
     @GetMapping("/api/mercuries/getUserIdMercuryId")
     public Map findUserMercuryId();
    

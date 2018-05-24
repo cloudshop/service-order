@@ -206,7 +206,7 @@ public class LeaguerOrderResource {
     	//更改状态
     	userService.userAnnexesChangeService(userDTO.getId());
     	//调用给直接或间接的服务商加钱
-    	commissionService.joinMoney(userDTO.getId());	
+    	//commissionService.joinMoney(userDTO.getId());	
     	return new ResponseEntity<LeaguerOrderDTO>(leaguerOrderDTO, HttpStatus.OK);
     }
     
