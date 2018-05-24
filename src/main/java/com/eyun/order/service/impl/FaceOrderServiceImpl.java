@@ -170,7 +170,7 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 			break;
 		}
 			
-		faceOrderDTO.setTransferAmount(faceOrderDTO.getAmount().multiply(faceOrderDTO.getTransfer()));
+		//faceOrderDTO.setTransferAmount(faceOrderDTO.getAmount().multiply(faceOrderDTO.getTransfer()));
 		faceOrderRepository.save(faceOrderMapper.toEntity(faceOrderDTO));
         return orderString;
 		}
