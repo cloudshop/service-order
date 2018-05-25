@@ -325,12 +325,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 		//确认收货
 		proOrder.setStatus(status);
 		ProOrder save = proOrderRepository.save(proOrder);	
-/*		 //给用户加钱
-    	commissionService.orderSettlement(save.getOrderNo());
+	    //给用户加钱
     	//给服务商加钱
-        commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo());*/ 
-		commissionService.orderSettlement(save.getOrderNo());
-        commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo(),save.getTransferAmount());
+/*    	commissionService.orderSettlement(save.getOrderNo());
+        commissionService.handleFacilitatorWallet(save.getShopId(), save.getPayment(), save.getOrderNo(),save.getTransferAmount());*/
 		return true;
 	}
 
