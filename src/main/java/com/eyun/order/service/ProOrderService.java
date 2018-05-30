@@ -82,4 +82,7 @@ public interface ProOrderService {
 
 
 	Boolean proOrderDelete(Long orderId);
+
+
+	List<ProOrder> toProEntityList(List<ProOrderDTO> content);
 	}

@@ -2,17 +2,21 @@ package com.eyun.order.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.eyun.order.service.ProOrderService;
+import com.eyun.order.service.ProService;
 import com.eyun.order.service.UaaService;
 import com.eyun.order.service.UserService;
 import com.eyun.order.service.WalletService;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
 import com.eyun.order.web.rest.util.HeaderUtil;
+import com.eyun.order.web.rest.util.OrderUtils;
 import com.eyun.order.web.rest.util.PaginationUtil;
 import com.eyun.order.service.dto.ProOrderDTO;
 import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ShipDTO;
 import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.service.impl.ProOrderServiceImpl;
+import com.eyun.order.service.mapper.ProOrderItemMapper;
+import com.eyun.order.service.dto.ManageOrderDTO;
 import com.eyun.order.service.dto.OrderDateDTO;
 import com.eyun.order.service.dto.PageOrder;
 import com.eyun.order.service.dto.PayNotifyDTO;
@@ -80,6 +84,13 @@ public class ProOrderResource {
 
     @Autowired
     private CommisionService commissionService;
+    
+    @Autowired
+    private ProService proService;
+    
+    @Autowired
+    private OrderUtils orderUtils;
+
 
     public ProOrderResource(ProOrderService proOrderService, ProOrderQueryService proOrderQueryService) {
         this.proOrderService = proOrderService;
@@ -337,8 +348,10 @@ public class ProOrderResource {
 			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
 		}
 
+		List<ProOrderDTO> content = findByCriteria.getContent();
+		List<ProOrderBO> showOrder = orderUtils.showOrderDTO(content);
 		list.setProOrderAmount(findByCriteria.getTotalElements());
-    	list.setProOrder(findByCriteria.getContent());
+    	list.setProOrder(showOrder);
 		return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
@@ -346,11 +359,11 @@ public class ProOrderResource {
 
     @ApiOperation("后台管理分页查询商家订单")
     @PostMapping("/manage/findMercuOrderByStatus")
-    public ResponseEntity<OrderDateDTO> findMercuOrderByStatus(@RequestBody PageOrder pageOrder){
+    public ResponseEntity<ManageOrderDTO> findMercuOrderByStatus(@RequestBody PageOrder pageOrder){
 		Pageable pageable = new PageRequest(pageOrder.getPage()-1,pageOrder.getSize());
 		Page<ProOrderDTO> findByCriteria;
 		Map findUserMercuryId = userService.findUserMercuryId();
-		OrderDateDTO list = new OrderDateDTO();
+		ManageOrderDTO list = new ManageOrderDTO();
 		//shopId条件
 		LongFilter longFilter = new LongFilter();
 		longFilter.setEquals(Long.valueOf(String.valueOf(findUserMercuryId.get("id"))));

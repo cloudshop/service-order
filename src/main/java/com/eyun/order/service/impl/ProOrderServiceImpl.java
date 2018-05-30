@@ -382,4 +382,10 @@ public class ProOrderServiceImpl implements ProOrderService {
 			throw new BadRequestAlertException("删除失败","order","delete failed");
 		}
 	}
+
+	@Override
+	public List<ProOrder> toProEntityList(List<ProOrderDTO> content) {
+		List<ProOrder> entity = proOrderMapper.toEntity(content);
+		return entity;
+	}
 }

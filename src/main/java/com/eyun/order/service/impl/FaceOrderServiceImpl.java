@@ -181,7 +181,7 @@ public class FaceOrderServiceImpl implements FaceOrderService {
 		if(faceOrder.getStatus()!= 1){
 			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
 		}
-		faceOrder.setStatus(2);
+		faceOrder.setStatus(4);
 		faceOrder.setUpdatedTime(Instant.now());
 		
 		//线下支付 分佣

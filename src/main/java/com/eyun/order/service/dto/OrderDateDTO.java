@@ -3,18 +3,20 @@ package com.eyun.order.service.dto;
 import java.util.List;
 
 import com.eyun.order.domain.ProOrder;
+import com.eyun.order.service.ProOrderBO;
 
 public class OrderDateDTO {
 	
-	private List<ProOrderDTO> proOrder;
+	private List<ProOrderBO> proOrder;
 	
 	private Long proOrderAmount;
 
-	public List<ProOrderDTO> getProOrder() {
+
+	public List<ProOrderBO> getProOrder() {
 		return proOrder;
 	}
 
-	public void setProOrder(List<ProOrderDTO> proOrder) {
+	public void setProOrder(List<ProOrderBO> proOrder) {
 		this.proOrder = proOrder;
 	}
 
@@ -26,6 +28,5 @@ public class OrderDateDTO {
 		this.proOrderAmount = proOrderAmount;
 	}
 
-    
-	
 }
+
