@@ -2,6 +2,7 @@ package com.eyun.order.web.rest.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +56,14 @@ public class OrderUtils {
 	    		ProOrderItemBO pItem = new ProOrderItemBO();
 	    		pItem.setProductSkuId(proOrderItem.getProductSkuId());
 	    		pItem.setPrice(proOrderItem.getPrice());
-	    		pItem.setPrice(proOrderItem.getPrice());
 	    		ProductSkuDTO sku = proService.getProductSku(proOrderItem.getProductSkuId());
 	    		if(sku == null){
 					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
+	    		}
+	    		List<Map> skuImg = proService.getSkuImg(sku.getId());
+	    		if(!skuImg.isEmpty()){
+	    			Map map = skuImg.get(0);
+		    		pItem.setUrl(map.get("imgUrl").toString());
 	    		}
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);
@@ -101,6 +106,12 @@ public class OrderUtils {
 	    		ProductSkuDTO sku = proService.getProductSku(proOrderItem.getProductSkuId());
 	    		if(sku == null){
 					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
+	    		}
+	    		
+	    		List<Map> skuImg = proService.getSkuImg(sku.getId());
+	    		if(!skuImg.isEmpty()){
+	    			Map map = skuImg.get(0);
+		    		pItem.setUrl(map.get("imgUrl").toString());
 	    		}
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);

@@ -29,6 +29,8 @@ public interface ProService {
 
 	@GetMapping("/api/sku-imgs/")
 	public List<Map> getSkuImg(@RequestParam("skuId") Long skuId);
+	
+	
 }
 
 
