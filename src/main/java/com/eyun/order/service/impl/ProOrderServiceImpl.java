@@ -303,6 +303,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 			throw new BadRequestAlertException("订单不是未支付状态", "order", "orderStatusError");
 		}
 		proOrder.setStatus(2);
+		proOrder.setUpdateTime(Instant.now());
 		proOrder.setPayNo(payNotifyDTO.getPayNo());
 		ProOrder save = proOrderRepository.save(proOrder);
 	//	commissionService.handleFacilitatorWallet(proOrder.getShopId(), proOrder.getPayment(), proOrder.getOrderNo());
@@ -322,6 +323,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 		if(proOrder == null){
 			throw new BadRequestAlertException("该订单号不存在", "", "");
 		}
+		proOrder.setUpdateTime(Instant.now());
 		//确认收货
 		proOrder.setStatus(status);
 		ProOrder save = proOrderRepository.save(proOrder);	
