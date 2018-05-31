@@ -16,6 +16,8 @@ import com.eyun.order.client.AuthorizedFeignClient;
 import com.eyun.order.domain.vo.AlipayDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
 
+import io.github.jhipster.service.filter.LongFilter;
+
 @AuthorizedFeignClient(name="product")
 public interface ProService {	
 	@GetMapping("/api/product-skus/stock/{processtype}/{id}/{count}")
@@ -27,8 +29,8 @@ public interface ProService {
 	@PostMapping("/api/product/follow")
 	public List<Map> follow(@RequestBody List pros);
 
-	@GetMapping("/api/sku-imgs/")
-	public List<Map> getSkuImg(@RequestParam("skuId") Long skuId);
+	@GetMapping("/api/skuimgs/{skuId}")
+	public List<Map> getSkuImg(@PathVariable("skuId") Long longFilter);
 	
 	
 }

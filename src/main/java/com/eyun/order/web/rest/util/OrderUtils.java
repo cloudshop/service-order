@@ -20,6 +20,8 @@ import com.eyun.order.service.dto.ProOrderItemDTO;
 import com.eyun.order.service.dto.ProductSkuDTO;
 import com.eyun.order.service.dto.UserDTO;
 import com.eyun.order.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.service.filter.LongFilter;
 @Component
 public class OrderUtils {
 	@Autowired
@@ -60,11 +62,14 @@ public class OrderUtils {
 	    		if(sku == null){
 					throw new BadRequestAlertException("SkuId有误,无法获取商品","","");
 	    		}
+
 	    		List<Map> skuImg = proService.getSkuImg(sku.getId());
 	    		if(!skuImg.isEmpty()){
 	    			Map map = skuImg.get(0);
 		    		pItem.setUrl(map.get("imgUrl").toString());
+		    		System.out.println(map.get("imgUrl").toString());
 	    		}
+
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);
 			}
