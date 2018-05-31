@@ -25,6 +25,4 @@ public class PageOrder {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	
-	
 }

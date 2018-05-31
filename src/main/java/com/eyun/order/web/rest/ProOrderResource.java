@@ -42,6 +42,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +60,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * REST controller for managing ProOrder.
@@ -314,7 +319,8 @@ public class ProOrderResource {
     @ApiOperation("分页查询订单")
     @PostMapping("/manage/findOrderByStatus")
     public ResponseEntity<OrderDateDTO> findOrderByStatus(@RequestBody PageOrder pageOrder){
-		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize());
+		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize(),new Sort(new Order(Direction.DESC,"createdTime")));
+		Sort sort = null;
 		UserDTO user;
 		Page<ProOrderDTO> findByCriteria;
 		try {
@@ -376,11 +382,13 @@ public class ProOrderResource {
 		BooleanFilter booleanFilterC = new BooleanFilter();
 		booleanFilterC.setEquals(false);
 		ProOrderCriteria criteria = new ProOrderCriteria();
+		
 		criteria.setShopId(longFilter);
 		criteria.setDeletedB(booleanFilterB);
 		criteria.setDeletedC(booleanFilterC);
 		if(pageOrder.getStatus() == 0){
 			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
+			
 		}else{
 			criteria.setStatus(integerFilter);
 			findByCriteria = proOrderQueryService.findByCriteria(criteria, pageable);
