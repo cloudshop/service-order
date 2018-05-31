@@ -378,6 +378,7 @@ public class ProOrderServiceImpl implements ProOrderService {
 		try {
 			ProOrder order = proOrderRepository.findOne(orderId);
 			order.setDeletedB(true);
+			order.setUpdateTime(Instant.now());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
