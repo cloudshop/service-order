@@ -319,7 +319,7 @@ public class ProOrderResource {
     @ApiOperation("分页查询订单")
     @PostMapping("/manage/findOrderByStatus")
     public ResponseEntity<OrderDateDTO> findOrderByStatus(@RequestBody PageOrder pageOrder){
-		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize(),new Sort(new Order(Direction.DESC,"createdTime")));
+		Pageable pageable = new PageRequest(pageOrder.getPage(),pageOrder.getSize(),new Sort(new Order(Direction.DESC,"updateTime")));
 		Sort sort = null;
 		UserDTO user;
 		Page<ProOrderDTO> findByCriteria;
