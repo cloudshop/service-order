@@ -71,7 +71,8 @@ public class OrderUtils {
 		    		pItem.setUrl(map.get("imgUrl").toString());
 		    		System.out.println(map.get("imgUrl").toString());
 	    		}
-
+	    		
+	    		pItem.setProductId(sku.getProductId());
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);
 			}
@@ -122,6 +123,7 @@ public class OrderUtils {
 	    			Map map = skuImg.get(0);
 		    		pItem.setUrl(map.get("imgUrl").toString());
 	    		}
+	    		pItem.setProductId(sku.getProductId());
 	    		pItem.setSkuName(sku.getSkuName());
 	    		pbo.getProOrderItems().add(pItem);
 			}
