@@ -49,8 +49,10 @@ public class OrderUtils {
 	    	pbo.setOrderString(proOrder.getOrderString());
 	    	pbo.setOrderid(proOrder.getId());
 	    	pbo.setPayment(proOrder.getPayment());
+	    	pbo.setShopId(proOrder.getShopId());
 	    	pbo.setOrderNo(proOrder.getOrderNo());
 	    	pbo.setShippingName(proOrder.getShippingName());
+	    	pbo.setUserId(proOrder.getcUserid());
 	    	pbo.setShipingCode(proOrder.getShipingCode());
 	    	pbo.setPaymentType(proOrder.getPaymentType());
 	    	Set<ProOrderItem> proOrderItems = proOrder.getProOrderItems();
@@ -97,8 +99,10 @@ public class OrderUtils {
 	    	pbo.setStatus(proOrder.getStatus());
 	    	pbo.setOrderString(proOrder.getOrderString());
 	    	pbo.setOrderid(proOrder.getId());
+	    	pbo.setUserId(proOrder.getcUserid());
 	    	pbo.setPayment(proOrder.getPayment());
 	    	pbo.setOrderNo(proOrder.getOrderNo());
+	    	pbo.setShopId(proOrder.getShopId());
 	    	pbo.setShippingName(proOrder.getShippingName());
 	    	pbo.setShipingCode(proOrder.getShipingCode());
 	    	pbo.setPaymentType(proOrder.getPaymentType());

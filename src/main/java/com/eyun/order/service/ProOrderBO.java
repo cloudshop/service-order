@@ -22,7 +22,27 @@ public class ProOrderBO {
     
     private Integer paymentType;
     
+    private Long shopId;
+        
+    private Long userId;
     
+    
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Long shopId) {
+		this.shopId = shopId;
+	}
 
 	public Integer getPaymentType() {
 		return paymentType;
